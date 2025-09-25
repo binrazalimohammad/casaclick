@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casaclick - Find your home in just a click</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f9fafb;
+            color: #333;
+        }
+        header {
+            background: #e9d3baff;
+            color: #000000ff;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #4b2d08ff;
+            font-weight: bold;
+            transition: color 0.3s, border-bottom 0.3s;
+            padding-bottom: 5px;
+        }
+        nav a:hover {
+            color: #a7824aff;
+            border-bottom: 2px solid #a7824aff;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 120px 20px;
+            background: linear-gradient(to right, rgba(192,160,123,0.9), rgba(150,119,75,0.9));
+            color: white;
+            overflow: hidden;
+        }
+        /* Faded logo as background */
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: url('C:/Users/Maligalig/Downloads/logo casa.png') no-repeat center;
+            background-size: contain;
+            opacity: 0.1; /* controls the faded effect */
+            pointer-events: none; /* so it doesn’t block clicks */
+        }
+        .hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            font-weight: 700;       /* Bold */
+            text-transform: uppercase;
+            letter-spacing: 2px;    /* Spacing between letters */
+        }
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;       /* Semi-bold */
+            letter-spacing: 2px;    /* Spacing between letters */
+        }
+        .hero button {
+            background: #f5f4f1ff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+        .hero button:hover {
+            background: #8a6a3cff;
+            transform: scale(1.05);
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 60px 40px;
+            background: #fff;
+        }
+        .feature {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .feature h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 60px 20px;
+            background: #b69a69e2;
+            color: white;
+        }
+        .cta button {
+            margin-top: 20px;
+            background: #f1d298ff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .cta button:hover {
+            background: #f1eee8ff;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #806946ff;
+            color: #10100fff;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Casaclick</h1>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Apartments</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>CASACLICK</h2>
+        <p>Find your home in just a click.</p>
+        <button>Browse Apartments</button>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <h3>Wide Selection</h3>
+            <p>Discover apartments that match your needs across multiple cities.</p>
+        </div>
+        <div class="feature">
+            <h3>Trusted Listings</h3>
+            <p>Every listing is verified for your peace of mind.</p>
+        </div>
+        <div class="feature">
+            <h3>Easy Booking</h3>
+            <p>Schedule visits and reserve apartments with just a few clicks.</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to Move In?</h2>
+        <p>Start your journey today with Casaclick.</p>
+        <button>Get Started</button>
+    </section>
+
+    <footer>
+        © {{ "now"|date("Y") }} Casaclick. All rights reserved.
+    </footer>
+</body>
+</html>
