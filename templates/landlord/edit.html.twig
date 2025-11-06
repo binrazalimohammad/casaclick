@@ -1,0 +1,240 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Landlord{% endblock %}
+
+{% block body %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="{{ path('app_landlord_index') }}" class="breadcrumb-link">
+                <i class="ti-list"></i> Landlords
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{{ path('app_landlord_show', {'id': landlord.id}) }}" class="breadcrumb-link">
+                <i class="ti-user"></i> {{ landlord.FirstName }} {{ landlord.LastName }}
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Edit</span>
+        </div>
+    </div>
+
+    <div class="form-wrapper">
+        {{ include('landlord/_form.html.twig', {'button_label': 'Update'}) }}
+    </div>
+
+    <div class="action-buttons-container">
+        <div class="action-buttons">
+            <a href="{{ path('app_landlord_show', {'id': landlord.id}) }}" class="view-button">
+                <i class="ti-eye"></i> 
+                <span>View Details</span>
+            </a>
+            
+            <a href="{{ path('app_landlord_index') }}" class="back-button">
+                <i class="ti-arrow-left"></i> 
+                <span>Back to List</span>
+            </a>
+            
+            {{ include('landlord/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-container {
+        background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+
+    .page-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(210, 180, 140, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .page-header {
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #8B7355;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .breadcrumb-link {
+        color: #8B4513;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .breadcrumb-link:hover {
+        color: #5C4033;
+        background: rgba(255, 255, 255, 0.8);
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .breadcrumb-separator {
+        color: #D2B48C;
+        font-weight: 300;
+    }
+
+    .breadcrumb-current {
+        color: #5C4033;
+        font-weight: 600;
+        padding: 6px 12px;
+        background: rgba(139, 69, 19, 0.1);
+        border-radius: 8px;
+    }
+
+    .form-wrapper {
+        width: 100%;
+        max-width: 800px;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 30px;
+    }
+
+    .action-buttons-container {
+        width: 100%;
+        max-width: 800px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .view-button,
+    .back-button {
+        background: linear-gradient(135deg, #8B4513, #A0522D);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .view-button {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        box-shadow: 0 8px 24px rgba(39, 174, 96, 0.3);
+    }
+
+    .view-button:hover {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        box-shadow: 0 12px 32px rgba(39, 174, 96, 0.4);
+    }
+
+    .view-button::before,
+    .back-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .back-button:hover {
+        background: linear-gradient(135deg, #A0522D, #8B4513);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(139, 69, 19, 0.4);
+    }
+
+    .view-button:hover::before,
+    .back-button:hover::before {
+        left: 100%;
+    }
+
+    .view-button:active,
+    .back-button:active {
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 20px 15px;
+        }
+        
+        .breadcrumb {
+            font-size: 13px;
+        }
+        
+        .breadcrumb-link,
+        .breadcrumb-current {
+            padding: 4px 8px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .view-button,
+        .back-button {
+            width: 100%;
+            justify-content: center;
+            padding: 14px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page-container {
+            padding: 16px 12px;
+        }
+        
+        .breadcrumb {
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,260 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">
+            <i class="fa fa-bar-chart"></i>
+            Dashboard
+        </h1>
+        <p class="dashboard-subtitle">Welcome to your property management dashboard</p>
+    </div>
+
+    <div class="header-actions">
+        <div class="search-section">
+            <input type="search" class="search-input" placeholder="Search listings" aria-label="Search listings">
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_maps') }}" class="btn btn-outline-dark">
+                <i class="fa fa-map-marker"></i> Maps
+            </a>
+            <a href="{{ path('app_product_new') }}" class="btn btn-dark">
+                <i class="fa fa-plus"></i> New
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Stats cards -->
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Total Properties</span>
+                    <span class="stat-pill">This month</span>
+                </div>
+                <div class="stat-bottom">
+                    <div class="stat-value">{{ stats.totalProperties|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Total Revenue</span>
+                    <span class="stat-pill">This month</span>
+                </div>
+                <div class="stat-bottom">
+                    <div class="stat-value">₱{{ stats.totalRevenue|default(0)|number_format(0, '.', ',') }}</div>
+                </div>
+            </div>
+        </div>
+        <!-- Listings column -->
+        <div class="col-12 col-lg-5">
+            <div class="card p-3" style="border-radius:14px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Listings</strong>
+                    <small class="text-muted">Latest</small>
+                </div>
+                <div class="listings-tiles">
+                    {% for p in products|slice(0, 4) %}
+                        <div class="listing-tile">
+                            <a href="{{ path('app_dashboard') }}?id={{ p.id }}" class="tile-link">
+                                <div class="tile-image">
+                                    {% if p.image %}
+                                        <img src="{{ asset('uploads/images/' ~ p.image) }}" alt="{{ p.name }}">
+                                    {% else %}
+                                        <div class="tile-placeholder">🏠</div>
+                                    {% endif %}
+                                </div>
+                                <div class="tile-content">
+                                    <div class="tile-title">{{ p.name }}</div>
+                                    <div class="tile-sub text-muted">{{ p.category ? p.category.name : 'Salads & Bowls' }}</div>
+                                    <div class="tile-price">₱{{ p.price|number_format(0, '.', ',') }}</div>
+                                    <div class="tile-frequency">Monthly</div>
+                                    <div class="tile-meta"><span>2 Beds</span><span>1 Bath</span><span>60 sqft</span></div>
+                                </div>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">No listings yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Details column -->
+        <div class="col-12 col-lg-7">
+            <div class="detail-card">
+                {% if featured %}
+                    <div class="detail-image">
+                        <img src="{{ asset('uploads/images/' ~ featured.image) }}" alt="{{ featured.name }}">
+                    </div>
+                    <div class="detail-header">
+                        <div class="detail-info">
+                            <h3 class="detail-title">{{ featured.name }}</h3>
+                            <span class="detail-price">${{ featured.price|number_format(0, '.', ',') }}</span>
+                        </div>
+                        <div class="detail-actions">
+                            <a href="{{ path('app_product_show', {id: featured.id}) }}" class="btn btn-outline-dark">
+                                <i class="ti-eye"></i> View
+                            </a>
+                            <a href="{{ path('app_product_edit', {id: featured.id}) }}" class="btn btn-dark">
+                                <i class="ti-pencil"></i> Edit
+                            </a>
+                        </div>
+                    </div>
+
+                    <p class="detail-desc">{{ featured.description }}</p>
+                {% else %}
+                    <div class="text-center text-muted py-5">Select a listing to see details.</div>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+
+        <!-- Listing Board + Suggestion -->
+        <div class="row g-4 mt-1">
+            <div class="col-12 col-xl-8">
+                <div class="card p-3" style="border-radius:14px;">
+                    <div class="d-flex justify-content-between align-items-center mb-4" style="padding: 8px 0;">
+                        <strong style="font-size: 18px; color: #2c3e50;">Listing Board</strong>
+                    </div>
+                    <div class="property-tiles">
+                        {% for p in products|slice(0, 3) %}
+                            <div class="property-tile">
+                                <div class="tile-image">
+                                    {% if p.image %}
+                                        <img src="{{ asset('uploads/images/' ~ p.image) }}" alt="{{ p.name }}">
+                                    {% else %}
+                                        <div class="tile-placeholder"><i class="fa fa-home"></i></div>
+                                    {% endif %}
+                                </div>
+                                <div class="tile-content">
+                                    <h4 class="tile-title">{{ p.name }}</h4>
+                                    <p class="tile-price">₱{{ p.price|number_format(0, '.', ',') }}</p>
+                                    <div class="tile-actions">
+                                        <a href="{{ path('app_product_show', {'id': p.id}) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-eye"></i> View
+                                        </a>
+                                        <a href="{{ path('app_product_edit', {'id': p.id}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center text-muted py-5">
+                                <i class="fa fa-home" style="font-size: 48px; color: #ddd;"></i>
+                                <p class="mt-2">No property listings found</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-4" style="padding-top: 16px; border-top: 1px solid #e9ecef;">
+                        <a href="{{ path('app_product_index') }}" class="view-all-btn">
+                            <i class="ti-list"></i> View All Listings
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-4">
+                <div class="ai-suggestion-card">
+                    <div class="ai-header">
+                        <h4 class="ai-title">AI Suggestion</h4>
+                    </div>
+                    <p class="ai-message">Hi, here are quick tips to improve your listing conversions today.</p>
+                    <div class="ai-input-group">
+                        <input class="ai-input" placeholder="Ask anything..." type="text">
+                        <button class="ai-send-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner notice -->
+        <div id="reviewBanner" class="banner-notice">
+            <div class="banner-content">
+                <div class="banner-message">
+                    <i class="ti-bell" style="margin-right: 8px;"></i>
+                    Some tenants have submitted requests recently, please check and review.
+                </div>
+                <div class="banner-actions">
+                    <a href="{{ path('app_product_index') }}" class="banner-btn primary">
+                        <i class="ti-check"></i> Review Listings
+                    </a>
+                    <button type="button" class="banner-btn secondary" onclick="document.getElementById('reviewBanner').remove()">
+                        <i class="ti-close"></i> Dismiss
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row g-4">
+            <div class="col-12 col-xl-6">
+                <div class="card p-3" style="border-radius:14px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>Growth Statistics</strong>
+                        <span class="badge text-bg-light">Yearly</span>
+                    </div>
+                    <canvas id="growthChart" height="180"></canvas>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6">
+                <div class="card p-3" style="border-radius:14px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>Sales Statistics</strong>
+                        <span class="badge text-bg-light">Last months</span>
+                    </div>
+                    <canvas id="salesChart" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% block javascripts_head %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        (function() {
+            const growthCtx = document.getElementById('growthChart');
+            if (growthCtx && window.Chart) {
+                new Chart(growthCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Q1','Q2','Q3','Q4'],
+                        datasets: [{
+                            label: 'Total Revenue',
+                            data: [120000, 185000, 160000, 220000],
+                            backgroundColor: '#a9825c'
+                        }]
+                    },
+                    options: { scales: { y: { ticks: { callback: v => '₱' + v } } }, plugins:{ legend:{display:false} } }
+                });
+            }
+
+            const salesCtx = document.getElementById('salesChart');
+            if (salesCtx && window.Chart) {
+                new Chart(salesCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+                        datasets: [
+                            { label:'Total Sales', data:[5,7,6,9,11,10], borderColor:'#a9825c', tension:.35 },
+                            { label:'Total Cost', data:[3,4,4,6,7,8], borderColor:'#9a8b7a', tension:.35 }
+                        ]
+                    },
+                    options: { plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+                });
+            }
+        })();
+    </script>
+{% endblock %}
+{% endblock %}

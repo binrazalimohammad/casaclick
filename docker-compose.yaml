@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: webdev_apartment_root_password
+      MYSQL_DATABASE: webdev_apartment_db
+      MYSQL_USER: webdev_apartment_user
+      MYSQL_PASSWORD: webdev_apartment_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - webdev_apartment_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: webdev_apartment_user
+      PMA_PASSWORD: webdev_apartment_password
+    ports:
+      - "8080:80"   
+    depends_on:
+      - mysql      
+    networks:
+      - webdev_apartment_network
+
+volumes:
+  mysql_data:
+
+
+networks:
+  webdev_apartment_network: 

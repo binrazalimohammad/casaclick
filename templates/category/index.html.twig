@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4 text-center">📂 Categories</h1>
+
+    <table class="table table-hover table-striped" style="margin: 0 auto; width: 100%; max-width: 800px;">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td class="d-flex gap-2 justify-content-center">
+                    <a href="{{ path('app_category_show', {'id': category.id}) }}" 
+                       class="btn btn-sm" 
+                       style="background:#8B4513; color:#fff; border:none; border-radius:6px;">
+                        🔎 Show
+                    </a>
+                    <a href="{{ path('app_category_edit', {'id': category.id}) }}" 
+                       class="btn btn-sm" 
+                       style="background:#DEB887; color:#3E2723; border:none; border-radius:6px; font-weight:bold;">
+                        ✏ Edit
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3" class="text-center">No categories found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_category_new') }}" 
+           class="btn px-4 py-2" 
+           style="background:#5C4033; color:#fff; border:none; border-radius:8px; font-weight:bold;">
+            ➕ Create new
+        </a>
+    </div>
+{% endblock %}

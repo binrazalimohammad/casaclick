@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tenant Profiles{% endblock %}
+
+{% block body %}
+<div class="listings-container">
+    <div class="page-title">
+        <i class="fa fa-users"></i> Tenant Profiles
+    </div>
+    
+    <div class="header-actions">
+        <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">
+            <i class="fa fa-arrow-left"></i> Dashboard
+        </a>
+        <a href="{{ path('app_tenant_new') }}" class="btn btn-dark">
+            <i class="fa fa-plus"></i> New Tenant
+        </a>
+    </div>
+
+    <!-- Tenant Profiles Tiles -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card p-4" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0"><i class="fa fa-users"></i> Tenant Profiles</h3>
+                    <span class="badge bg-success">{{ tenants|length }} Registered</span>
+                </div>
+                <div class="profile-tiles">
+                    {% for tenant in tenants %}
+                        <div class="profile-tile tenant-tile">
+                            <div class="profile-avatar tenant-avatar">
+                                <i class="ti-user"></i>
+                            </div>
+                            <div class="profile-content">
+                                <h5 class="profile-name">{{ tenant.name }}</h5>
+                                <p class="profile-email">{{ tenant.email }}</p>
+                                <p class="profile-phone">{{ tenant.phone }}</p>
+                                {% if tenant.address %}
+                                    <p class="profile-address">{{ tenant.address|slice(0, 50) }}{% if tenant.address|length > 50 %}...{% endif %}</p>
+                                {% endif %}
+                                <div class="profile-actions">
+                                    <a href="{{ path('app_tenant_show', {'id': tenant.id}) }}" class="btn btn-sm btn-outline-success">
+                                        <i class="ti-eye"></i> View Profile
+                                    </a>
+                                    <a href="{{ path('app_tenant_edit', {'id': tenant.id}) }}" class="btn btn-sm btn-success">
+                                        <i class="ti-pencil"></i> Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="ti-user" style="font-size: 48px; color: #ddd;"></i>
+                            <p class="mt-2">No tenant profiles found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

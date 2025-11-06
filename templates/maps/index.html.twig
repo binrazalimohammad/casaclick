@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Maps{% endblock %}
+
+{% block body %}
+    <div class="maps-container">
+        <div class="maps-header">
+            <div class="maps-title">
+                <h2 class="maps-title-text">Map</h2>
+                <p class="maps-subtitle">Property locations and neighborhood insights</p>
+            </div>
+            <a href="{{ path('app_dashboard') }}" class="back-btn">
+                <i class="ti-arrow-left"></i>
+                Back to Dashboard
+            </a>
+        </div>
+        
+        <div class="maps-content">
+            <div class="map-wrapper">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30894.5909!2d121.0223!3d14.5546!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c9105b9c0f0f%3A0x6a90f5e2e5d8a5a9!2sMakati%2C%20Metro%20Manila!5e0!3m2!1sen!2sPH!4v1700000000001"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            
+            <div class="map-controls">
+                <div class="map-info">
+                    <div class="location-info">
+                        <h4>Makati City</h4>
+                        <p>Metro Manila</p>
+                    </div>
+                    <div class="map-actions">
+                        <a href="https://www.google.com/maps/place/Makati,+Metro+Manila" target="_blank" class="map-btn primary">
+                            <i class="ti-location-pin"></i>
+                            View larger map
+                        </a>
+                        <a href="https://www.google.com/maps/dir//Makati,+Metro+Manila" target="_blank" class="map-btn secondary">
+                            <i class="ti-direction"></i>
+                            Directions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .maps-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .maps-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .maps-title {
+            flex: 1;
+        }
+
+        .maps-title-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 4px 0;
+        }
+
+        .maps-subtitle {
+            color: #6c757d;
+            font-size: 14px;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #ffffff;
+            color: #495057;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:hover {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .maps-content {
+            position: relative;
+        }
+
+        .map-wrapper {
+            height: 70vh;
+            min-height: 600px;
+            position: relative;
+            background: #f8f9fa;
+        }
+
+        .map-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 280px;
+        }
+
+        .location-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 4px 0;
+        }
+
+        .location-info p {
+            font-size: 13px;
+            color: #6c757d;
+            margin: 0 0 16px 0;
+        }
+
+        .map-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .map-btn.primary {
+            background: #0f7e7e;
+            color: white;
+        }
+
+        .map-btn.primary:hover {
+            background: #0a6363;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 126, 126, 0.3);
+        }
+
+        .map-btn.secondary {
+            background: rgba(15, 126, 126, 0.1);
+            color: #0f7e7e;
+            border: 1px solid rgba(15, 126, 126, 0.2);
+        }
+
+        .map-btn.secondary:hover {
+            background: rgba(15, 126, 126, 0.15);
+            border-color: rgba(15, 126, 126, 0.3);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .maps-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+                padding: 20px;
+            }
+
+            .back-btn {
+                justify-content: center;
+            }
+
+            .map-wrapper {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            .map-controls {
+                position: static;
+                margin: 20px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            }
+
+            .map-actions {
+                flex-direction: row;
+            }
+
+            .map-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .map-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+{% endblock %}

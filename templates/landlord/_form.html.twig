@@ -1,0 +1,910 @@
+{{ form_start(form, {
+    'attr': {
+        'class': 'landlord-form',
+        'novalidate': 'novalidate'
+    }
+}) }}
+
+    <div class="form-header">
+        <div class="form-icon-wrapper">
+            <i class="ti-user form-icon"></i>
+        </div>
+        <h2 class="form-title">{{ button_label|default('Create') }} Landlord</h2>
+        <p class="form-subtitle">Please fill in the landlord information below</p>
+    </div>
+
+    <div class="form-fields">
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="ti-id-badge"></i>
+                Personal Information
+            </h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        {{ form_label(form.FirstName, 'First Name', {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+                        <div class="input-container">
+                            <i class="ti-user input-icon"></i>
+                            {{ form_widget(form.FirstName, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Enter first name',
+                                    'autocomplete': 'given-name'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.FirstName) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        {{ form_label(form.LastName, 'Last Name', {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+                        <div class="input-container">
+                            <i class="ti-user input-icon"></i>
+                            {{ form_widget(form.LastName, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Enter last name',
+                                    'autocomplete': 'family-name'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.LastName) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="ti-email"></i>
+                Contact Information
+            </h3>
+            
+            <div class="form-group">
+                <div class="input-wrapper">
+                    {{ form_label(form.Email, 'Email Address', {
+                        'label_attr': {
+                            'class': 'field-label'
+                        }
+                    }) }}
+                    <div class="input-container">
+                        <i class="ti-email input-icon"></i>
+                        {{ form_widget(form.Email, {
+                            'attr': {
+                                'class': 'form-input',
+                                'placeholder': 'landlord@example.com',
+                                'autocomplete': 'email',
+                                'type': 'email'
+                            }
+                        }) }}
+                    </div>
+                    {{ form_errors(form.Email) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    {{ form_label(form.Phone, 'Phone Number', {
+                        'label_attr': {
+                            'class': 'field-label'
+                        }
+                    }) }}
+                    <div class="input-container">
+                        <i class="ti-mobile input-icon"></i>
+                        {{ form_widget(form.Phone, {
+                            'attr': {
+                                'class': 'form-input',
+                                'placeholder': '+63 900 000 0000',
+                                'autocomplete': 'tel',
+                                'type': 'tel'
+                            }
+                        }) }}
+                    </div>
+                    {{ form_errors(form.Phone) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="ti-location-pin"></i>
+                Address Information
+            </h3>
+            
+            <div class="form-group">
+                <div class="input-wrapper">
+                    {{ form_label(form.Address, 'Full Address', {
+                        'label_attr': {
+                            'class': 'field-label'
+                        }
+                    }) }}
+                    <div class="input-container">
+                        <i class="ti-location-pin input-icon"></i>
+                        {{ form_widget(form.Address, {
+                            'attr': {
+                                'class': 'form-input address-field',
+                                'placeholder': 'Street, Barangay, City, Province, ZIP Code',
+                                'autocomplete': 'street-address',
+                                'rows': 3
+                            }
+                        }) }}
+                    </div>
+                    {{ form_errors(form.Address) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <div class="action-buttons">
+            <button type="submit" class="submit-button" id="submit-btn">
+                <i class="ti-check"></i>
+                <span>{{ button_label|default('Create') }} Landlord</span>
+                <div class="button-shine"></div>
+            </button>
+            
+            <button type="button" class="reset-button" onclick="this.form.reset();">
+                <i class="ti-reload"></i>
+                <span>Reset Form</span>
+            </button>
+        </div>
+        
+        <div class="form-status" id="form-status" style="display: none;">
+            <div class="status-message">
+                <i class="ti-info"></i>
+                <span>Processing your request, please wait...</span>
+            </div>
+        </div>
+    </div>
+
+{{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.landlord-form');
+    const submitButton = document.querySelector('.submit-button');
+    const inputs = document.querySelectorAll('.form-input');
+    
+    // Prevent multiple form submissions
+    let isSubmitting = false;
+    
+    if (form && submitButton) {
+        form.addEventListener('submit', function(e) {
+            if (isSubmitting) {
+                e.preventDefault();
+                return false;
+            }
+            
+            isSubmitting = true;
+            form.classList.add('loading');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="ti-check"></i><span>Processing...</span><div class="button-shine"></div>';
+            
+            // Show status message
+            const statusDiv = document.getElementById('form-status');
+            if (statusDiv) {
+                statusDiv.style.display = 'block';
+            }
+            
+            // Re-enable after 10 seconds as fallback
+            setTimeout(function() {
+                isSubmitting = false;
+                form.classList.remove('loading');
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="ti-check"></i><span>{{ button_label|default("Create") }} Landlord</span><div class="button-shine"></div>';
+                
+                if (statusDiv) {
+                    statusDiv.style.display = 'none';
+                }
+            }, 10000);
+        });
+    }
+    
+    // Simplified input interactions
+    inputs.forEach(input => {
+        const inputContainer = input.closest('.input-container');
+        const icon = inputContainer?.querySelector('.input-icon');
+        
+        // Focus effects
+        input.addEventListener('focus', function() {
+            if (inputContainer) inputContainer.classList.add('focused');
+            if (icon) {
+                icon.style.color = '#8B4513';
+                icon.style.transform = 'scale(1.1)';
+            }
+        });
+        
+        // Blur effects
+        input.addEventListener('blur', function() {
+            if (inputContainer) inputContainer.classList.remove('focused');
+            if (icon) {
+                icon.style.color = '#8B7355';
+                icon.style.transform = 'scale(1)';
+            }
+        });
+        
+        // Simple validation on blur only (not on every input)
+        input.addEventListener('blur', function() {
+            validateField(input);
+        });
+        
+        // Add has-value class
+        input.addEventListener('input', function() {
+            if (input.value.trim() !== '') {
+                input.classList.add('has-value');
+            } else {
+                input.classList.remove('has-value');
+            }
+        });
+    });
+    
+    // Simplified validation function
+    function validateField(field) {
+        const value = field.value.trim();
+        const fieldType = field.type;
+        
+        // Remove existing error styling
+        field.classList.remove('error');
+        clearFieldError(field);
+        
+        // Basic validation
+        if (field.hasAttribute('required') && value === '') {
+            showFieldError(field, 'This field is required');
+            return false;
+        }
+        
+        // Email validation
+        if (fieldType === 'email' && value !== '') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                showFieldError(field, 'Please enter a valid email address');
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    function showFieldError(field, message) {
+        field.classList.add('error');
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'field-error-message';
+        errorDiv.textContent = message;
+        field.parentNode.appendChild(errorDiv);
+    }
+    
+    function clearFieldError(field) {
+        const existingError = field.parentNode.querySelector('.field-error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+    }
+    
+    // Add character counter for address field
+    const addressField = document.querySelector('.address-field');
+    if (addressField) {
+        const maxLength = 500;
+        const counter = document.createElement('div');
+        counter.className = 'character-counter';
+        counter.textContent = `0 / ${maxLength}`;
+        addressField.parentNode.appendChild(counter);
+        
+        addressField.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            counter.textContent = `${currentLength} / ${maxLength}`;
+            
+            if (currentLength > maxLength * 0.9) {
+                counter.classList.add('warning');
+            } else {
+                counter.classList.remove('warning');
+            }
+        });
+    }
+});
+</script>
+
+<style>
+    /* ========================================
+       LANDLORD FORM STYLES
+       ======================================== */
+    
+    .landlord-form {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, #FFFDF7 0%, #F8F5EE 100%);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.1),
+            0 8px 32px rgba(139, 69, 19, 0.1);
+        border: 1px solid rgba(210, 180, 140, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .landlord-form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8B4513, #D2B48C, #8B4513);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0%, 100% { background-position: 200% 0; }
+        50% { background-position: -200% 0; }
+    }
+
+    /* Form Header */
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid rgba(210, 180, 140, 0.2);
+    }
+
+    .form-icon-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #8B4513, #A0522D);
+        border-radius: 50%;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3);
+        position: relative;
+    }
+
+    .form-icon-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, #8B4513, #A0522D, #8B4513);
+        border-radius: 50%;
+        z-index: -1;
+        opacity: 0.3;
+        filter: blur(8px);
+    }
+
+    .form-icon {
+        font-size: 32px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-title {
+        color: #5C4033;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        letter-spacing: -0.5px;
+    }
+
+    .form-subtitle {
+        color: #8B7355;
+        font-size: 16px;
+        font-weight: 400;
+        margin: 0;
+        opacity: 0.8;
+    }
+
+    /* Form Sections */
+    .form-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .form-section {
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid rgba(210, 180, 140, 0.2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        background: rgba(255, 255, 255, 0.8);
+        border-color: rgba(210, 180, 140, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        color: #5C4033;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .section-title i {
+        color: #8B4513;
+        font-size: 20px;
+    }
+
+    /* Form Layout */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .field-label {
+        color: #5C4033;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 16px;
+        color: #8B7355;
+        font-size: 16px;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .form-input {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(210, 180, 140, 0.3);
+        border-radius: 12px;
+        padding: 16px 16px 16px 48px;
+        font-size: 16px;
+        color: #5C4033;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+        width: 100%;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-input:focus {
+        border-color: #8B4513;
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 
+            0 0 0 4px rgba(139, 69, 19, 0.1),
+            0 4px 16px rgba(139, 69, 19, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .form-input:focus + .input-icon,
+    .form-input:focus ~ .input-icon {
+        color: #8B4513;
+        transform: scale(1.1);
+    }
+
+    .form-input::placeholder {
+        color: #A9A9A9;
+        font-weight: 400;
+        opacity: 0.7;
+    }
+
+    .address-field {
+        min-height: 100px;
+        resize: vertical;
+        padding-top: 16px;
+    }
+
+    /* Form Errors */
+    .form-errors {
+        color: #e74c3c;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 8px;
+        padding: 8px 12px;
+        background: rgba(231, 76, 60, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #e74c3c;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid rgba(210, 180, 140, 0.2);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #8B4513, #A0522D);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 32px;
+        font-size: 16px;
+        font-weight: 700;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 200px;
+        justify-content: center;
+    }
+
+    .submit-button:hover {
+        background: linear-gradient(135deg, #A0522D, #8B4513);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(139, 69, 19, 0.4);
+    }
+
+    .submit-button:active {
+        transform: translateY(-1px);
+    }
+
+    .button-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .submit-button:hover .button-shine {
+        left: 100%;
+    }
+
+    .reset-button {
+        background: rgba(255, 255, 255, 0.8);
+        color: #8B7355;
+        border: 2px solid rgba(210, 180, 140, 0.5);
+        border-radius: 12px;
+        padding: 16px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(10px);
+    }
+
+    .reset-button:hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: #8B7355;
+        color: #5C4033;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .landlord-form {
+            padding: 24px;
+            margin: 16px;
+            border-radius: 16px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .form-title {
+            font-size: 24px;
+        }
+
+        .form-icon-wrapper {
+            width: 60px;
+            height: 60px;
+        }
+
+        .form-icon {
+            font-size: 24px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .submit-button,
+        .reset-button {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-input {
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .landlord-form {
+            padding: 16px;
+            margin: 8px;
+        }
+
+        .form-section {
+            padding: 16px;
+        }
+
+        .form-title {
+            font-size: 20px;
+        }
+    }
+
+    /* Loading State */
+    .landlord-form.loading .submit-button {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .landlord-form.loading .submit-button::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        right: 16px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Success State */
+    .landlord-form.success .submit-button {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+
+    .landlord-form.success .submit-button:hover {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    /* Error States */
+    .form-input.error {
+        border-color: #e74c3c !important;
+        background: rgba(231, 76, 60, 0.05) !important;
+        box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+    }
+
+    .field-error-message {
+        color: #e74c3c;
+        font-size: 12px;
+        font-weight: 500;
+        margin-top: 6px;
+        padding: 6px 12px;
+        background: rgba(231, 76, 60, 0.1);
+        border-radius: 6px;
+        border-left: 3px solid #e74c3c;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Character Counter */
+    .character-counter {
+        position: absolute;
+        bottom: -25px;
+        right: 0;
+        font-size: 11px;
+        color: #8B7355;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(210, 180, 140, 0.3);
+    }
+
+    .character-counter.warning {
+        color: #f39c12;
+        background: rgba(243, 156, 18, 0.1);
+        border-color: rgba(243, 156, 18, 0.3);
+    }
+
+    /* Enhanced Input States */
+    .form-input.has-value {
+        background: rgba(255, 255, 255, 1);
+        border-color: rgba(139, 69, 19, 0.4);
+    }
+
+    .input-container.focused .input-icon {
+        color: #8B4513 !important;
+        transform: scale(1.1) !important;
+    }
+
+    /* Floating Label Effect */
+    .field-label {
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus + .field-label,
+    .form-input.has-value + .field-label {
+        color: #8B4513;
+        transform: translateY(-2px);
+    }
+
+    /* Form Section Animations */
+    .form-section {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .form-section:nth-child(1) { animation-delay: 0.1s; }
+    .form-section:nth-child(2) { animation-delay: 0.2s; }
+    .form-section:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Button Hover Effects */
+    .submit-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    .submit-button:disabled:hover {
+        transform: none !important;
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3) !important;
+    }
+
+    /* Input Focus Ring */
+    .form-input:focus {
+        outline: none;
+        border-color: #8B4513;
+        box-shadow: 
+            0 0 0 4px rgba(139, 69, 19, 0.1),
+            0 4px 16px rgba(139, 69, 19, 0.2),
+            inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Smooth Transitions */
+    * {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Accessibility Improvements */
+    .form-input:focus-visible {
+        outline: 2px solid #8B4513;
+        outline-offset: 2px;
+    }
+
+    .submit-button:focus-visible,
+    .reset-button:focus-visible {
+        outline: 2px solid #8B4513;
+        outline-offset: 2px;
+    }
+
+    /* High Contrast Mode Support */
+    @media (prefers-contrast: high) {
+        .form-input {
+            border-width: 2px;
+        }
+        
+        .form-input:focus {
+            border-width: 3px;
+        }
+        
+        .submit-button {
+            border: 2px solid #000;
+        }
+    }
+
+    /* Form Status */
+    .form-status {
+        margin-top: 20px;
+        text-align: center;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .status-message {
+        background: rgba(52, 152, 219, 0.1);
+        color: #3498db;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .status-message i {
+        font-size: 16px;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        
+        .landlord-form::before {
+            animation: none;
+        }
+        
+        .status-message i {
+            animation: none;
+        }
+    }
+</style>

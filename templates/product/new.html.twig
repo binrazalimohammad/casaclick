@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Listing{% endblock %}
+
+{% block body %}
+<div class="form-container">
+    <div class="form-card">
+        {{ include('product/_form.html.twig') }}
+    </div>
+    
+    <div class="form-actions-bottom">
+        <a href="{{ path('app_product_index') }}" class="back-to-list-btn">
+            ← Back to List
+        </a>
+    </div>
+</div>
+{% endblock %}

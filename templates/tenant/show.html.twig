@@ -1,0 +1,301 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tenant Details{% endblock %}
+
+{% block body %}
+<div class="tenant-details-container">
+    <div class="tenant-header">
+        <h1 class="page-title"><i class="fa fa-user"></i> Tenant Details</h1>
+    </div>
+
+    <div class="tenant-details-card">
+        <div class="details-header">
+            <div class="tenant-avatar">
+                <i class="fa fa-user"></i>
+            </div>
+            <div class="tenant-info">
+                <h2 class="tenant-name">{{ tenant.name }}</h2>
+                <p class="tenant-email">{{ tenant.email }}</p>
+            </div>
+        </div>
+
+        <div class="details-content">
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fa fa-id-card"></i>
+                    <span>ID</span>
+                </div>
+                <div class="detail-value">{{ tenant.id }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fa fa-phone"></i>
+                    <span>Phone</span>
+                </div>
+                <div class="detail-value">{{ tenant.phone }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fa fa-map-marker-alt"></i>
+                    <span>Address</span>
+                </div>
+                <div class="detail-value">{{ tenant.address ?: 'No address provided' }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ path('app_tenant') }}" class="btn btn-back">
+            <i class="fa fa-arrow-left"></i> Back to List
+        </a>
+
+        <a href="{{ path('app_tenant_edit', {'id': tenant.id}) }}" class="btn btn-edit">
+            <i class="fa fa-edit"></i> Edit
+        </a>
+
+        {{ include('tenant/_delete_form.html.twig') }}
+    </div>
+</div>
+
+<style>
+    .tenant-details-container {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin: 20px 0;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .tenant-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        color: #2c3e50;
+        font-weight: 800;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 2.5rem;
+        letter-spacing: -0.5px;
+        margin-bottom: 0;
+    }
+
+    .page-title i {
+        margin-right: 12px;
+        color: #8B4513;
+    }
+
+    .tenant-details-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #e9ecef;
+        margin-bottom: 32px;
+    }
+
+    .details-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid #f1f3f4;
+    }
+
+    .tenant-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: white;
+        margin-right: 24px;
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    }
+
+    .tenant-info {
+        flex: 1;
+    }
+
+    .tenant-name {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .tenant-email {
+        font-size: 16px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .details-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        display: flex;
+        align-items: center;
+        min-width: 150px;
+        font-weight: 600;
+        color: #8B4513;
+        font-size: 16px;
+    }
+
+    .detail-label i {
+        margin-right: 12px;
+        font-size: 18px;
+        width: 20px;
+        text-align: center;
+    }
+
+    .detail-value {
+        flex: 1;
+        color: #2c3e50;
+        font-size: 16px;
+        word-break: break-word;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .action-buttons .btn {
+        font-size: 14px;
+        font-weight: 600;
+        padding: 14px 28px;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .action-buttons .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .action-buttons .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-back {
+        color: #8B4513;
+        border-color: #8B4513;
+        background: linear-gradient(135deg, #ffffff 0%, #f5f5dc 100%);
+    }
+
+    .btn-back:hover {
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        border-color: #A0522D;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+        text-decoration: none;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        border-color: #A0522D;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #A0522D 0%, #CD853F 100%);
+        border-color: #CD853F;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+        text-decoration: none;
+    }
+
+    .action-buttons .btn i {
+        margin-right: 8px;
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .action-buttons .btn:hover i {
+        transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+        .tenant-details-container {
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .details-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .tenant-avatar {
+            margin-right: 0;
+            margin-bottom: 16px;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .detail-label {
+            min-width: auto;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+            max-width: 250px;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}

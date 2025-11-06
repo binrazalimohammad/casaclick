@@ -1,0 +1,40 @@
+{{ form_start(form, {'attr': {'class': 'brown-form'}}) }}
+
+    <div class="mb-3">
+        {{ form_widget(form) }}
+    </div>
+
+    <button class="btn btn-primary px-4 py-2" 
+            style="background:#795548; border:none; color:#fff; border-radius:8px;">
+        {{ button_label|default('Save') }}
+    </button>
+
+{{ form_end(form) }}
+
+<style>
+    .brown-form label {
+        font-weight: bold;
+        color: #3e2723;
+        margin-bottom: 6px;
+    }
+
+    .brown-form input, 
+    .brown-form textarea, 
+    .brown-form select {
+        border-radius: 6px;
+        border: 1px solid #9e835cff;
+        background-color: #f5f5dc;
+        color: #3e2723;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .brown-form input:focus, 
+    .brown-form textarea:focus, 
+    .brown-form select:focus {
+        outline: none;
+        border: 2px solid #9e835cff;
+        background-color: #fff8e1;
+    }
+</style>
