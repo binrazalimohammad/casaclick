@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pending Listings{% endblock %}
+
+{% block body %}
+<div class="listings-container">
+    <div class="page-title">
+        <i class="fa fa-clock-o"></i>
+        <span style="margin-left: 12px;">Pending Listings (Admin Review)</span>
+    </div>
+
+    <div class="header-actions">
+        <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">
+            <i class="fa fa-arrow-left"></i> Dashboard
+        </a>
+        <a href="{{ path('app_product_index') }}" class="btn btn-dark">
+            <i class="fa fa-list"></i> Active Listings
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card p-4" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0"><i class="fa fa-hourglass-half"></i> Pending Listings</h3>
+                    <span class="badge bg-warning text-dark">{{ products|length }} Waiting for review</span>
+                </div>
+
+                <div class="property-tiles">
+                    {% for product in products %}
+                        <div class="property-tile">
+                            <div class="tile-image">
+                                {% if product.image %}
+                                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <div class="tile-placeholder"><i class="fa fa-home"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="tile-content">
+                                <div class="tile-header">
+                                    <h4 class="tile-title">{{ product.name }}</h4>
+                                    <span class="badge bg-warning text-dark occupied-badge">
+                                        <i class="fa fa-clock-o"></i> Pending Approval
+                                    </span>
+                                </div>
+                                <p class="tile-price">₱{{ product.price|number_format(0, '.', ',') }}</p>
+                                {% if product.createdBy %}
+                                    <p class="tile-landlord">
+                                        <i class="fa fa-user"></i>
+                                        <strong>Landlord:</strong> {{ product.createdBy.name }} ({{ product.createdBy.email }})
+                                    </p>
+                                {% endif %}
+                                <div class="tile-actions">
+                                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-eye"></i> View
+                                    </a>
+                                    <form method="post" action="{{ path('app_product_approve', {'id': product.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ product.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-check"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{{ path('app_product_reject', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to reject this listing?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ product.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-warning">
+                                            <i class="fa fa-times"></i> Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fa fa-check-circle" style="font-size: 48px; color: #28a745;"></i>
+                            <p class="mt-2">No pending listings at the moment.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

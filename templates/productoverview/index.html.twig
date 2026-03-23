@@ -1,0 +1,329 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Active Listings - Tenant & Landlord Profiles{% endblock %}
+
+{% block body %}
+<div class="listings-container">
+    <div class="listings-header d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">🏠 Active Listings</h1>
+        <div class="d-flex gap-2 align-items-center">
+            <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">← Dashboard</a>
+            <a href="{{ path('app_product_new') }}" class="btn btn-dark">+ New Listing</a>
+        </div>
+    </div>
+
+    <!-- Property Listings Tiles -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card p-4" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">🏘️ Property Listings</h3>
+                    <span class="badge bg-primary">{{ products|length }} Active</span>
+                </div>
+                <div class="property-tiles">
+                    {% for product in products %}
+                        <div class="property-tile">
+                            <div class="tile-image">
+                                {% if product.image %}
+                                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <div class="tile-placeholder">🏠</div>
+                                {% endif %}
+                                <div class="tile-badge">Active</div>
+                            </div>
+                            <div class="tile-content">
+                                <h4 class="tile-title">{{ product.name }}</h4>
+                                <p class="tile-price">${{ product.price|number_format(0, '.', ',') }}/month</p>
+                                <p class="tile-description">{{ product.description|slice(0, 80) }}{% if product.description|length > 80 %}...{% endif %}</p>
+                                <div class="tile-actions">
+                                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="ti-home" style="font-size: 48px; color: #ddd;"></i>
+                            <p class="mt-2">No property listings found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenant Profiles Tiles -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card p-4" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">👥 Tenant Profiles</h3>
+                    <span class="badge bg-success">{{ tenants|length }} Registered</span>
+                </div>
+                <div class="profile-tiles">
+                    {% for tenant in tenants %}
+                        <div class="profile-tile">
+                            <div class="profile-avatar">
+                                <i class="ti-user"></i>
+                            </div>
+                            <div class="profile-content">
+                                <h5 class="profile-name">{{ tenant.name }}</h5>
+                                <p class="profile-email">{{ tenant.email }}</p>
+                                <p class="profile-phone">{{ tenant.phone }}</p>
+                                {% if tenant.address %}
+                                    <p class="profile-address">{{ tenant.address|slice(0, 40) }}{% if tenant.address|length > 40 %}...{% endif %}</p>
+                                {% endif %}
+                                <div class="profile-actions">
+                                    <a href="{{ path('app_tenant_show', {'id': tenant.id}) }}" class="btn btn-sm btn-outline-success">View Profile</a>
+                                    <a href="{{ path('app_tenant_edit', {'id': tenant.id}) }}" class="btn btn-sm btn-success">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="ti-user" style="font-size: 48px; color: #ddd;"></i>
+                            <p class="mt-2">No tenant profiles found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Landlord Profiles Tiles -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card p-4" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">🏢 Landlord Profiles</h3>
+                    <span class="badge bg-warning">{{ landlords|length }} Registered</span>
+                </div>
+                <div class="profile-tiles">
+                    {% for landlord in landlords %}
+                        <div class="profile-tile landlord-tile">
+                            <div class="profile-avatar landlord-avatar">
+                                <i class="ti-briefcase"></i>
+                            </div>
+                            <div class="profile-content">
+                                <h5 class="profile-name">{{ landlord.FirstName }} {{ landlord.LastName }}</h5>
+                                <p class="profile-email">{{ landlord.Email }}</p>
+                                <p class="profile-phone">{{ landlord.Phone }}</p>
+                                {% if landlord.Address %}
+                                    <p class="profile-address">{{ landlord.Address|slice(0, 40) }}{% if landlord.Address|length > 40 %}...{% endif %}</p>
+                                {% endif %}
+                                <div class="profile-actions">
+                                    <a href="{{ path('app_landlord_show', {'id': landlord.id}) }}" class="btn btn-sm btn-outline-warning">View Profile</a>
+                                    <a href="{{ path('app_landlord_edit', {'id': landlord.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="ti-briefcase" style="font-size: 48px; color: #ddd;"></i>
+                            <p class="mt-2">No landlord profiles found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .listings-container {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .listings-header h1 {
+        color: #2c3e50;
+        font-weight: 700;
+    }
+
+    /* Property Tiles */
+    .property-tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .property-tile {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid #e9ecef;
+    }
+
+    .property-tile:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .tile-image {
+        position: relative;
+        height: 200px;
+        background: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .tile-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .tile-placeholder {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #6c757d;
+        background: #e9ecef;
+    }
+
+    .tile-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #28a745;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .tile-content {
+        padding: 20px;
+    }
+
+    .tile-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .tile-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: #28a745;
+        margin-bottom: 8px;
+    }
+
+    .tile-description {
+        color: #6c757d;
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 16px;
+    }
+
+    .tile-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    /* Profile Tiles */
+    .profile-tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .profile-tile {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid #e9ecef;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .profile-tile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #6c757d;
+        flex-shrink: 0;
+    }
+
+    .landlord-avatar {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .profile-content {
+        flex: 1;
+    }
+
+    .profile-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 4px;
+    }
+
+    .profile-email {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .profile-phone {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .profile-address {
+        color: #6c757d;
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .profile-actions .btn {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    @media (max-width: 768px) {
+        .property-tiles,
+        .profile-tiles {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-tile {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            align-self: center;
+        }
+    }
+</style>
+{% endblock %}

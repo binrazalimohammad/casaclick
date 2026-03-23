@@ -1,0 +1,104 @@
+{{ form_start(form, {
+    'attr': {
+        'class': 'brown-form',
+        'enctype': 'multipart/form-data'
+    }
+}) }}
+
+    <div class="mb-3">
+        {{ form_label(form.name, 'Listing Name') }}
+        {{ form_widget(form.name, {
+            'attr': {
+                'placeholder': 'Enter apartment or listing name'
+            }
+        }) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.price, 'Monthly Rent (PHP)') }}
+        {{ form_widget(form.price, {
+            'attr': {
+                'placeholder': 'Enter monthly rent (e.g. 12000)'
+            }
+        }) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, 'Description') }}
+        {{ form_widget(form.description, {
+            'attr': {
+                'placeholder': 'Describe your apartment (location, amenities, etc.)',
+                'rows': 4
+            }
+        }) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.category, 'Category') }}
+        {{ form_widget(form.category, {
+            'attr': {
+                'class': 'form-select',
+            }
+        }) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.image, 'Upload Apartment Image') }}
+        {{ form_widget(form.image, {
+            'attr': {
+                'placeholder': 'Choose a .jpeg or .png file',
+                'accept': 'image/jpeg,image/png'
+            }
+        }) }}
+    </div>
+
+    <button class="btn btn-primary px-4 py-2" 
+            style="background:#795548; border:none; color:#fff; border-radius:8px;">
+        {{ button_label|default('Save') }}
+    </button>
+
+{{ form_end(form) }}
+
+<style>
+    .brown-form label {
+        font-weight: bold;
+        color: #3e2723;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .brown-form input, 
+    .brown-form textarea, 
+    .brown-form select {
+        border-radius: 6px;
+        border: 1px solid #9e835c;
+        background-color: #f5f5dc;
+        color: #3e2723;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .brown-form input:focus, 
+    .brown-form textarea:focus, 
+    .brown-form select:focus {
+        outline: none;
+        border: 2px solid #9e835c;
+        background-color: #fff8e1;
+        box-shadow: 0 0 5px rgba(158, 131, 92, 0.5);
+    }
+
+    .brown-form button {
+        background-color: #795548;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .brown-form button:hover {
+        background-color: #5d4037;
+    }
+</style>

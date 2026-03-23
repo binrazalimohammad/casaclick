@@ -1,0 +1,418 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Applications{% endblock %}
+
+{% block body %}
+<div class="applications-container">
+    <div class="applications-header">
+        <div class="header-content">
+            <div class="header-icon-wrapper">
+                <i class="fa fa-file-text-o header-icon"></i>
+            </div>
+            <h1 class="page-title">
+                {% if is_granted('ROLE_LANDLORD') %}
+                    Applications for My Listings
+                {% else %}
+                    My Applications
+                {% endif %}
+            </h1>
+        </div>
+        <a href="{{ path('app_product_index') }}" class="btn-back">
+            <i class="fa fa-arrow-left"></i> Back to Listings
+        </a>
+    </div>
+
+    <div class="applications-content">
+        {% for application in applications %}
+            <div class="application-card">
+                <div class="card-header-section">
+                    <h2 class="listing-name-status">
+                        {{ application.listing.name }} 
+                        <span class="status-badge status-{{ application.status }}">
+                            {{ application.status|upper }}
+                        </span>
+                    </h2>
+                </div>
+                
+                <div class="card-body-section">
+                    <div class="info-row">
+                        <span class="info-label">Listing:</span>
+                        <span class="info-value">{{ application.listing.name }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Price:</span>
+                        <span class="info-value">₱{{ application.listing.price|number_format(2, '.', ',') }}</span>
+                    </div>
+                    {% if is_granted('ROLE_LANDLORD') %}
+                        <div class="info-row">
+                            <span class="info-label">Applicant:</span>
+                            <span class="info-value">{{ application.tenant.name }} ({{ application.tenant.email }})</span>
+                        </div>
+                    {% else %}
+                        <div class="info-row">
+                            <span class="info-label">Landlord:</span>
+                            <span class="info-value">{{ application.landlord ? application.landlord.name : 'N/A' }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="info-row">
+                        <span class="info-label">Applied:</span>
+                        <span class="info-value">{{ application.createdAt|date('Y-m-d H:i') }}</span>
+                    </div>
+                    {% if application.updatedAt %}
+                        <div class="info-row">
+                            <span class="info-label">Updated:</span>
+                            <span class="info-value">{{ application.updatedAt|date('Y-m-d H:i') }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-actions">
+                    <a href="{{ path('app_product_show', {'id': application.listing.id}) }}" class="action-btn view-btn">
+                        <i class="fa fa-eye"></i> View Listing
+                    </a>
+                    {% if application.status == 'approved' %}
+                        <a href="{{ path('app_payment_index', {'applicationId': application.id}) }}" class="action-btn payment-btn">
+                            <i class="fa fa-money"></i> View Payments
+                        </a>
+                        {% if not is_granted('ROLE_LANDLORD') %}
+                            <a href="{{ path('app_payment_new', {'id': application.id}) }}" class="action-btn payment-btn">
+                                <i class="fa fa-credit-card"></i> Make Payment
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    {% if is_granted('ROLE_LANDLORD') and application.status == 'pending' %}
+                        <form method="post" action="{{ path('app_application_approve', {'id': application.id}) }}" style="display: inline;">
+                            <button type="submit" class="action-btn approve-btn">
+                                <i class="fa fa-check"></i> Approve
+                            </button>
+                        </form>
+                        <form method="post" action="{{ path('app_application_reject', {'id': application.id}) }}" style="display: inline;">
+                            <button type="submit" class="action-btn reject-btn">
+                                <i class="fa fa-times"></i> Reject
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fa fa-file-text-o empty-icon"></i>
+                <p class="empty-message">No applications found.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .applications-container {
+        background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .applications-header {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .header-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3);
+    }
+
+    .header-icon {
+        font-size: 40px;
+        color: white;
+    }
+
+    .page-title {
+        color: #5C4033;
+        font-size: 36px;
+        font-weight: 800;
+        margin: 0;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+        letter-spacing: -0.5px;
+    }
+
+    .btn-back {
+        background: #FFFDF7;
+        color: #8B4513;
+        border: 2px solid #D2B48C;
+        border-radius: 10px;
+        padding: 12px 24px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .btn-back:hover {
+        background: #8B4513;
+        color: white;
+        border-color: #8B4513;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    }
+
+    .applications-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .application-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(210, 180, 140, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .application-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header-section {
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #E8DCC0;
+    }
+
+    .listing-name-status {
+        color: #5C4033;
+        font-size: 24px;
+        font-weight: 800;
+        margin: 0;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .status-badge {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .status-badge.status-pending {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+    }
+
+    .status-badge.status-approved {
+        background: linear-gradient(135deg, #27ae60, #229954);
+        color: white;
+    }
+
+    .status-badge.status-rejected {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+
+    .card-body-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .info-label {
+        color: #8B7355;
+        font-size: 14px;
+        font-weight: 600;
+        min-width: 100px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .info-value {
+        color: #5C4033;
+        font-size: 15px;
+        font-weight: 500;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding-top: 20px;
+        border-top: 1px solid #E8DCC0;
+    }
+
+    .action-btn {
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        cursor: pointer;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .view-btn {
+        background: #FFFDF7;
+        color: #8B4513;
+        border-color: #D2B48C;
+    }
+
+    .view-btn:hover {
+        background: #8B4513;
+        color: white;
+        border-color: #8B4513;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    }
+
+    .approve-btn {
+        background: linear-gradient(135deg, #27ae60, #229954);
+        color: white;
+        border-color: #27ae60;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .approve-btn:hover {
+        background: linear-gradient(135deg, #229954, #27ae60);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    }
+
+    .reject-btn {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+        border-color: #f39c12;
+        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    }
+
+    .reject-btn:hover {
+        background: linear-gradient(135deg, #e67e22, #f39c12);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+    }
+
+    .payment-btn {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border-color: #3498db;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .payment-btn:hover {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        color: #D2B48C;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .empty-message {
+        color: #8B7355;
+        font-size: 18px;
+        font-weight: 500;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+        .applications-container {
+            padding: 20px 15px;
+        }
+
+        .applications-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+        .header-icon-wrapper {
+            width: 60px;
+            height: 60px;
+        }
+
+        .header-icon {
+            font-size: 30px;
+        }
+
+        .application-card {
+            padding: 24px;
+        }
+
+        .card-actions {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}

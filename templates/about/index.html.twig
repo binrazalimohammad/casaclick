@@ -1,0 +1,111 @@
+{% extends 'base_public.html.twig' %}
+
+{% block title %}About Us - CasaClick{% endblock %}
+
+{% block body %}
+<section class="about-hero">
+    <h1>About CasaClick</h1>
+    <p class="about-tagline">We connect tenants with verified apartments and landlords with qualified applicants.</p>
+</section>
+
+<section class="about-mission">
+    <div class="mission-content">
+        <h2>Our Mission</h2>
+        <p>CasaClick was founded to simplify the rental process. We believe everyone deserves a smooth path to finding a home. Our platform verifies listings, streamlines applications, and builds trust between tenants and landlords.</p>
+    </div>
+</section>
+
+<section class="about-team">
+    <h2>Meet the Team</h2>
+    <div class="team-grid">
+        {% for member in team %}
+        <div class="team-card">
+            <div class="team-avatar">{{ member.name|slice(0, 1) }}</div>
+            <h3>{{ member.name }}</h3>
+            <p class="team-position">{{ member.position }}</p>
+            <p class="team-bio">{{ member.bio }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="about-values">
+    <h2>Our Values</h2>
+    <div class="values-grid">
+        <div class="value-card"><i class="fa fa-shield"></i><h3>Trust</h3><p>Verified listings, transparent process</p></div>
+        <div class="value-card"><i class="fa fa-users"></i><h3>Community</h3><p>Building connections that last</p></div>
+        <div class="value-card"><i class="fa fa-lightbulb-o"></i><h3>Innovation</h3><p>Constantly improving the experience</p></div>
+    </div>
+</section>
+
+<style>
+.about-hero {
+    background: linear-gradient(135deg, #5c4033, #8B4513);
+    color: white;
+    padding: 80px 24px;
+    text-align: center;
+}
+.about-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 16px; }
+.about-tagline { font-size: 1.2rem; opacity: 0.95; max-width: 600px; margin: 0 auto; }
+.about-mission, .about-team, .about-values {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px;
+}
+.about-mission { background: #f9f7f4; }
+.about-mission h2, .about-team h2, .about-values h2 {
+    text-align: center;
+    color: #5c4033;
+    margin-bottom: 32px;
+}
+.mission-content { text-align: center; max-width: 700px; margin: 0 auto; }
+.mission-content p { font-size: 1.1rem; color: #555; line-height: 1.8; }
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+}
+.team-card {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    text-align: center;
+}
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.team-card h3 { margin: 0 0 4px; color: #5c4033; }
+.team-position { color: #8B4513; font-weight: 600; font-size: 0.9rem; margin: 0 0 12px; }
+.team-bio { margin: 0; color: #666; font-size: 0.95rem; }
+.about-values { background: #f9f7f4; }
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+}
+.value-card {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+.value-card i { font-size: 2rem; color: #8B4513; margin-bottom: 12px; }
+.value-card h3 { margin: 0 0 8px; color: #5c4033; }
+.value-card p { margin: 0; color: #666; font-size: 0.9rem; }
+@media (max-width: 768px) {
+    .team-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}

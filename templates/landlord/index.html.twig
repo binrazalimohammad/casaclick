@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Landlord Profiles{% endblock %}
+
+{% block body %}
+<div class="listings-container">
+    <div class="page-title">
+        <i class="fa fa-user-tie"></i>
+        <span style="margin-left: 12px;">Landlord Profiles</span>
+    </div>
+    
+    <div class="header-actions">
+        <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">
+            <i class="fa fa-arrow-left"></i> Dashboard
+        </a>
+        {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_landlord_new') }}" class="btn btn-dark">
+            <i class="fa fa-plus"></i> New Landlord
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Landlord Profiles Tiles -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card p-4" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0"><i class="fa fa-user-tie"></i><span style="margin-left: 12px;">Landlord Profiles</span></h3>
+                    <span class="badge bg-warning">{{ landlords|length }} Registered</span>
+                </div>
+                <div class="profile-tiles">
+                    {% for landlord in landlords %}
+                        <div class="profile-tile landlord-tile">
+                            <div class="profile-avatar landlord-avatar">
+                                {% if landlord.Photo %}
+                                    <img src="{{ asset('uploads/images/' ~ landlord.Photo) }}" alt="{{ landlord.FirstName }} {{ landlord.LastName }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                {% else %}
+                                    <i class="ti-briefcase"></i>
+                                {% endif %}
+                            </div>
+                            <div class="profile-content">
+                                <h5 class="profile-name">{{ landlord.FirstName }} {{ landlord.LastName }}</h5>
+                                <p class="profile-email">{{ landlord.Email }}</p>
+                                <p class="profile-phone">{{ landlord.Phone }}</p>
+                                {% if landlord.Address %}
+                                    <p class="profile-address">{{ landlord.Address|slice(0, 50) }}{% if landlord.Address|length > 50 %}...{% endif %}</p>
+                                {% endif %}
+                                <div class="profile-actions">
+                                    <a href="{{ path('app_landlord_show', {'id': landlord.id}) }}" class="btn btn-sm btn-outline-warning">
+                                        <i class="ti-eye"></i> View Profile
+                                    </a>
+                                    {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_landlord_edit', {'id': landlord.id}) }}" class="btn btn-sm btn-warning">
+                                        <i class="ti-pencil"></i> Edit
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <i class="ti-briefcase" style="font-size: 48px; color: #ddd;"></i>
+                            <p class="mt-2">No landlord profiles found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

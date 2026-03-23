@@ -1,0 +1,359 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Details{% endblock %}
+
+{% block body %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="{{ path('app_admin_user_index') }}" class="breadcrumb-link">
+                <i class="fa fa-users"></i> Users
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">{{ user.name }}</span>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header-section">
+            <div>
+                <h1 class="user-name">
+                    <i class="fa fa-user"></i> {{ user.name }}
+                </h1>
+                <p class="user-email">{{ user.email }}</p>
+            </div>
+            <div class="header-actions">
+                <a class="btn-action btn-edit" href="{{ path('app_admin_user_edit', {'id': user.id}) }}">
+                    <i class="fa fa-edit"></i> Edit
+                </a>
+                {% include 'admin/users/_delete_form.html.twig' with { user: user } %}
+            </div>
+        </div>
+
+        <div class="details-section">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-user"></i> Full Name
+                </div>
+                <div class="detail-value">{{ user.name }}</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-envelope"></i> Email Address
+                </div>
+                <div class="detail-value">{{ user.email }}</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-shield"></i> Role
+                </div>
+                <div class="detail-value">
+                    <span class="role-badge">{{ user.primaryRole }}</span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-calendar"></i> Created
+                </div>
+                <div class="detail-value">{{ user.createdAt|date('Y-m-d H:i') }}</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-toggle-on"></i> Status
+                </div>
+                <div class="detail-value">
+                    {% if user.isEnabled %}
+                        <span class="status-badge active">Active</span>
+                    {% else %}
+                        <span class="status-badge inactive">Disabled</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-actions">
+            <a class="back-button" href="{{ path('app_admin_user_index') }}">
+                <i class="fa fa-arrow-left"></i> Back to Users List
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-container {
+        background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        max-width: 1000px;
+        margin: 0 auto 30px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #8B7355;
+    }
+
+    .breadcrumb-link {
+        color: #8B4513;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .breadcrumb-link:hover {
+        color: #5C4033;
+        background: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-separator {
+        color: #D2B48C;
+    }
+
+    .breadcrumb-current {
+        color: #5C4033;
+        font-weight: 600;
+        padding: 6px 12px;
+        background: rgba(139, 69, 19, 0.1);
+        border-radius: 8px;
+    }
+
+    .content-card {
+        background: #FFFDF7;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(210, 180, 140, 0.2);
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .card-header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #E8DCC0;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .user-name {
+        color: #5C4033;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-name i {
+        color: #8B4513;
+        font-size: 28px;
+    }
+
+    .user-email {
+        color: #8B7355;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-edit {
+        background: #FFF3CD;
+        color: #856404;
+        border: 1px solid #FFE69C;
+    }
+
+    .btn-edit:hover {
+        background: #FFE69C;
+        color: #5C4033;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: #F8D7DA;
+        color: #721C24;
+        border: 1px solid #F5C6CB;
+    }
+
+    .btn-delete:hover {
+        background: #F5C6CB;
+        color: #721C24;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .details-section {
+        margin-bottom: 30px;
+    }
+
+    .detail-item {
+        display: flex;
+        padding: 20px 0;
+        border-bottom: 1px solid #E8DCC0;
+        gap: 20px;
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        min-width: 180px;
+        color: #8B7355;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .detail-label i {
+        color: #8B4513;
+        font-size: 16px;
+    }
+
+    .detail-value {
+        flex: 1;
+        color: #5C4033;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .role-badge {
+        display: inline-block;
+        background: #E8DCC0;
+        color: #5C4033;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-right: 8px;
+        margin-bottom: 4px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge.active {
+        background: #D4EDDA;
+        color: #155724;
+    }
+
+    .status-badge.inactive {
+        background: #F8D7DA;
+        color: #721C24;
+    }
+
+    .card-actions {
+        padding-top: 30px;
+        border-top: 1px solid #E8DCC0;
+        text-align: center;
+    }
+
+    .back-button {
+        background: linear-gradient(135deg, #8B4513, #A0522D);
+        color: white;
+        padding: 14px 32px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    }
+
+    .back-button:hover {
+        background: linear-gradient(135deg, #A0522D, #8B4513);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 20px 15px;
+        }
+
+        .content-card {
+            padding: 24px 16px;
+        }
+
+        .card-header-section {
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 28px;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-label {
+            min-width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+

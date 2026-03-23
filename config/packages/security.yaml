@@ -1,29 +1,83 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto
+    role_hierarchy:
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN]
+        ROLE_ADMIN: [ROLE_STAFF, ROLE_TENANT, ROLE_LANDLORD]  # Admin has full access
+        ROLE_STAFF: [ROLE_TENANT]  # Staff: limited admin, no user management
+        ROLE_LANDLORD: [ROLE_TENANT]
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api_login:
+            pattern: ^/api/login_check
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
         main:
             lazy: true
-            provider: users_in_memory
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
+            provider: app_user_provider
+            user_checker: App\Security\UserChecker
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                username_parameter: _username
+                password_parameter: _password
+                success_handler: App\Security\LoginSuccessHandler
+            logout:
+                path: /logout
+                target: /login
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                always_remember_me: false
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/listings, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/categories, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/home$, roles: PUBLIC_ACCESS }
+        - { path: ^/about$, roles: PUBLIC_ACCESS }
+        - { path: ^/contact$, roles: PUBLIC_ACCESS }
+        - { path: ^/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/connect/google, roles: PUBLIC_ACCESS }
+        - { path: ^/dashboard, roles: ROLE_STAFF }    # Staff and Admin can access dashboard
+        - { path: ^/admin/users, roles: ROLE_ADMIN }  # Only Admin manages users
+        - { path: ^/admin/logs, roles: ROLE_ADMIN }   # Only Admin sees activity logs
+        - { path: ^/admin, roles: ROLE_STAFF }        # Staff can access admin area (limited)
+        - { path: ^/landlord/new, roles: ROLE_LANDLORD }  # Admins can access via role hierarchy
+        - { path: ^/landlord, roles: ROLE_TENANT }  # Admins can access via role hierarchy
+        - { path: ^/tenant, roles: ROLE_LANDLORD }  # Admins can access via role hierarchy
+        - { path: ^/product, roles: ROLE_TENANT }
+        - { path: ^/payment, roles: ROLE_TENANT }
+        - { path: ^/application, roles: ROLE_TENANT }
+        - { path: ^/account, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

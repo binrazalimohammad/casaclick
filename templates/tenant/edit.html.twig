@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Tenant{% endblock %}
+
+{% block body %}
+<div class="form-container">
+    <div class="form-header">
+        <div class="header-icon">👤</div>
+        <h1 class="form-title">Edit Tenant</h1>
+    </div>
+    
+    <div class="form-card">
+        {{ include('tenant/_form.html.twig', {'button_label': 'Update'}) }}
+    </div>
+    
+    <div class="form-actions-bottom">
+        <a href="{{ path('app_tenant') }}" class="back-to-list-btn">
+            ← Back to List
+        </a>
+        {{ include('tenant/_delete_form.html.twig') }}
+    </div>
+</div>
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .header-icon {
+        font-size: 32px;
+        color: #8e24aa;
+    }
+
+    .form-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #3e2723;
+        margin: 0;
+    }
+
+    .form-card {
+        background: #fafafa;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+    }
+
+    .form-actions-bottom {
+        text-align: center;
+        margin-top: 20px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .back-to-list-btn {
+        background: #5d4037;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        display: inline-block;
+        transition: background-color 0.2s ease;
+    }
+
+    .back-to-list-btn:hover {
+        background: #4e342e;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 16px;
+            margin: 20px auto;
+        }
+
+        .form-card {
+            padding: 24px;
+        }
+
+        .form-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .form-actions-bottom {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+{% endblock %}

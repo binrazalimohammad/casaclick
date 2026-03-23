@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Listing{% endblock %}
+
+{% block body %}
+<div class="page-container">
+    <div class="form-wrapper">
+        <div class="form-header">
+            <i class="fa fa-plus-circle form-icon"></i>
+            <h1 class="form-title">Create New Listing</h1>
+        </div>
+
+        <div class="form-card">
+            {{ include('product/_form.html.twig') }}
+        </div>
+
+        <div class="back-button-container">
+            <a href="{{ path('app_product_index') }}" class="back-button">
+                <i class="fa fa-arrow-left"></i> Back to Listings
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-container {
+        background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-wrapper {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-icon {
+        font-size: 48px;
+        color: #8B4513;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .form-title {
+        color: #5C4033;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+    }
+
+    .form-card {
+        background: #FFFDF7;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(210, 180, 140, 0.2);
+    }
+
+    .back-button-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .back-button {
+        background: linear-gradient(135deg, #8B4513, #A0522D);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3);
+    }
+
+    .back-button:hover {
+        background: linear-gradient(135deg, #A0522D, #8B4513);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(139, 69, 19, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 20px 15px;
+        }
+
+        .form-card {
+            padding: 30px 20px;
+        }
+
+        .form-title {
+            font-size: 28px;
+        }
+    }
+</style>
+{% endblock %}

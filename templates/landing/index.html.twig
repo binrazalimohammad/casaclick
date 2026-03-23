@@ -1,0 +1,250 @@
+{% extends 'base_public.html.twig' %}
+
+{% block title %}CasaClick - Find Your Home in Just a Click{% endblock %}
+
+{% block body %}
+{# Section 1: Hero #}
+<section class="landing-hero">
+    <div class="hero-content">
+        <h1>Find Your Home in Just a Click</h1>
+        <p class="hero-tagline">Discover verified apartments across multiple cities. Trusted listings, easy booking.</p>
+        <div class="hero-buttons">
+            <a href="{{ path('app_product_index') }}" class="btn btn-primary">Browse Apartments</a>
+            <a href="{{ path('app_register') }}" class="btn btn-secondary">Get Started</a>
+        </div>
+    </div>
+    <div class="hero-visual"></div>
+</section>
+
+{# Section 2: Features #}
+<section class="landing-section landing-features">
+    <h2>Why Choose CasaClick?</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fa fa-home"></i></div>
+            <h3>Wide Selection</h3>
+            <p>Discover apartments that match your needs across multiple cities and neighborhoods.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fa fa-shield"></i></div>
+            <h3>Trusted Listings</h3>
+            <p>Every listing is verified for your peace of mind. No scams, no surprises.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fa fa-calendar-check-o"></i></div>
+            <h3>Easy Booking</h3>
+            <p>Schedule visits and reserve apartments with just a few clicks.</p>
+        </div>
+    </div>
+</section>
+
+{# Section 3: How It Works #}
+<section class="landing-section landing-how">
+    <h2>How It Works</h2>
+    <div class="steps-grid">
+        <div class="step-card">
+            <span class="step-num">1</span>
+            <h3>Create Account</h3>
+            <p>Sign up as a tenant or landlord in seconds.</p>
+        </div>
+        <div class="step-card">
+            <span class="step-num">2</span>
+            <h3>Browse & Apply</h3>
+            <p>Search listings and submit applications online.</p>
+        </div>
+        <div class="step-card">
+            <span class="step-num">3</span>
+            <h3>Move In</h3>
+            <p>Get approved and move into your new home.</p>
+        </div>
+    </div>
+</section>
+
+{# Section 4: Stats #}
+<section class="landing-section landing-stats">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-value">500+</span>
+            <span class="stat-label">Active Listings</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">1,200+</span>
+            <span class="stat-label">Happy Tenants</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">50+</span>
+            <span class="stat-label">Cities</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">98%</span>
+            <span class="stat-label">Satisfaction Rate</span>
+        </div>
+    </div>
+</section>
+
+{# Section 5: Testimonials / Social proof #}
+<section class="landing-section landing-testimonials">
+    <h2>What Our Users Say</h2>
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <p>"Found my perfect apartment in just 3 days. CasaClick made it so easy!"</p>
+            <strong>— Maria S.</strong>
+        </div>
+        <div class="testimonial-card">
+            <p>"As a landlord, I get qualified applicants quickly. Highly recommend."</p>
+            <strong>— John D.</strong>
+        </div>
+        <div class="testimonial-card">
+            <p>"The verification process gave me confidence. No more sketchy listings."</p>
+            <strong>— Sarah L.</strong>
+        </div>
+    </div>
+</section>
+
+{# Section 6: CTA #}
+<section class="landing-section landing-cta">
+    <h2>Ready to Find Your Home?</h2>
+    <p>Join thousands of users who found their perfect match on CasaClick.</p>
+    <div class="cta-buttons">
+        <a href="{{ path('app_register') }}" class="btn btn-cta">Create Free Account</a>
+        <a href="{{ path('app_product_index') }}" class="btn btn-outline">View Listings</a>
+    </div>
+</section>
+
+<style>
+.landing-hero {
+    min-height: 70vh;
+    background: linear-gradient(135deg, rgba(92,64,51,0.95) 0%, rgba(139,69,19,0.9) 50%, rgba(160,82,45,0.9) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 60px 24px;
+    gap: 40px;
+}
+.hero-content { flex: 1; max-width: 600px; }
+.hero-content h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 0 0 16px; font-weight: 800; }
+.hero-tagline { font-size: clamp(1rem, 2vw, 1.25rem); opacity: 0.95; margin-bottom: 24px; }
+.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary { background: white; color: #5c4033; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+.btn-secondary { background: transparent; color: white; border: 2px solid white; }
+.btn-secondary:hover { background: rgba(255,255,255,0.15); }
+.hero-visual {
+    flex: 0 0 300px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 16px;
+}
+.landing-section {
+    padding: 80px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.landing-section h2 {
+    text-align: center;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 48px;
+    color: #5c4033;
+}
+.landing-features { background: #f9f7f4; }
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+}
+.feature-card {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    text-align: center;
+}
+.feature-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+.feature-card h3 { margin: 0 0 8px; color: #5c4033; }
+.feature-card p { margin: 0; color: #666; }
+.landing-how { background: white; }
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+}
+.step-card {
+    text-align: center;
+    padding: 24px;
+}
+.step-num {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    background: #D2B48C;
+    color: #5c4033;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 1.25rem;
+    line-height: 48px;
+    margin-bottom: 16px;
+}
+.step-card h3 { margin: 0 0 8px; }
+.step-card p { margin: 0; color: #666; }
+.landing-stats {
+    background: linear-gradient(135deg, #5c4033, #8B4513);
+    color: white;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 32px;
+    text-align: center;
+}
+.stat-value { display: block; font-size: 2.5rem; font-weight: 800; }
+.stat-label { font-size: 0.95rem; opacity: 0.9; }
+.landing-testimonials { background: #f9f7f4; }
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+.testimonial-card {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.testimonial-card p { margin: 0 0 12px; font-style: italic; color: #555; }
+.testimonial-card strong { color: #5c4033; }
+.landing-cta {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: white;
+    text-align: center;
+}
+.landing-cta h2 { color: white; }
+.landing-cta p { font-size: 1.1rem; margin-bottom: 24px; opacity: 0.95; }
+.cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-cta { background: white; color: #5c4033; }
+.btn-outline { background: transparent; color: white; border: 2px solid white; }
+@media (max-width: 768px) {
+    .landing-hero { flex-direction: column; text-align: center; min-height: auto; padding: 40px 20px; }
+    .hero-visual { display: none; }
+    .hero-buttons { justify-content: center; }
+}
+</style>
+{% endblock %}
