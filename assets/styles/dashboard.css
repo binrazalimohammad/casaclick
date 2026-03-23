@@ -327,11 +327,12 @@
 
 /* Banner Notice */
 .banner-notice {
-    background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-    border-radius: 12px;
+    background: #8B4513;
+    border-radius: 16px;
     margin: 24px 0;
     box-shadow: 0 4px 16px rgba(139, 69, 19, 0.3);
-    border: 1px solid rgba(245, 245, 220, 0.2);
+    border: 1px solid rgba(210, 180, 140, 0.2);
+    transition: all 0.3s ease;
 }
 
 .banner-content {
@@ -344,13 +345,14 @@
 }
 
 .banner-message {
-    color: #f5f5dc;
-    font-size: 14px;
+    color: #FFFDF7;
+    font-size: 15px;
     font-weight: 500;
     display: flex;
     align-items: center;
     flex: 1;
     min-width: 200px;
+    font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
 }
 
 .banner-actions {
@@ -373,9 +375,10 @@
 }
 
 .banner-btn.primary {
-    background: rgba(255, 255, 255, 0.9);
+    background: #FFFDF7;
     color: #8B4513;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
 }
 
 .banner-btn.primary:hover {
@@ -386,9 +389,10 @@
 }
 
 .banner-btn.secondary {
-    background: transparent;
-    color: #f5f5dc;
+    background: rgba(139, 69, 19, 0.2);
+    color: #FFFDF7;
     border: 1px solid rgba(245, 245, 220, 0.4);
+    font-weight: 500;
 }
 
 .banner-btn.secondary:hover {

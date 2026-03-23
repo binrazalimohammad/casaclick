@@ -1,0 +1,157 @@
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f9fafb;
+  --text: #172033;
+  --muted: #667085;
+  --border: #e4e7ec;
+  --primary: #8b4513;
+  --primary-600: #a0522d;
+  --primary-700: #6f3710;
+  --success: #12b76a;
+  --danger: #d92d20;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", "Nunito", "Poppins", "Segoe UI", Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+p, small, .text-muted {
+  color: var(--muted);
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover {
+  color: var(--primary-600);
+}
+
+/* Unified card surface */
+.content-card,
+.dashboard-container,
+.form-container,
+.form-card,
+.stat-card,
+.chart-card,
+.listing-board,
+.profile-tile,
+.property-tile,
+.tenant-details-card {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  background: var(--surface) !important;
+}
+
+/* Unified controls */
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  min-height: 44px;
+}
+
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12) !important;
+  outline: none !important;
+}
+
+/* Unified buttons */
+.btn,
+button,
+.btn-login,
+.btn-register,
+.btn-update,
+.btn-save {
+  border-radius: var(--radius-md) !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary,
+.btn-dark,
+.btn-login,
+.btn-register,
+.btn-update,
+.btn-save {
+  background: linear-gradient(180deg, var(--primary-600), var(--primary)) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-dark:hover,
+.btn-login:hover,
+.btn-register:hover,
+.btn-update:hover,
+.btn-save:hover {
+  background: linear-gradient(180deg, var(--primary), var(--primary-700)) !important;
+  transform: translateY(-1px);
+}
+
+.btn-outline-dark,
+.btn-back,
+.btn-cancel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+.btn-outline-dark:hover,
+.btn-back:hover,
+.btn-cancel:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+.alert {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border) !important;
+}
+
+table {
+  background: var(--surface) !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Cleaner spacing for all pages that use base */
+.main-panel .content {
+  padding-bottom: 24px;
+}
+
+/* Keep mobile readable */
+@media (max-width: 991px) {
+  .main-panel {
+    padding: 16px !important;
+  }
+  .content-card,
+  .dashboard-container,
+  .form-container {
+    padding: 18px !important;
+  }
+}

@@ -37,6 +37,8 @@ class ProductRepository extends ServiceEntityRepository
     public function findRecent(int $limit = 6): array
     {
         return $this->createQueryBuilder('p')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
             ->orderBy('p.id', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
@@ -67,4 +69,76 @@ class ProductRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @return Product[]
+     */
+    public function findByOwner(int $userId, int $limit = 20): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->andWhere('p.createdBy = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findAllWithLandlord(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findApprovedWithLandlord(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->andWhere('p.status = :status')
+            ->setParameter('status', 'approved')
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findApprovedById(int $id): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->andWhere('p.id = :id')
+            ->andWhere('p.status = :status')
+            ->setParameter('id', $id)
+            ->setParameter('status', 'approved')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findPendingWithLandlord(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->andWhere('p.status = :status')
+            ->setParameter('status', 'pending')
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

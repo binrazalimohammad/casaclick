@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}Admin Area{% endblock %}
+{% block body %}
+<div class="admin-area">
+    <h1>Admin Area</h1>
+    {% if is_admin %}
+        <p>Full admin access. You can manage users and view activity logs.</p>
+        <div class="admin-links">
+            <a href="{{ path('app_admin_user_index') }}" class="btn-admin"><i class="fa fa-users"></i> Manage Users</a>
+            <a href="{{ path('app_admin_logs') }}" class="btn-admin"><i class="fa fa-history"></i> Activity Logs</a>
+        </div>
+    {% else %}
+        <p>Staff dashboard. Contact an administrator for user management.</p>
+    {% endif %}
+    <p><a href="{{ path('app_dashboard') }}" class="back-link"><i class="fa fa-arrow-left"></i> Back to Dashboard</a></p>
+</div>
+<style>.admin-area { max-width: 600px; } .admin-links { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; } .btn-admin { padding: 12px 20px; background: linear-gradient(135deg,#8B4513,#A0522D); color: white; border-radius: 8px; text-decoration: none; } .btn-admin:hover { opacity: 0.9; } .back-link { color: #8B4513; }</style>
+{% endblock %}

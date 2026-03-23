@@ -11,3 +11,4 @@ import './styles/app.css';
 import './styles/components.css';
 import './styles/forms.css';
 import './styles/dashboard.css';
+import './styles/theme.css';

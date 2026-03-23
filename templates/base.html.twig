@@ -15,10 +15,6 @@
     <link href="https://cdn.jsdelivr.net/npm/themify-icons@0.1.2/css/themify-icons.css" rel="stylesheet">
     
 
-    {% block stylesheets %}
-        {{ encore_entry_link_tags('app') }}
-    {% endblock %}
-
     {% block javascripts_head %}{% endblock %}
 
     <style>
@@ -39,7 +35,7 @@
 
         /* Sidebar styling */
         .sidebar {
-            background: #f5f5dc;
+            background: #ffffff;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
 
@@ -74,7 +70,7 @@
             padding: 12px;
             display: block;
             margin: 0 auto;
-            border: 3px solid #f5f5dc;
+            border: 3px solid #ffffff;
         }
 
         .logo-brand-text {
@@ -115,9 +111,24 @@
             text-decoration: none;
             padding: 12px 20px;
             border-radius: 8px;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
             background: transparent;
             margin: 4px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar .nav li a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            border-radius: 0 4px 4px 0;
         }
 
         .sidebar .nav li a i {
@@ -125,23 +136,131 @@
             width: 20px;
             text-align: center;
             color: #5c4033;
+            transition: all 0.3s ease;
         }
 
         .sidebar .nav li a:hover i {
-            color: #fff;
+            color: #8B4513;
+            transform: scale(1.1);
         }
 
         .sidebar .nav li a:hover {
-            background: #d2b48c;
-            color: #fff;
+            background: #f5f5f5;
+            color: #3e2723;
+            transform: translateX(4px);
+        }
+
+        .sidebar .nav li a:hover::before {
+            transform: scaleY(1);
         }
 
         .sidebar .nav li.active a {
-            background: #7c6648ff;
-            color: #fff;
+            background: linear-gradient(90deg, rgba(139, 69, 19, 0.1) 0%, rgba(160, 82, 45, 0.05) 100%);
+            color: #8B4513;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.15);
+        }
+
+        .sidebar .nav li.active a::before {
+            transform: scaleY(1);
+        }
+
+        .sidebar .nav li.active a i {
+            color: #8B4513;
+            transform: scale(1.15);
         }
 
 
+
+        /* User Info Widget */
+        .user-info-widget {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #FFFDF7 0%, #F8F5EE 100%);
+            border-radius: 16px;
+            padding: 12px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(210, 180, 140, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-info-widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-name {
+            color: #5C4033;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            color: #8B7355;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+        }
+
+        .user-role-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .user-role-badge.admin {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .user-role-badge.landlord {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .user-role-badge.staff {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .user-role-badge.tenant {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
 
         /* Center main content */
         .main-panel {
@@ -149,6 +268,7 @@
             padding: 40px;
             display: flex;
             justify-content: center;
+            position: relative;
         }
 
         .content {
@@ -177,7 +297,118 @@
             text-align: center;
             color: #5c4033;
         }
+
+        /* Mobile sidebar fixes */
+        @media (max-width: 991px) {
+            .sidebar {
+                display: block !important;
+                position: relative;
+                width: 100%;
+                height: auto;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                z-index: 100;
+            }
+
+            .sidebar .sidebar-wrapper {
+                width: 100%;
+                padding: 16px;
+                box-shadow: none;
+            }
+
+            .sidebar .logo {
+                margin-bottom: 8px;
+            }
+
+            .sidebar .nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 0;
+                padding: 0;
+            }
+
+            .sidebar .nav li {
+                flex: 1 1 45%;
+                margin: 0;
+            }
+
+            .sidebar .nav li a {
+                width: 100%;
+                padding: 10px 12px;
+                justify-content: flex-start;
+                border: 1px solid #f0eae1;
+                background: #ffffff;
+            }
+
+            .main-panel {
+                margin-left: 0;
+                padding: 20px;
+                width: 100%;
+            }
+
+            .user-info-widget {
+                position: static;
+                margin: 12px 16px;
+                width: auto;
+            }
+        }
     </style>
+    <script>
+        // Add click animation to sidebar links
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarLinks = document.querySelectorAll('.sidebar .nav li a');
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Remove active class from all items
+                    document.querySelectorAll('.sidebar .nav li').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item's parent
+                    this.closest('li').classList.add('active');
+                    
+                    // Add ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(139, 69, 19, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 </head>
 <body>
     <div class="wrapper">
@@ -195,45 +426,129 @@
                 </div>
 
                 <ul class="nav flex-column align-items-start">
-                    <li>
-                        <a href="{{ path('app_dashboard') }}">
-                            <i class="fa fa-bar-chart"></i>
-                            <p>Dashboard</p>
-                        </a>
-                    </li>
-                    <li>
+                    {% if is_granted('ROLE_STAFF') or is_granted('ROLE_ADMIN') %}
+                        <li class="{% if app.request.attributes.get('_route') == 'app_dashboard' %}active{% endif %}">
+                            <a href="{{ path('app_dashboard') }}">
+                                <i class="fa fa-bar-chart"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="{% if 'app_landlord' in app.request.attributes.get('_route') %}active{% endif %}">
                         <a href="{{ path('app_landlord_index') }}">
                             <i class="fa fa-user"></i>
                             <p>Landlord's Profile</p>
                         </a>
                     </li>
-                    <li>
+                    {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+                    <li class="{% if 'app_tenant' in app.request.attributes.get('_route') %}active{% endif %}">
                         <a href="{{ path('app_tenant') }}">
                             <i class="fa fa-users"></i>
                             <p>Tenant's Profile</p>
                         </a>
                     </li>
-                    <li>
+                    {% endif %}
+                    <li class="{% if 'app_maps' in app.request.attributes.get('_route') %}active{% endif %}">
                         <a href="{{ path('app_maps') }}">
                             <i class="fa fa-map-marker"></i>
                             <p>Maps</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="#">
+                    {% if not is_granted('ROLE_ADMIN') %}
+                    <li class="{% if 'app_application' in app.request.attributes.get('_route') %}active{% endif %}">
+                        <a href="{{ path('app_application_index') }}">
                             <i class="fa fa-bell"></i>
-                            <p>Notifications</p>
+                            <p>Applications</p>
                         </a>
                     </li>
-                    <li>
+                    {% endif %}
+                    <li class="{% if 'app_product' in app.request.attributes.get('_route') and app.request.attributes.get('_route') != 'app_product_pending' %}active{% endif %}">
                         <a href="{{ path('app_product_index') }}">
                             <i class="fa fa-list"></i>
                             <p>Active Listings</p>
                         </a>
                     </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="{% if app.request.attributes.get('_route') == 'app_product_pending' %}active{% endif %}">
+                        <a href="{{ path('app_product_pending') }}">
+                            <i class="fa fa-clock-o"></i>
+                            <p>Pending Listings</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_STAFF') or is_granted('ROLE_ADMIN') %}
+                    <li class="{% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}">
+                        <a href="{{ path('app_admin') }}">
+                            <i class="fa fa-cog"></i>
+                            <p>Admin Area</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="{% if 'app_admin_user' in app.request.attributes.get('_route') %}active{% endif %}">
+                        <a href="{{ path('app_admin_user_index') }}">
+                            <i class="fa fa-users"></i>
+                            <p>Manage Users</p>
+                        </a>
+                    </li>
+                    <li class="{% if 'app_admin_logs' in app.request.attributes.get('_route') %}active{% endif %}">
+                        <a href="{{ path('app_admin_logs') }}">
+                            <i class="fa fa-history"></i>
+                            <p>Activity Logs</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="{% if app.request.attributes.get('_route') == 'app_account_show' %}active{% endif %}">
+                        <a href="{{ path('app_account_show') }}">
+                            <i class="fa fa-id-card"></i>
+                            <p>My Profile</p>
+                        </a>
+                    </li>
+                    <li class="{% if app.request.attributes.get('_route') == 'app_account_password' %}active{% endif %}">
+                        <a href="{{ path('app_account_password') }}">
+                            <i class="fa fa-lock"></i>
+                            <p>Change Password</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_logout') }}">
+                            <i class="fa fa-sign-out"></i>
+                            <p>Logout</p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
+
+        <!-- User Info Widget -->
+        {% if app.user %}
+        <div class="user-info-widget">
+            <div class="user-avatar">
+                {% if app.user.name %}
+                    {{ app.user.name|slice(0, 1)|upper }}
+                {% else %}
+                    {{ app.user.email|slice(0, 1)|upper }}
+                {% endif %}
+            </div>
+            <div class="user-details">
+                <div class="user-name">
+                    {{ app.user.name ?? app.user.email }}
+                </div>
+                <div class="user-role">
+                    {% set primaryRole = app.user.primaryRole ?? 'ROLE_TENANT' %}
+                    {% if primaryRole == 'ROLE_ADMIN' %}
+                        <span class="user-role-badge admin">Admin</span>
+                    {% elseif primaryRole == 'ROLE_STAFF' %}
+                        <span class="user-role-badge staff">Staff</span>
+                    {% elseif primaryRole == 'ROLE_LANDLORD' %}
+                        <span class="user-role-badge landlord">Landlord</span>
+                    {% else %}
+                        <span class="user-role-badge tenant">Tenant</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Main Panel -->
         <div class="main-panel">

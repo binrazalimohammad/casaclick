@@ -5,7 +5,8 @@
 {% block body %}
 <div class="listings-container">
     <div class="page-title">
-        <i class="fa fa-users"></i> Tenant Profiles
+        <i class="fa fa-users"></i>
+        <span style="margin-left: 12px;">Tenant Profiles</span>
     </div>
     
     <div class="header-actions">
@@ -22,14 +23,18 @@
         <div class="col-12">
             <div class="card p-4" style="border-radius: 16px;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0"><i class="fa fa-users"></i> Tenant Profiles</h3>
+                    <h3 class="mb-0"><i class="fa fa-users"></i><span style="margin-left: 12px;">Tenant Profiles</span></h3>
                     <span class="badge bg-success">{{ tenants|length }} Registered</span>
                 </div>
                 <div class="profile-tiles">
                     {% for tenant in tenants %}
                         <div class="profile-tile tenant-tile">
                             <div class="profile-avatar tenant-avatar">
-                                <i class="ti-user"></i>
+                                {% if tenant.photo %}
+                                    <img src="{{ asset('uploads/images/' ~ tenant.photo) }}" alt="{{ tenant.name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                {% else %}
+                                    <i class="ti-user"></i>
+                                {% endif %}
                             </div>
                             <div class="profile-content">
                                 <h5 class="profile-name">{{ tenant.name }}</h5>
@@ -37,6 +42,12 @@
                                 <p class="profile-phone">{{ tenant.phone }}</p>
                                 {% if tenant.address %}
                                     <p class="profile-address">{{ tenant.address|slice(0, 50) }}{% if tenant.address|length > 50 %}...{% endif %}</p>
+                                {% endif %}
+                                {% if tenant.modeOfPayment %}
+                                    <p class="profile-payment">
+                                        <i class="fa fa-credit-card"></i> 
+                                        <strong>Payment:</strong> {{ tenant.modeOfPayment|replace({'_': ' '})|title }}
+                                    </p>
                                 {% endif %}
                                 <div class="profile-actions">
                                     <a href="{{ path('app_tenant_show', {'id': tenant.id}) }}" class="btn btn-sm btn-outline-success">

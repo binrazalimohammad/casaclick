@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CasaClick{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-brown: #5c4033;
+            --brand-gold: #8B4513;
+            --brand-tan: #D2B48C;
+            --brand-cream: #FFFDF7;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Nunito', 'Poppins', sans-serif;
+            color: #3e2723;
+            line-height: 1.6;
+        }
+        .public-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,253,247,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .public-nav .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--brand-brown);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .public-nav .logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+        .public-nav .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .public-nav .nav-links a {
+            color: var(--brand-brown);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .public-nav .nav-links a:hover {
+            color: var(--brand-gold);
+        }
+        .public-nav .btn-login {
+            background: linear-gradient(135deg, var(--brand-gold), #A0522D);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .public-nav .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139,69,19,0.4);
+        }
+        main { padding-top: 76px; min-height: 100vh; }
+        .public-footer {
+            background: linear-gradient(135deg, #5c4033, #8B4513);
+            color: white;
+            padding: 40px 24px;
+            text-align: center;
+        }
+        .public-footer a { color: var(--brand-tan); }
+        .public-footer a:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            .public-nav { padding: 10px 16px; }
+            .public-nav .nav-links { gap: 16px; }
+        }
+    </style>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="public-nav">
+        <a href="{{ path('app_landing') }}" class="logo">
+            <img src="{{ asset('new_logo.png') }}" alt="CasaClick" onerror="this.style.display='none'">
+            <span>CASACLICK</span>
+        </a>
+        <div class="nav-links">
+            <a href="{{ path('app_landing') }}">Home</a>
+            <a href="{{ path('app_about') }}">About</a>
+            <a href="{{ path('app_contact') }}">Contact</a>
+            <a href="{{ path('app_product_index') }}">Listings</a>
+            <a href="{{ path('app_login') }}" class="btn-login">Log In</a>
+        </div>
+    </nav>
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    <footer class="public-footer">
+        <p>&copy; {{ "now"|date("Y") }} CasaClick. All rights reserved.</p>
+        <p><a href="{{ path('app_landing') }}">Home</a> &bull; <a href="{{ path('app_about') }}">About</a> &bull; <a href="{{ path('app_contact') }}">Contact</a></p>
+    </footer>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

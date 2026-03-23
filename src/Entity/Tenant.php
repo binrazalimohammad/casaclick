@@ -25,6 +25,12 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $modeOfPayment = null; // 'cash', 'bank_transfer', 'gcash', 'paymaya', 'credit_card'
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +77,28 @@ class Tenant
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+        return $this;
+    }
+
+    public function getModeOfPayment(): ?string
+    {
+        return $this->modeOfPayment;
+    }
+
+    public function setModeOfPayment(?string $modeOfPayment): static
+    {
+        $this->modeOfPayment = $modeOfPayment;
         return $this;
     }
 }

@@ -29,6 +29,9 @@ class Landlord
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $Address = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Photo = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Landlord
     public function setAddress(?string $Address): static
     {
         $this->Address = $Address;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->Photo;
+    }
+
+    public function setPhoto(?string $Photo): static
+    {
+        $this->Photo = $Photo;
 
         return $this;
     }

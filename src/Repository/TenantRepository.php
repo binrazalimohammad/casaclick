@@ -15,4 +15,13 @@ class TenantRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tenant::class);
     }
+
+    public function findOneByEmail(string $email): ?Tenant
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

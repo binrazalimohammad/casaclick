@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Landlord;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -108,6 +109,15 @@ class LandlordType extends AbstractType
                         'max' => 500,
                         'maxMessage' => 'Address cannot be longer than {{ limit }} characters'
                     ])
+                ]
+            ])
+            ->add('photo', FileType::class, [
+                'label' => 'Photo',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-input',
+                    'accept' => 'image/*'
                 ]
             ])
         ;

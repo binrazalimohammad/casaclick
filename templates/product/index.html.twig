@@ -12,9 +12,11 @@
         <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">
             <i class="fa fa-arrow-left"></i> Dashboard
         </a>
-        <a href="{{ path('app_product_new') }}" class="btn btn-dark">
-            <i class="fa fa-plus"></i> New Listing
-        </a>
+        {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_product_new') }}" class="btn btn-dark">
+                <i class="fa fa-plus"></i> New Listing
+            </a>
+        {% endif %}
     </div>
 
     <!-- Property Listings Tiles -->
@@ -36,15 +38,57 @@
                                 {% endif %}
                             </div>
                             <div class="tile-content">
-                                <h4 class="tile-title">{{ product.name }}</h4>
+                                <div class="tile-header">
+                                    <h4 class="tile-title">{{ product.name }}</h4>
+                                    <div style="display: flex; gap: 6px; align-items: center;">
+                                        {% if occupiedListings[product.id] is defined and occupiedListings[product.id] %}
+                                            <span class="badge bg-warning text-dark occupied-badge">
+                                                <i class="fa fa-lock"></i> Occupied
+                                            </span>
+                                        {% endif %}
+                                        {% if product.status is defined and product.status != 'approved' %}
+                                            {% if product.status == 'pending' %}
+                                                <span class="badge bg-warning text-dark occupied-badge">
+                                                    <i class="fa fa-clock-o"></i> Pending Admin Approval
+                                                </span>
+                                            {% elseif product.status == 'rejected' %}
+                                                <span class="badge bg-danger text-light occupied-badge">
+                                                    <i class="fa fa-times-circle"></i> Rejected by Admin
+                                                </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
                                 <p class="tile-price">₱{{ product.price|number_format(0, '.', ',') }}</p>
+                                {% if product.createdBy %}
+                                    <p class="tile-landlord">
+                                        <i class="fa fa-user"></i> 
+                                        <strong>Landlord:</strong> {{ product.createdBy.name }} ({{ product.createdBy.email }})
+                                    </p>
+                                {% endif %}
                                 <div class="tile-actions">
                                     <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="fa fa-eye"></i> View
                                     </a>
-                                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-sm btn-primary">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
+                                    {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+                                        {% if product.createdBy and product.createdBy.id == app.user.id or is_granted('ROLE_ADMIN') %}
+                                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                        {% endif %}
+
+                                        {# Only landlords (who own the listing) can unoccupy, NOT admins #}
+                                        {% if is_granted('ROLE_LANDLORD') and product.createdBy and product.createdBy.id == app.user.id %}
+                                            {% if occupiedListings[product.id] is defined and occupiedListings[product.id] %}
+                                                <form method="post" action="{{ path('app_product_unoccupy', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to unoccupy this listing? It will become available for new applications.');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('unoccupy' ~ product.id) }}">
+                                                    <button type="submit" class="btn btn-sm btn-warning">
+                                                        <i class="fa fa-unlock"></i> Unoccupy
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -60,5 +104,49 @@
     </div>
 
 </div>
+
+<style>
+    .tile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .tile-title {
+        flex: 1;
+        margin: 0;
+    }
+
+    .occupied-badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 6px;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #ffc107 !important;
+        color: #856404 !important;
+        border: 1px solid #ffb300;
+    }
+
+    .occupied-badge i {
+        font-size: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .tile-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .occupied-badge {
+            margin-top: 4px;
+        }
+    }
+</style>
 
 {% endblock %}

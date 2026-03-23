@@ -3,68 +3,112 @@
 {% block title %}Apartment Details{% endblock %}
 
 {% block body %}
-<div class="apartment-details-container">
-    <div class="apartment-details-card">
+<div class="page-container">
+    <div class="details-card">
         <!-- Header Section -->
-        <div class="apartment-header">
-            <i class="ti-package apartment-icon"></i>
-            <h1 class="apartment-title">Apartment Details</h1>
+        <div class="details-header">
+            <h1 class="details-title">Apartment Details</h1>
         </div>
 
         <!-- Details Section -->
-        <div class="apartment-details-content">
-            <div class="detail-row">
+        <div class="details-content">
+            <div class="detail-item">
                 <span class="detail-label">Id</span>
                 <span class="detail-value">{{ product.id }}</span>
             </div>
-            <div class="detail-row">
+            <div class="detail-item">
                 <span class="detail-label">Name</span>
                 <span class="detail-value">{{ product.name }}</span>
             </div>
-            <div class="detail-row">
+            <div class="detail-item">
                 <span class="detail-label">Price</span>
-                <span class="detail-value">${{ product.price|number_format(2, '.', ',') }}</span>
+                <span class="detail-value">₱{{ product.price|number_format(2, '.', ',') }}</span>
             </div>
-            <div class="detail-row">
+            <div class="detail-item">
                 <span class="detail-label">Description</span>
                 <span class="detail-value">{{ product.description }}</span>
             </div>
-            <div class="detail-row">
+            {% if product.createdBy %}
+            <div class="detail-item">
+                <span class="detail-label">Landlord</span>
+                <span class="detail-value">
+                    <i class="fa fa-user"></i> {{ product.createdBy.name }} ({{ product.createdBy.email }})
+                </span>
+            </div>
+            {% endif %}
+            <div class="detail-item detail-item-image">
                 <span class="detail-label">Image</span>
-                <div class="detail-image-container">
+                <div class="detail-image-wrapper">
                     {% if product.image %}
                         <img src="{{ asset('uploads/images/' ~ product.image) }}" 
                              alt="{{ product.name }}" 
-                             class="apartment-image">
+                             class="detail-image">
                     {% else %}
                         <div class="no-image-placeholder">
-                            <i class="ti-image"></i>
-                            <span>No image</span>
+                            <i class="fa fa-image"></i>
+                            <span>No image available</span>
                         </div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
+        <!-- Occupied Status Message -->
+        {% if isOccupied %}
+            <div class="occupied-message">
+                <div class="occupied-icon">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </div>
+                <div class="occupied-content">
+                    <h3>This listing is already occupied</h3>
+                    <p>This property has already been approved for another tenant and is no longer available for applications.</p>
+                </div>
+            </div>
+        {% endif %}
+
         <!-- Action Buttons -->
-        <div class="apartment-actions">
+        <div class="details-actions">
             <a href="{{ path('app_product_index') }}" class="action-btn back-btn">
-                <i class="ti-arrow-left"></i> Back to list
+                <i class="fa fa-arrow-left"></i> Back to list
             </a>
-            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="action-btn edit-btn">
-                <i class="ti-pencil"></i> Edit
-            </a>
-            <button type="button" class="action-btn refresh-btn" onclick="location.reload()">
-                <i class="ti-reload"></i>
-            </button>
-            {{ include('product/_delete_form.html.twig') }}
+            {% if app.user and app.user.primaryRole == 'ROLE_TENANT' and product.createdBy.id != app.user.id %}
+                {% if isOccupied %}
+                    <span class="action-btn occupied-btn" style="opacity: 0.7; cursor: not-allowed;">
+                        <i class="fa fa-lock"></i> Listing Occupied
+                    </span>
+                {% elseif not hasApplied %}
+                    <form method="post" action="{{ path('app_application_new', {'id': product.id}) }}" style="display: inline;">
+                        <button type="submit" class="action-btn apply-btn">
+                            <i class="fa fa-check"></i> Apply for Listing
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="action-btn applied-btn" style="opacity: 0.7; cursor: default;">
+                        <i class="fa fa-check"></i> Already Applied
+                    </span>
+                {% endif %}
+            {% endif %}
+            {% if (is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN')) and (is_granted('ROLE_ADMIN') or (app.user and product.createdBy.id == app.user.id)) %}
+                <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="action-btn edit-btn">
+                    <i class="fa fa-edit"></i> Edit
+                </a>
+                {% if isOccupied %}
+                    <form method="post" action="{{ path('app_product_unoccupy', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to unoccupy this listing? It will become available for new applications.');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('unoccupy' ~ product.id) }}">
+                        <button type="submit" class="action-btn" style="background: #ffc107; color: #856404; border-color: #ffb300;">
+                            <i class="fa fa-unlock"></i> Unoccupy
+                        </button>
+                    </form>
+                {% endif %}
+                {{ include('product/_delete_form.html.twig') }}
+            {% endif %}
         </div>
     </div>
 </div>
 
 <style>
-    .apartment-details-container {
-        background: linear-gradient(180deg, #F8F5EE 0%, #E8DCC0 100%);
+    .page-container {
+        background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
         min-height: 100vh;
         padding: 40px 20px;
         display: flex;
@@ -72,63 +116,56 @@
         align-items: center;
     }
 
-    .apartment-details-card {
-        background-color: #FFFDF7;
+    .details-card {
+        background: #FFFDF7;
         border-radius: 20px;
         padding: 40px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(210, 180, 140, 0.2);
-        max-width: 600px;
+        max-width: 700px;
         width: 100%;
     }
 
-    .apartment-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 30px;
+    .details-header {
+        margin-bottom: 32px;
         padding-bottom: 20px;
-        border-bottom: 1px solid rgba(210, 180, 140, 0.3);
+        border-bottom: 2px solid #E8DCC0;
     }
 
-    .apartment-icon {
-        font-size: 32px;
-        color: #C9A46D;
-        margin-right: 15px;
-    }
-
-    .apartment-title {
+    .details-title {
         color: #5C4033;
-        font-size: 2em;
-        font-weight: bold;
+        font-size: 36px;
+        font-weight: 800;
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
     }
 
-    .apartment-details-content {
-        background-color: #FEFCF8;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 30px;
+    .details-content {
+        margin-bottom: 32px;
     }
 
-    .detail-row {
+    .detail-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 0;
-        border-bottom: 1px solid rgba(210, 180, 140, 0.2);
+        padding: 16px 0;
+        border-bottom: 1px solid #E8DCC0;
     }
 
-    .detail-row:last-child {
+    .detail-item:last-child {
         border-bottom: none;
+    }
+
+    .detail-item-image {
         align-items: flex-start;
     }
 
     .detail-label {
-        font-weight: bold;
+        font-weight: 700;
         color: #5C4033;
         font-size: 16px;
-        min-width: 120px;
+        min-width: 140px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
     }
 
     .detail-value {
@@ -136,19 +173,21 @@
         font-size: 16px;
         text-align: right;
         flex: 1;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+        word-break: break-word;
     }
 
-    .detail-image-container {
+    .detail-image-wrapper {
         flex: 1;
         text-align: right;
     }
 
-    .apartment-image {
-        width: 250px;
-        height: 180px;
+    .detail-image {
+        width: 280px;
+        height: 200px;
         object-fit: cover;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         display: block;
         margin-left: auto;
     }
@@ -158,29 +197,44 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 250px;
-        height: 180px;
-        background-color: #F5F5F5;
+        width: 280px;
+        height: 200px;
+        background: #F5F5F5;
         border-radius: 12px;
         color: #999;
         margin-left: auto;
+        font-family: 'Nunito', 'Poppins', sans-serif;
     }
 
     .no-image-placeholder i {
         font-size: 48px;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        color: #D2B48C;
     }
 
-    .apartment-actions {
+    .no-image-placeholder span {
+        font-size: 14px;
+        color: #8B7355;
+    }
+
+    .details-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
         gap: 12px;
+        flex-wrap: nowrap;
+        align-items: center;
+        padding-top: 24px;
+        border-top: 2px solid #E8DCC0;
+    }
+
+    .details-actions form {
+        display: flex;
+        margin: 0;
+        padding: 0;
     }
 
     .action-btn {
-        padding: 12px 20px;
-        border-radius: 8px;
+        padding: 12px 24px;
+        border-radius: 10px;
         text-decoration: none;
         font-weight: 600;
         font-size: 14px;
@@ -190,93 +244,187 @@
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Nunito', 'Poppins', sans-serif;
     }
 
     .back-btn {
-        background-color: #8B4513;
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
         color: white;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
     }
 
     .back-btn:hover {
-        background-color: #A0522D;
+        background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
         color: white;
         text-decoration: none;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
     }
 
     .edit-btn {
-        background-color: #C9A46D;
+        background: linear-gradient(135deg, #C9A46D 0%, #D2B48C 100%);
         color: white;
+        box-shadow: 0 4px 15px rgba(201, 164, 109, 0.3);
     }
 
     .edit-btn:hover {
-        background-color: #D2B48C;
+        background: linear-gradient(135deg, #D2B48C 0%, #C9A46D 100%);
         color: white;
         text-decoration: none;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(201, 164, 109, 0.4);
     }
 
-    .refresh-btn {
-        background-color: white;
-        color: #28a745;
-        border: 2px solid #28a745;
-        padding: 10px;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        justify-content: center;
-    }
-
-    .refresh-btn:hover {
-        background-color: #28a745;
+    .apply-btn {
+        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
         color: white;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .apply-btn:hover {
+        background: linear-gradient(135deg, #218838 0%, #28a745 100%);
+        color: white;
+        text-decoration: none;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .applied-btn {
+        background: #E8DCC0;
+        color: #5C4033;
+        cursor: not-allowed;
+    }
+
+    .occupied-message {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 2px solid #ffc107;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .occupied-icon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        background: #ffc107;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+
+    .occupied-content {
+        flex: 1;
+    }
+
+    .occupied-content h3 {
+        color: #856404;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .occupied-content p {
+        color: #856404;
+        font-size: 14px;
+        margin: 0 0 8px 0;
+        line-height: 1.6;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .occupied-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    .occupied-btn {
+        background: #ffc107;
+        color: #856404;
+        cursor: not-allowed;
+    }
+
+    .delete-form {
+        display: inline-block;
     }
 
     .delete-btn {
-        background-color: #8B4513;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
         color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
     }
 
     .delete-btn:hover {
-        background-color: #A0522D;
+        background: linear-gradient(135deg, #c82333 0%, #dc3545 100%);
         color: white;
         text-decoration: none;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
     }
 
     @media (max-width: 768px) {
-        .apartment-details-container {
+        .page-container {
             padding: 20px 15px;
         }
         
-        .apartment-details-card {
+        .details-card {
             padding: 30px 20px;
         }
         
-        .apartment-title {
-            font-size: 1.5em;
+        .details-title {
+            font-size: 28px;
         }
         
-        .detail-row {
+        .detail-item {
             flex-direction: column;
             align-items: flex-start;
             gap: 8px;
         }
         
-        .detail-value {
-            text-align: left;
+        .detail-label {
+            min-width: auto;
+            margin-bottom: 4px;
         }
         
-        .apartment-image {
+        .detail-value {
+            text-align: left;
             width: 100%;
-            max-width: 300px;
+        }
+        
+        .detail-image {
+            width: 100%;
+            max-width: 100%;
             margin: 0;
         }
         
-        .apartment-actions {
-            flex-wrap: wrap;
+        .no-image-placeholder {
+            width: 100%;
+            margin: 0;
+        }
+        
+        .details-actions {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            width: 100%;
             justify-content: center;
         }
     }

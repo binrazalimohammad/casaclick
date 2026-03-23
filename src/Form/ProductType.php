@@ -55,7 +55,7 @@ class ProductType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Choose a .jpeg or .png file',
-                    'accept' => 'image/jpg,image/png',
+                    'accept' => 'image/jpeg,image/png',
                     'class' => 'form-control',
                 ],
             ])

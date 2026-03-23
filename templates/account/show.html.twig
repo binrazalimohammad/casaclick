@@ -1,0 +1,579 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa fa-user"></i> My Profile
+            </h1>
+            <p class="page-subtitle">View and manage your account information</p>
+        </div>
+        <div class="header-actions">
+            {% if user.primaryRole == 'ROLE_TENANT' %}
+                {% if not editMode %}
+                    <a href="{{ path('app_account_show', {'edit': true}) }}" class="btn-tenant-profile">
+                        <i class="fa fa-edit"></i> Edit Profile
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_account_show') }}" class="btn-cancel">
+                        <i class="fa fa-times"></i> Cancel
+                    </a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ path('app_account_password') }}" class="btn-change-password">
+                <i class="fa fa-key"></i> Change Password
+            </a>
+        </div>
+    </div>
+
+    <div class="content-card">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% if editMode and user.primaryRole == 'ROLE_TENANT' and tenantForm %}
+            {# Edit Mode - Show Form #}
+            <div class="profile-section">
+                <h2 class="section-title">Edit Your Profile</h2>
+                {{ form_start(tenantForm, {'attr': {'class': 'profile-edit-form'}}) }}
+                    <div class="form-fields">
+                        <div class="form-group">
+                            {{ form_label(tenantForm.name, 'Name', {
+                                'label_attr': {'class': 'field-label'}
+                            }) }}
+                            {{ form_widget(tenantForm.name, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Enter full name'
+                                }
+                            }) }}
+                            {{ form_errors(tenantForm.name) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(tenantForm.email, 'Email', {
+                                'label_attr': {'class': 'field-label'}
+                            }) }}
+                            {{ form_widget(tenantForm.email, {
+                                'attr': {
+                                    'class': 'form-input form-input-disabled',
+                                    'readonly': true
+                                }
+                            }) }}
+                            {{ form_errors(tenantForm.email) }}
+                            {% if tenantForm.email.vars.help %}
+                                <small class="form-help-text">{{ tenantForm.email.vars.help }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(tenantForm.phone, 'Phone', {
+                                'label_attr': {'class': 'field-label'}
+                            }) }}
+                            {{ form_widget(tenantForm.phone, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': '+63 900 000 0000'
+                                }
+                            }) }}
+                            {{ form_errors(tenantForm.phone) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(tenantForm.address, 'Address', {
+                                'label_attr': {'class': 'field-label'}
+                            }) }}
+                            {{ form_widget(tenantForm.address, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Street, City, ZIP'
+                                }
+                            }) }}
+                            {{ form_errors(tenantForm.address) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(tenantForm.photo, 'Photo', {
+                                'label_attr': {'class': 'field-label'}
+                            }) }}
+                            {% if tenant and tenant.photo %}
+                                <div class="current-photo">
+                                    <img src="{{ asset('uploads/images/' ~ tenant.photo) }}" alt="Current photo" style="max-width: 150px; border-radius: 8px; margin-bottom: 10px;">
+                                </div>
+                            {% endif %}
+                            {{ form_widget(tenantForm.photo, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'accept': 'image/*'
+                                }
+                            }) }}
+                            {{ form_errors(tenantForm.photo) }}
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">
+                            <i class="fa fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                {{ form_end(tenantForm) }}
+            </div>
+        {% else %}
+            {# View Mode - Show Information #}
+            <div class="profile-section">
+                <div class="profile-info">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fa fa-user-circle"></i> Name
+                        </div>
+                        <div class="info-value">{{ user.name }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fa fa-envelope"></i> Email
+                        </div>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+
+                    {% if user.primaryRole == 'ROLE_TENANT' and tenant %}
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fa fa-phone"></i> Phone
+                            </div>
+                            <div class="info-value">{{ tenant.phone ?? 'Not provided' }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fa fa-map-marker-alt"></i> Address
+                            </div>
+                            <div class="info-value">{{ tenant.address ?? 'Not provided' }}</div>
+                        </div>
+
+                        {% if tenant.photo %}
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="fa fa-image"></i> Photo
+                                </div>
+                                <div class="info-value">
+                                    <img src="{{ asset('uploads/images/' ~ tenant.photo) }}" alt="Profile photo" style="max-width: 150px; border-radius: 8px;">
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fa fa-shield"></i> Role
+                        </div>
+                        <div class="info-value">
+                            <span class="role-badge-profile">
+                                {% if user.primaryRole == 'ROLE_ADMIN' %}
+                                    <i class="fa fa-crown"></i> Admin
+                                {% elseif user.primaryRole == 'ROLE_LANDLORD' %}
+                                    <i class="fa fa-home"></i> Landlord
+                                {% else %}
+                                    <i class="fa fa-user"></i> Tenant
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fa fa-calendar"></i> Created
+                        </div>
+                        <div class="info-value">{{ user.createdAt|date('Y-m-d H:i') }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fa fa-check-circle"></i> Status
+                        </div>
+                        <div class="info-value">
+                            {% if user.isEnabled %}
+                                <span class="status-badge status-active">
+                                    <i class="fa fa-check"></i> Active
+                                </span>
+                            {% else %}
+                                <span class="status-badge status-disabled">
+                                    <i class="fa fa-times"></i> Disabled
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .page-container {
+        background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        max-width: 900px;
+        margin: 0 auto 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-tenant-profile {
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .btn-tenant-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+        background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        background: #5a6268;
+        color: white;
+        text-decoration: none;
+    }
+
+    .section-title {
+        color: #5C4033;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .profile-edit-form {
+        width: 100%;
+    }
+
+    .form-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-input {
+        background-color: white;
+        border: 1px solid #D2B48C;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 16px;
+        color: #5C4033;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .form-input:focus {
+        border-color: #8B4513;
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+    }
+
+    .form-input-disabled {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .form-help-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 13px;
+        color: #8B7355;
+        font-style: italic;
+    }
+
+    .form-actions {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+        background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    }
+
+    .current-photo {
+        margin-bottom: 10px;
+    }
+
+    .page-title {
+        color: #5C4033;
+        font-size: 36px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-title i {
+        color: #8B4513;
+        font-size: 32px;
+    }
+
+    .page-subtitle {
+        color: #8B7355;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .btn-change-password {
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .btn-change-password:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+        background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+        color: white;
+        text-decoration: none;
+    }
+
+    .content-card {
+        background: #FFFDF7;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(210, 180, 140, 0.2);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        font-size: 14px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .alert-success {
+        background: #D4EDDA;
+        color: #155724;
+    }
+
+    .alert-error,
+    .alert-danger {
+        background: #F8D7DA;
+        color: #721C24;
+    }
+
+    .alert-info {
+        background: #D1ECF1;
+        color: #0C5460;
+    }
+
+    .profile-section {
+        margin-top: 20px;
+    }
+
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #E8DCC0;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        color: #8B7355;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .info-label i {
+        color: #A0825C;
+        font-size: 14px;
+    }
+
+    .info-value {
+        color: #5C4033;
+        font-size: 16px;
+        font-weight: 500;
+        font-family: 'Nunito', 'Poppins', sans-serif;
+    }
+
+    .role-badge-profile {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
+    }
+
+    .role-badge-profile i {
+        font-size: 14px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: #D4EDDA;
+        color: #155724;
+    }
+
+    .status-active i {
+        color: #28A745;
+    }
+
+    .status-disabled {
+        background: #F8D7DA;
+        color: #721C24;
+    }
+
+    .status-disabled i {
+        color: #DC3545;
+    }
+
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 20px 15px;
+        }
+
+        .content-card {
+            padding: 24px 16px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+        .page-header {
+            flex-direction: column;
+        }
+
+        .header-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .btn-tenant-profile,
+        .btn-change-password {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
