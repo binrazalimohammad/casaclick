@@ -1,13 +1,6 @@
+/* Design tokens: casaclick-brand.css (:root, fonts) */
+
 :root {
-  --bg: #f5f7fb;
-  --surface: #ffffff;
-  --surface-soft: #f9fafb;
-  --text: #172033;
-  --muted: #667085;
-  --border: #e4e7ec;
-  --primary: #8b4513;
-  --primary-600: #a0522d;
-  --primary-700: #6f3710;
   --success: #12b76a;
   --danger: #d92d20;
   --radius-sm: 8px;
@@ -18,13 +11,11 @@
 }
 
 html, body {
-  background: var(--bg);
+  background: var(--bg, var(--cc-soft));
   color: var(--text);
-  font-family: "Inter", "Nunito", "Poppins", "Segoe UI", Arial, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--text);
   letter-spacing: -0.02em;
 }
 
@@ -139,19 +130,22 @@ table {
   border: 1px solid var(--border) !important;
 }
 
-/* Cleaner spacing for all pages that use base */
+/* Main content: vertical rhythm + bottom breathing room */
 .main-panel .content {
-  padding-bottom: 24px;
+  padding-bottom: var(--cc-space-8);
+  padding-left: var(--cc-space-1);
+  padding-right: var(--cc-space-1);
+  box-sizing: border-box;
 }
 
-/* Keep mobile readable */
+/* Keep mobile readable — gutters align with --cc-page-gutter */
 @media (max-width: 991px) {
   .main-panel {
-    padding: 16px !important;
+    padding: var(--cc-page-gutter) !important;
   }
   .content-card,
-  .dashboard-container,
+  .dashboard-container:not(.cc-dashboard),
   .form-container {
-    padding: 18px !important;
+    padding: var(--cc-space-5) !important;
   }
 }

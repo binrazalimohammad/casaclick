@@ -100,6 +100,26 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * Approved listings for marketing highlights (e.g. About page carousel), newest first.
+     *
+     * @return Product[]
+     */
+    public function findApprovedRecent(int $limit = 8): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->andWhere('p.status = :status')
+            ->setParameter('status', 'approved')
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Product[]
      */
     public function findApprovedWithLandlord(): array

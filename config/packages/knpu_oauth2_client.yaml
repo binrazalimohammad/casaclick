@@ -2,9 +2,16 @@ knpu_oauth2_client:
     clients:
         google:
             type: google
-            client_id: '%env(GOOGLE_CLIENT_ID)%'
-            client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+            # Must match Google Cloud Console OAuth 2.0 Client (Web application)
+            # trim: avoids hidden spaces/newlines in .env that break Google (400 malformed)
+            client_id: '%env(trim:GOOGLE_OAUTH_CLIENT_ID)%'
+            client_secret: '%env(trim:GOOGLE_OAUTH_CLIENT_SECRET)%'
             redirect_route: app_google_connect_check
             redirect_params: {}
+            # Session-based OAuth "state" breaks if callback host != session cookie host
+            # (e.g. login on localhost, callback on 127.0.0.1). Token exchange still validates
+            # client_id, secret, and redirect_uri with Google.
+            use_state: false
+            # 403 on Google’s site: see .env “Google OAuth” — External consent + Test users while Testing, or publish app.
             # Restrict to staff emails (optional - configure in your domain)
             # access_type: offline

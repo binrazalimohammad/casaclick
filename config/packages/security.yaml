@@ -21,15 +21,17 @@ security:
         api_login:
             pattern: ^/api/login_check
             stateless: true
+            provider: app_user_provider
             json_login:
                 check_path: /api/login_check
                 username_path: email
                 password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
+                success_handler: App\Security\JWTAuthenticationSuccessHandler
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
             pattern: ^/api
             stateless: true
+            provider: app_user_provider
             jwt: ~
         main:
             lazy: true
@@ -53,6 +55,8 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/verify-email$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/verify-email, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/listings, roles: PUBLIC_ACCESS }
@@ -65,6 +69,7 @@ security:
         - { path: ^/about$, roles: PUBLIC_ACCESS }
         - { path: ^/contact$, roles: PUBLIC_ACCESS }
         - { path: ^/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/resend-verification$, roles: PUBLIC_ACCESS }
         - { path: ^/connect/google, roles: PUBLIC_ACCESS }
         - { path: ^/dashboard, roles: ROLE_STAFF }    # Staff and Admin can access dashboard
         - { path: ^/admin/users, roles: ROLE_ADMIN }  # Only Admin manages users

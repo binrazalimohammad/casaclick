@@ -42,6 +42,14 @@ class MobileApiController extends AbstractController
         ]);
     }
 
+    /**
+     * Approved property listings (public). No JWT required.
+     *
+     * GET /api/mobile/listings
+     * Response: { "success": true, "data": [...], "meta": { "count": n } }
+     * Each item: id, name, price, description, image (path or null), category, createdAt (ISO-8601).
+     * Image is a site-relative path; prepend your base URL (e.g. http://127.0.0.1:8000) for a full URL.
+     */
     #[Route('/listings', name: 'listings', methods: ['GET'])]
     public function listings(ProductRepository $productRepository): JsonResponse
     {
@@ -64,6 +72,12 @@ class MobileApiController extends AbstractController
         ], Response::HTTP_OK, [], ['json_encode_options' => JSON_UNESCAPED_SLASHES]);
     }
 
+    /**
+     * Single approved listing by numeric id (public). No JWT required.
+     *
+     * GET /api/mobile/listings/{id}
+     * 404 if not found or not approved. Includes optional landlord: { "name": "..." }.
+     */
     #[Route('/listings/{id}', name: 'listing_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function listingShow(int $id, ProductRepository $productRepository): JsonResponse
     {

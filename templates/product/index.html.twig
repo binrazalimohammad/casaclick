@@ -3,150 +3,417 @@
 {% block title %}Active Listings{% endblock %}
 
 {% block body %}
-<div class="listings-container">
-    <div class="page-title">
-        <i class="fa fa-building"></i> Active Listings
-    </div>
-    
-    <div class="header-actions">
-        <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">
-            <i class="fa fa-arrow-left"></i> Dashboard
+<div class="propeble-listings">
+  <header class="propeble-listings__hero">
+    <p class="propeble-listings__eyebrow">Properties</p>
+    <h1 class="propeble-listings__title">Find your next home</h1>
+    <p class="propeble-listings__lead">Browse verified listings. Filter by availability and open any card for full details.</p>
+  </header>
+
+  <div class="propeble-listings__toolbar">
+    <a href="{{ path('app_dashboard') }}" class="propeble-listings__btn propeble-listings__btn--ghost">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i> Dashboard
+    </a>
+    <div class="propeble-listings__toolbar-meta">
+      <span class="propeble-listings__count">{{ products|length }} listing{% if products|length != 1 %}s{% endif %}</span>
+      {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_product_new') }}" class="propeble-listings__btn propeble-listings__btn--primary">
+          <i class="fa fa-plus" aria-hidden="true"></i> New listing
         </a>
-        {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_product_new') }}" class="btn btn-dark">
-                <i class="fa fa-plus"></i> New Listing
-            </a>
-        {% endif %}
+      {% endif %}
     </div>
+  </div>
 
-    <!-- Property Listings Tiles -->
-    <div class="row g-4 mb-5">
-        <div class="col-12">
-            <div class="card p-4" style="border-radius: 16px;">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0"><i class="fa fa-list-alt"></i> Property Listings</h3>
-                    <span class="badge bg-primary">{{ products|length }} Active</span>
-                </div>
-                <div class="property-tiles">
-                    {% for product in products %}
-                        <div class="property-tile">
-                            <div class="tile-image">
-                                {% if product.image %}
-                                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}">
-                                {% else %}
-                                    <div class="tile-placeholder"><i class="fa fa-home"></i></div>
-                                {% endif %}
-                            </div>
-                            <div class="tile-content">
-                                <div class="tile-header">
-                                    <h4 class="tile-title">{{ product.name }}</h4>
-                                    <div style="display: flex; gap: 6px; align-items: center;">
-                                        {% if occupiedListings[product.id] is defined and occupiedListings[product.id] %}
-                                            <span class="badge bg-warning text-dark occupied-badge">
-                                                <i class="fa fa-lock"></i> Occupied
-                                            </span>
-                                        {% endif %}
-                                        {% if product.status is defined and product.status != 'approved' %}
-                                            {% if product.status == 'pending' %}
-                                                <span class="badge bg-warning text-dark occupied-badge">
-                                                    <i class="fa fa-clock-o"></i> Pending Admin Approval
-                                                </span>
-                                            {% elseif product.status == 'rejected' %}
-                                                <span class="badge bg-danger text-light occupied-badge">
-                                                    <i class="fa fa-times-circle"></i> Rejected by Admin
-                                                </span>
-                                            {% endif %}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <p class="tile-price">₱{{ product.price|number_format(0, '.', ',') }}</p>
-                                {% if product.createdBy %}
-                                    <p class="tile-landlord">
-                                        <i class="fa fa-user"></i> 
-                                        <strong>Landlord:</strong> {{ product.createdBy.name }} ({{ product.createdBy.email }})
-                                    </p>
-                                {% endif %}
-                                <div class="tile-actions">
-                                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fa fa-eye"></i> View
-                                    </a>
-                                    {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
-                                        {% if product.createdBy and product.createdBy.id == app.user.id or is_granted('ROLE_ADMIN') %}
-                                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-sm btn-primary">
-                                                <i class="fa fa-edit"></i> Edit
-                                            </a>
-                                        {% endif %}
-
-                                        {# Only landlords (who own the listing) can unoccupy, NOT admins #}
-                                        {% if is_granted('ROLE_LANDLORD') and product.createdBy and product.createdBy.id == app.user.id %}
-                                            {% if occupiedListings[product.id] is defined and occupiedListings[product.id] %}
-                                                <form method="post" action="{{ path('app_product_unoccupy', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to unoccupy this listing? It will become available for new applications.');">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('unoccupy' ~ product.id) }}">
-                                                    <button type="submit" class="btn btn-sm btn-warning">
-                                                        <i class="fa fa-unlock"></i> Unoccupy
-                                                    </button>
-                                                </form>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="text-center text-muted py-5">
-                            <i class="fa fa-home" style="font-size: 48px; color: #ddd;"></i>
-                            <p class="mt-2">No property listings found</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+  <div class="propeble-listings__grid-wrap">
+    {% if products|length > 0 %}
+    <div class="propeble-listings__grid" role="list">
+      {% for product in products %}
+      <article class="propeble-listings__card" role="listitem">
+        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="propeble-listings__card-media">
+          {% if product.image %}
+            <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="" loading="lazy" width="400" height="250">
+          {% else %}
+            <div class="propeble-listings__card-placeholder" aria-hidden="true"><i class="fa fa-home"></i></div>
+          {% endif %}
+          <div class="propeble-listings__card-badges">
+            {% if occupiedListings[product.id] is defined and occupiedListings[product.id] %}
+              <span class="propeble-listings__badge propeble-listings__badge--occupied"><i class="fa fa-lock" aria-hidden="true"></i> Occupied</span>
+            {% endif %}
+            {% if product.status is defined and product.status != 'approved' %}
+              {% if product.status == 'pending' %}
+                <span class="propeble-listings__badge propeble-listings__badge--pending"><i class="fa fa-clock-o" aria-hidden="true"></i> Pending</span>
+              {% elseif product.status == 'rejected' %}
+                <span class="propeble-listings__badge propeble-listings__badge--rejected"><i class="fa fa-times-circle" aria-hidden="true"></i> Rejected</span>
+              {% endif %}
+            {% endif %}
+          </div>
+        </a>
+        <div class="propeble-listings__card-body">
+          {% if product.category %}
+            <p class="propeble-listings__cat">{{ product.category.name }}</p>
+          {% endif %}
+          <h2 class="propeble-listings__card-title">
+            <a href="{{ path('app_product_show', {'id': product.id}) }}">{{ product.name }}</a>
+          </h2>
+          <p class="propeble-listings__price">₱{{ product.price|number_format(0, '.', ',') }} <span class="propeble-listings__price-unit">/ month</span></p>
+          {% set excerpt = product.description|striptags %}
+          <p class="propeble-listings__excerpt">{{ excerpt|length > 100 ? excerpt|slice(0, 100) ~ '…' : excerpt }}</p>
+          {% if product.createdBy %}
+            <p class="propeble-listings__landlord">
+              <i class="fa fa-user" aria-hidden="true"></i> {{ product.createdBy.name }}
+            </p>
+          {% endif %}
+          <div class="propeble-listings__actions">
+            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="propeble-listings__link">View details <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+            {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+              {% if product.createdBy and product.createdBy.id == app.user.id or is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="propeble-listings__link propeble-listings__link--alt">Edit</a>
+              {% endif %}
+              {% if is_granted('ROLE_LANDLORD') and product.createdBy and product.createdBy.id == app.user.id %}
+                {% if occupiedListings[product.id] is defined and occupiedListings[product.id] %}
+                  <form method="post" action="{{ path('app_product_unoccupy', {'id': product.id}) }}" class="propeble-listings__unoccupy-form" onsubmit="return confirm('Are you sure you want to unoccupy this listing? It will become available for new applications.');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('unoccupy' ~ product.id) }}">
+                    <button type="submit" class="propeble-listings__link propeble-listings__link--warn">Unoccupy</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          </div>
         </div>
+      </article>
+      {% endfor %}
     </div>
-
+    {% else %}
+    <div class="propeble-listings__empty">
+      <div class="propeble-listings__empty-icon" aria-hidden="true"><i class="fa fa-building"></i></div>
+      <h2 class="propeble-listings__empty-title">No listings yet</h2>
+      <p class="propeble-listings__empty-text">When listings are available, they will appear here.</p>
+      {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_product_new') }}" class="propeble-listings__btn propeble-listings__btn--primary">Create a listing</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
 </div>
 
 <style>
-    .tile-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 8px;
-    }
+.propeble-listings {
+  --pl-brown: #5c4033;
+  --pl-gold: #8B4513;
+  --pl-sienna: #A0522D;
+  --pl-tan: #D2B48C;
+  --pl-cream: #FFFDF7;
+  --pl-soft: #f9f7f4;
+  --pl-white: #ffffff;
+  --pl-text: #3e2723;
+  --pl-muted: #6d4c41;
+  --pl-line: rgba(92, 64, 51, 0.12);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 12px 48px;
+  font-family: 'Nunito', 'Poppins', 'Segoe UI', sans-serif;
+}
 
-    .tile-title {
-        flex: 1;
-        margin: 0;
-    }
+.propeble-listings__hero {
+  text-align: center;
+  padding: 1.5rem 0 1.75rem;
+}
+.propeble-listings__eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--pl-gold);
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+.propeble-listings__title {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 800;
+  color: var(--pl-brown);
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+.propeble-listings__lead {
+  margin: 0 auto;
+  max-width: 520px;
+  font-size: 0.98rem;
+  color: var(--pl-muted);
+  line-height: 1.55;
+}
 
-    .occupied-badge {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 6px 10px;
-        border-radius: 6px;
-        white-space: nowrap;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: #ffc107 !important;
-        color: #856404 !important;
-        border: 1px solid #ffb300;
-    }
+.propeble-listings__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--pl-white);
+  border: 1px solid var(--pl-line);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(92, 64, 51, 0.06);
+}
+.propeble-listings__toolbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.propeble-listings__count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--pl-brown);
+  letter-spacing: 0.04em;
+}
 
-    .occupied-badge i {
-        font-size: 10px;
-    }
+.propeble-listings__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+.propeble-listings__btn--ghost {
+  background: transparent;
+  color: var(--pl-brown);
+  border-color: var(--pl-line);
+}
+.propeble-listings__btn--ghost:hover {
+  border-color: var(--pl-gold);
+  color: var(--pl-gold);
+}
+.propeble-listings__btn--primary {
+  background: linear-gradient(135deg, var(--pl-gold), var(--pl-sienna));
+  color: #fff !important;
+  border-color: transparent;
+}
+.propeble-listings__btn--primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 14px rgba(139, 69, 19, 0.35);
+}
 
-    @media (max-width: 768px) {
-        .tile-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+.propeble-listings__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
 
-        .occupied-badge {
-            margin-top: 4px;
-        }
-    }
+.propeble-listings__card {
+  background: var(--pl-white);
+  border: 1px solid var(--pl-line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(92, 64, 51, 0.07);
+  transition: box-shadow 0.25s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.propeble-listings__card:hover {
+  box-shadow: 0 16px 40px rgba(92, 64, 51, 0.12);
+  transform: translateY(-3px);
+}
+
+.propeble-listings__card-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: var(--pl-soft);
+  overflow: hidden;
+}
+.propeble-listings__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+.propeble-listings__card:hover .propeble-listings__card-media img {
+  transform: scale(1.04);
+}
+.propeble-listings__card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--pl-tan);
+  background: linear-gradient(145deg, var(--pl-soft), #ede8e0);
+}
+.propeble-listings__card-badges {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  z-index: 1;
+}
+.propeble-listings__badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.propeble-listings__badge--occupied {
+  background: #fff8e6;
+  color: #856404;
+  border: 1px solid #f0d78c;
+}
+.propeble-listings__badge--pending {
+  background: #fff8e6;
+  color: #856404;
+  border: 1px solid #f0d78c;
+}
+.propeble-listings__badge--rejected {
+  background: #fdeaea;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.propeble-listings__card-body {
+  padding: 1.25rem 1.35rem 1.35rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.propeble-listings__cat {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--pl-gold);
+}
+.propeble-listings__card-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.propeble-listings__card-title a {
+  color: var(--pl-brown);
+  text-decoration: none;
+}
+.propeble-listings__card-title a:hover {
+  color: var(--pl-gold);
+}
+.propeble-listings__price {
+  margin: 0 0 0.65rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--pl-gold);
+}
+.propeble-listings__price-unit {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pl-muted);
+}
+.propeble-listings__excerpt {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  color: var(--pl-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.propeble-listings__landlord {
+  margin: 0 0 1rem;
+  font-size: 0.82rem;
+  color: var(--pl-muted);
+}
+.propeble-listings__landlord i {
+  color: var(--pl-tan);
+  margin-right: 4px;
+}
+
+.propeble-listings__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--pl-line);
+  margin-top: auto;
+}
+.propeble-listings__link {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--pl-gold);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.propeble-listings__link:hover {
+  color: var(--pl-brown);
+}
+.propeble-listings__link--alt {
+  color: var(--pl-brown);
+}
+.propeble-listings__link--alt:hover {
+  color: var(--pl-gold);
+}
+.propeble-listings__link--warn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: #b45309;
+}
+.propeble-listings__link--warn:hover {
+  text-decoration: underline;
+}
+.propeble-listings__unoccupy-form {
+  display: inline;
+  margin: 0;
+}
+
+.propeble-listings__empty {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background: var(--pl-white);
+  border: 1px dashed var(--pl-line);
+  border-radius: 14px;
+}
+.propeble-listings__empty-icon {
+  font-size: 3rem;
+  color: var(--pl-tan);
+  margin-bottom: 1rem;
+}
+.propeble-listings__empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  color: var(--pl-brown);
+}
+.propeble-listings__empty-text {
+  margin: 0 0 1.25rem;
+  color: var(--pl-muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 576px) {
+  .propeble-listings__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .propeble-listings__toolbar-meta {
+    justify-content: space-between;
+  }
+}
 </style>
-
 {% endblock %}

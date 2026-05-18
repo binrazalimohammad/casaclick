@@ -5,304 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CasaClick</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {{ encore_entry_link_tags('app') }}
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Nunito', 'Poppins', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: url('{{ asset('uploads/images/log in background.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            position: relative;
-            /* Fallback gradient if image doesn't load */
-            background-color: #F5E6D3;
-        }
-
-        /* Overlay for better readability */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(2px);
-            z-index: 0;
-        }
-
-        .login-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 450px;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 50px 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .login-header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #5C4033;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .login-header p {
-            color: #8B7355;
-            font-size: 15px;
-            font-weight: 400;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #5C4033;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #E8DCC0;
-            border-radius: 12px;
-            font-size: 15px;
-            font-family: 'Nunito', sans-serif;
-            background: #FFFDF7;
-            color: #3E2723;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #C9A46D;
-            background: #FFFFFF;
-            box-shadow: 0 0 0 3px rgba(201, 164, 109, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: #A0825C;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-bottom: 28px;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 10px;
-            cursor: pointer;
-            accent-color: #C9A46D;
-        }
-
-        .remember-me label {
-            color: #5C4033;
-            font-size: 14px;
-            cursor: pointer;
-            margin: 0;
-            font-weight: 400;
-        }
-
-        .error-message {
-            background: #FEE;
-            border: 1px solid #FCC;
-            color: #C33;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        .google-divider {
-            text-align: center;
-            margin: 20px 0;
-            color: #8B7355;
-            font-size: 13px;
-        }
-        .btn-google {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background: #fff;
-            border: 2px solid #E8DCC0;
-            border-radius: 12px;
-            color: #5C4033;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-google:hover {
-            background: #f9f7f4;
-            border-color: #C9A46D;
-        }
-        .btn-google i { margin-right: 8px; }
-
-        .register-link {
-            text-align: center;
-            margin-top: 28px;
-            padding-top: 28px;
-            border-top: 1px solid #E8DCC0;
-        }
-
-        .register-link p {
-            color: #8B7355;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .register-link a {
-            color: #8B4513;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: color 0.3s ease;
-        }
-
-        .register-link a:hover {
-            color: #A0522D;
-            text-decoration: underline;
-        }
-
-        .input-icon {
-            position: relative;
-        }
-
-        .input-icon i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #A0825C;
-            font-size: 16px;
-        }
-
-        .input-icon input {
-            padding-left: 45px;
-        }
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 40px 30px;
-                margin: 20px;
-            }
-
-            .login-header h1 {
-                font-size: 28px;
-            }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .cc-auth-page {
+            background-image: linear-gradient(160deg, rgba(255, 253, 247, 0.55), rgba(245, 230, 211, 0.35)),
+                url('{{ asset('uploads/images/log in background.jpg') }}');
         }
     </style>
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <h1>Welcome Back</h1>
-                <p>Sign in to your account</p>
+<body class="cc-auth-page">
+    <div class="login-container" style="width:100%;max-width:min(460px,calc(100vw - 24px));padding:clamp(12px,4vw,20px);">
+        <div class="cc-auth-card">
+            <div class="cc-auth-card__top">
+                <a href="{{ path('app_landing') }}" class="cc-back-landing"><i class="fa fa-arrow-left"></i> Back to home</a>
+            </div>
+            <div class="login-header" style="text-align:center;margin-bottom:1.75rem;">
+                <h1 class="cc-font-display" style="font-size:clamp(1.65rem,4vw,2rem);margin-bottom:0.35rem;">Welcome back</h1>
+                <p class="cc-auth-sub" style="margin-bottom:0;">Sign in to CasaClick</p>
             </div>
 
+            {% include '_partials/cc_dismissible_flashes.html.twig' %}
+
+            {% set v = app.request.query.get('verification') %}
+            {% if v == 'success' %}
+                {% include '_partials/cc_flash_item.html.twig' with {
+                    variant: 'success',
+                    message: 'Your email has been verified. You can now sign in.'
+                } only %}
+            {% elseif v == 'invalid' %}
+                {% include '_partials/cc_flash_item.html.twig' with {
+                    variant: 'error',
+                    message: 'Invalid or expired verification link. Request a new one below if you still need to verify.'
+                } only %}
+            {% elseif v == 'error' %}
+                {% include '_partials/cc_flash_item.html.twig' with {
+                    variant: 'error',
+                    message: 'Something went wrong while verifying your email. Please try again or use “Resend verification”.'
+                } only %}
+            {% endif %}
+
             {% if error %}
-                <div class="error-message">
-                    <i class="fa fa-exclamation-circle"></i>
-                    This account is not registered or the email/password is incorrect.
-                    Please check your details or <strong>register a new account</strong>.
-                </div>
+                {# Show Symfony’s real message (wrong password, unverified email via UserChecker, etc.) #}
+                {% set login_error_message = error.messageKey|trans(error.messageData, 'security') %}
+                {% include '_partials/cc_flash_item.html.twig' with {
+                    variant: 'error',
+                    message: login_error_message
+                } only %}
             {% endif %}
 
             <form action="{{ path('app_login') }}" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                 <div class="form-group">
-                    <label for="username">
-                        <i class="fa fa-envelope"></i> Email Address
-                    </label>
+                    <label for="username">Email address</label>
                     <div class="input-icon">
                         <i class="fa fa-envelope"></i>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="_username" 
-                            value="{{ last_username }}" 
-                            autocomplete="username" 
-                            required 
-                            autofocus 
-                            placeholder="Enter your email"
-                        />
+                        <input type="text" id="username" name="_username" value="{{ last_username }}"
+                               autocomplete="username" required autofocus placeholder="Enter your email">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">
-                        <i class="fa fa-lock"></i> Password
-                    </label>
+                    <label for="password">Password</label>
                     <div class="input-icon">
                         <i class="fa fa-lock"></i>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="_password" 
-                            autocomplete="current-password" 
-                            required 
-                            placeholder="Enter your password"
-                        />
+                        <input type="password" id="password" name="_password"
+                               autocomplete="current-password" required placeholder="Enter your password">
                     </div>
                 </div>
 
@@ -311,25 +80,25 @@
                     <label for="remember_me">Remember me</label>
                 </div>
 
-                <button type="submit" class="btn-login">
-                    <i class="fa fa-sign-in"></i> Sign In
+                <button type="submit" class="cc-btn-primary">
+                    <i class="fa fa-sign-in"></i> Sign in
                 </button>
 
-                <div class="google-divider">
-                    <span>or</span>
-                </div>
-                <a href="{{ path('app_google_connect') }}" class="btn-google" title="Staff: Sign in with Google">
+                <div class="cc-auth-divider"><span>or</span></div>
+                <a href="{{ path('app_google_connect') }}" class="cc-btn-google" title="Staff: Sign in with Google">
                     <i class="fa fa-google"></i> Sign in with Google (Staff)
                 </a>
             </form>
 
-            <div class="register-link">
+            <div class="cc-auth-footer">
                 <p>Don't have an account?</p>
-                <a href="{{ path('app_register') }}">
-                    <i class="fa fa-user-plus"></i> Register now
-                </a>
+                <a href="{{ path('app_register') }}"><i class="fa fa-user-plus"></i> Register</a>
+                <p style="margin-top:10px;">
+                    <a href="{{ path('app_resend_verification') }}">Didn’t get the verification email?</a>
+                </p>
             </div>
         </div>
     </div>
+    {{ encore_entry_script_tags('app') }}
 </body>
 </html>

@@ -1,0 +1,6 @@
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        {% set variant = label in ['success', 'warning', 'error'] ? label : 'info' %}
+        {% include '_partials/cc_flash_item.html.twig' with { variant: variant, message: message } only %}
+    {% endfor %}
+{% endfor %}

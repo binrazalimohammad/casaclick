@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resend verification — CasaClick</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    {{ encore_entry_link_tags('app') }}
+    <style>
+        * { box-sizing: border-box; }
+        .cc-auth-page {
+            background-image: linear-gradient(160deg, rgba(255, 253, 247, 0.55), rgba(245, 230, 211, 0.35)),
+                url('{{ asset('uploads/images/log in background.jpg') }}');
+        }
+    </style>
+</head>
+<body class="cc-auth-page">
+    <div class="cc-auth-card" style="max-width:min(420px,calc(100vw - 24px));margin:0 auto;">
+        <div class="cc-auth-card__top">
+            <a href="{{ path('app_landing') }}" class="cc-back-landing"><i class="fa fa-arrow-left"></i> Back to home</a>
+        </div>
+        <h1 class="cc-font-display" style="font-size:1.5rem;text-align:center;margin-bottom:0.5rem;">Resend verification email</h1>
+        <p class="cc-auth-sub" style="text-align:center;">Enter the email you used to register. If the account exists and is not verified, we’ll send a new link.</p>
+        <form method="post" action="{{ path('app_resend_verification') }}">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('resend_verification') }}">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" class="form-control" style="padding-left:1rem;">
+            </div>
+            <button type="submit" class="cc-btn-primary">Send verification link</button>
+        </form>
+        <p style="margin-top:1.25rem;text-align:center;"><a href="{{ path('app_login') }}">← Back to login</a></p>
+    </div>
+</body>
+</html>

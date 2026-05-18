@@ -26,15 +26,18 @@
     .page-container {
         background: linear-gradient(135deg, #F8F5EE 0%, #F0E6D2 100%);
         min-height: 100vh;
-        padding: 40px 20px;
+        padding: clamp(16px, 4vw, 40px) clamp(12px, 3vw, 20px);
         display: flex;
         justify-content: center;
         align-items: center;
+        box-sizing: border-box;
+        overflow-x: clip;
     }
 
     .form-wrapper {
         width: 100%;
-        max-width: 600px;
+        max-width: min(600px, 100%);
+        min-width: 0;
     }
 
     .form-header {

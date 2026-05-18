@@ -1,36 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Casaclick Dashboard{% endblock %}</title>
 
-    <!-- Styles are provided by Webpack Encore entry 'app' -->
-
-    <!-- Fonts and Icons -->
+    <!-- Fonts and Icons (aligned with public landing: DM Sans + Cormorant) -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Muli:400,300" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;600;700;800&family=Quicksand:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/themify-icons@0.1.2/css/themify-icons.css" rel="stylesheet">
     
 
     {% block javascripts_head %}{% endblock %}
 
     <style>
-        body { 
-            background: linear-gradient(135deg, #8B4513, #A0522D, #CD853F, #D2B48C);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-            font-family: 'Segoe UI', sans-serif;
+        body {
+            background: linear-gradient(180deg, #fffdf7 0%, #f9f7f4 45%, #f0ebe3 100%);
+            font-family: 'DM Sans', system-ui, sans-serif;
             color: #3e2723;
             min-height: 100vh;
+            overflow-x: clip;
         }
-
-        @keyframes gradientShift {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
+        html {
+            overflow-x: clip;
         }
 
         /* Sidebar styling */
@@ -78,7 +71,7 @@
             font-weight: 800;
             color: #5c4033;
             margin-top: 12px;
-            font-family: 'Nunito', 'Poppins', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Cormorant Garamond', Georgia, serif;
             letter-spacing: 1px;
             text-transform: uppercase;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -220,7 +213,7 @@
             color: #5C4033;
             font-size: 14px;
             font-weight: 700;
-            font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             line-height: 1.2;
         }
 
@@ -230,7 +223,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-family: 'Nunito', 'Poppins', 'Quicksand', sans-serif;
+            font-family: 'DM Sans', sans-serif;
         }
 
         .user-role-badge {
@@ -262,22 +255,27 @@
             color: white;
         }
 
-        /* Center main content */
+        /* Center main content — fluid gutters */
         .main-panel {
             margin-left: 260px;
-            padding: 40px;
+            padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem);
             display: flex;
             justify-content: center;
             position: relative;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .content {
             width: 100%;
-            max-width: 1100px;
+            max-width: min(1200px, 100%);
+            min-width: 0;
             background: transparent;
             border-radius: 0;
             padding: 0;
             box-shadow: none;
+            box-sizing: border-box;
         }
 
         table {
@@ -342,7 +340,7 @@
 
             .main-panel {
                 margin-left: 0;
-                padding: 20px;
+                padding: clamp(1rem, 4vw, 1.5rem);
                 width: 100%;
             }
 
@@ -557,5 +555,8 @@
             </div>
         </div>
     </div>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
 </body>
 </html>

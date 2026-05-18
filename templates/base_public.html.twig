@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CasaClick{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    {% block google_fonts %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% endblock %}
+    {% block icon_font %}
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    {% endblock %}
     <style>
         :root {
             --brand-brown: #5c4033;
@@ -14,11 +20,23 @@
             --brand-cream: #FFFDF7;
         }
         * { box-sizing: border-box; }
+        html {
+            overflow-x: clip;
+        }
         body {
             margin: 0;
-            font-family: 'Nunito', 'Poppins', sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
             color: #3e2723;
             line-height: 1.6;
+            overflow-x: clip;
+            background: var(--brand-cream);
+        }
+        main {
+            max-width: 100%;
+            overflow-x: clip;
+        }
+        input, textarea, select, button {
+            max-width: 100%;
         }
         .public-nav {
             position: fixed;
@@ -78,13 +96,39 @@
         }
         main { padding-top: 76px; min-height: 100vh; }
         .public-footer {
-            background: linear-gradient(135deg, #5c4033, #8B4513);
-            color: white;
-            padding: 40px 24px;
+            background: linear-gradient(145deg, #4a3429 0%, #5c4033 45%, #6b4420 100%);
+            color: rgba(255, 253, 247, 0.98);
+            padding: clamp(2.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2rem);
             text-align: center;
         }
-        .public-footer a { color: var(--brand-tan); }
-        .public-footer a:hover { text-decoration: underline; }
+        .public-footer p,
+        .public-footer .public-footer__copy {
+            color: rgba(255, 253, 247, 0.96);
+            font-size: 0.9375rem;
+            line-height: 1.65;
+            margin: 0 0 1.125rem;
+        }
+        .public-footer .public-footer__nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem 1rem;
+            margin: 0;
+        }
+        .public-footer .public-footer__nav a {
+            color: #f5ead8;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .public-footer .public-footer__nav a:hover {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .public-footer .public-footer__sep {
+            color: rgba(255, 253, 247, 0.45);
+        }
         @media (max-width: 768px) {
             .public-nav { padding: 10px 16px; }
             .public-nav .nav-links { gap: 16px; }
@@ -95,7 +139,7 @@
     {% endblock %}
     {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}cc-public-page{% endblock %}">
     <nav class="public-nav">
         <a href="{{ path('app_landing') }}" class="logo">
             <img src="{{ asset('new_logo.png') }}" alt="CasaClick" onerror="this.style.display='none'">
@@ -113,8 +157,14 @@
         {% block body %}{% endblock %}
     </main>
     <footer class="public-footer">
-        <p>&copy; {{ "now"|date("Y") }} CasaClick. All rights reserved.</p>
-        <p><a href="{{ path('app_landing') }}">Home</a> &bull; <a href="{{ path('app_about') }}">About</a> &bull; <a href="{{ path('app_contact') }}">Contact</a></p>
+        <p class="public-footer__copy">&copy; {{ "now"|date("Y") }} CasaClick. All rights reserved.</p>
+        <nav class="public-footer__nav" aria-label="Footer">
+            <a href="{{ path('app_landing') }}">Home</a>
+            <span class="public-footer__sep" aria-hidden="true">·</span>
+            <a href="{{ path('app_about') }}">About</a>
+            <span class="public-footer__sep" aria-hidden="true">·</span>
+            <a href="{{ path('app_contact') }}">Contact</a>
+        </nav>
     </footer>
     {% block javascripts %}{% endblock %}
 </body>

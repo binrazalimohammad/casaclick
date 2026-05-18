@@ -8,7 +8,9 @@ import './bootstrap.js';
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
+import './styles/casaclick-brand.css';
 import './styles/components.css';
 import './styles/forms.css';
 import './styles/dashboard.css';
 import './styles/theme.css';
+import './js/cc-flash-dismiss.js';

@@ -1,250 +1,792 @@
 {% extends 'base_public.html.twig' %}
 
-{% block title %}CasaClick - Find Your Home in Just a Click{% endblock %}
+{% block title %}CasaClick — Modern apartment living{% endblock %}
 
-{% block body %}
-{# Section 1: Hero #}
-<section class="landing-hero">
-    <div class="hero-content">
-        <h1>Find Your Home in Just a Click</h1>
-        <p class="hero-tagline">Discover verified apartments across multiple cities. Trusted listings, easy booking.</p>
-        <div class="hero-buttons">
-            <a href="{{ path('app_product_index') }}" class="btn btn-primary">Browse Apartments</a>
-            <a href="{{ path('app_register') }}" class="btn btn-secondary">Get Started</a>
-        </div>
-    </div>
-    <div class="hero-visual"></div>
-</section>
+{% block body_class %}landing-westio-body cc-public-page{% endblock %}
 
-{# Section 2: Features #}
-<section class="landing-section landing-features">
-    <h2>Why Choose CasaClick?</h2>
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon"><i class="fa fa-home"></i></div>
-            <h3>Wide Selection</h3>
-            <p>Discover apartments that match your needs across multiple cities and neighborhoods.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon"><i class="fa fa-shield"></i></div>
-            <h3>Trusted Listings</h3>
-            <p>Every listing is verified for your peace of mind. No scams, no surprises.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon"><i class="fa fa-calendar-check-o"></i></div>
-            <h3>Easy Booking</h3>
-            <p>Schedule visits and reserve apartments with just a few clicks.</p>
-        </div>
-    </div>
-</section>
+{% block google_fonts %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+{% block icon_font %}{% endblock %}
+{% block stylesheets %}{{ parent() }}{% endblock %}
 
-{# Section 3: How It Works #}
-<section class="landing-section landing-how">
-    <h2>How It Works</h2>
-    <div class="steps-grid">
-        <div class="step-card">
-            <span class="step-num">1</span>
-            <h3>Create Account</h3>
-            <p>Sign up as a tenant or landlord in seconds.</p>
-        </div>
-        <div class="step-card">
-            <span class="step-num">2</span>
-            <h3>Browse & Apply</h3>
-            <p>Search listings and submit applications online.</p>
-        </div>
-        <div class="step-card">
-            <span class="step-num">3</span>
-            <h3>Move In</h3>
-            <p>Get approved and move into your new home.</p>
-        </div>
-    </div>
-</section>
-
-{# Section 4: Stats #}
-<section class="landing-section landing-stats">
-    <div class="stats-grid">
-        <div class="stat-item">
-            <span class="stat-value">500+</span>
-            <span class="stat-label">Active Listings</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">1,200+</span>
-            <span class="stat-label">Happy Tenants</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">50+</span>
-            <span class="stat-label">Cities</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">98%</span>
-            <span class="stat-label">Satisfaction Rate</span>
-        </div>
-    </div>
-</section>
-
-{# Section 5: Testimonials / Social proof #}
-<section class="landing-section landing-testimonials">
-    <h2>What Our Users Say</h2>
-    <div class="testimonials-grid">
-        <div class="testimonial-card">
-            <p>"Found my perfect apartment in just 3 days. CasaClick made it so easy!"</p>
-            <strong>— Maria S.</strong>
-        </div>
-        <div class="testimonial-card">
-            <p>"As a landlord, I get qualified applicants quickly. Highly recommend."</p>
-            <strong>— John D.</strong>
-        </div>
-        <div class="testimonial-card">
-            <p>"The verification process gave me confidence. No more sketchy listings."</p>
-            <strong>— Sarah L.</strong>
-        </div>
-    </div>
-</section>
-
-{# Section 6: CTA #}
-<section class="landing-section landing-cta">
-    <h2>Ready to Find Your Home?</h2>
-    <p>Join thousands of users who found their perfect match on CasaClick.</p>
-    <div class="cta-buttons">
-        <a href="{{ path('app_register') }}" class="btn btn-cta">Create Free Account</a>
-        <a href="{{ path('app_product_index') }}" class="btn btn-outline">View Listings</a>
-    </div>
-</section>
-
+{% block head %}
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" fetchpriority="high">
 <style>
-.landing-hero {
-    min-height: 70vh;
-    background: linear-gradient(135deg, rgba(92,64,51,0.95) 0%, rgba(139,69,19,0.9) 50%, rgba(160,82,45,0.9) 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 60px 24px;
-    gap: 40px;
+/* Palette: global tokens in assets/styles/casaclick-brand.css (Encore). Duplicated here for hero-only overrides. */
+.landing-westio-body {
+  --brand-brown: #5c4033;
+  --brand-gold: #8B4513;
+  --brand-tan: #D2B48C;
+  --brand-cream: #FFFDF7;
+  background: var(--cc-cream);
+  color: var(--cc-text);
 }
-.hero-content { flex: 1; max-width: 600px; }
-.hero-content h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 0 0 16px; font-weight: 800; }
-.hero-tagline { font-size: clamp(1rem, 2vw, 1.25rem); opacity: 0.95; margin-bottom: 24px; }
-.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
-.btn {
-    display: inline-block;
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+
+.landing-westio-body .public-nav {
+  background: rgba(255, 253, 247, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cc-line);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
 }
-.btn-primary { background: white; color: #5c4033; }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-.btn-secondary { background: transparent; color: white; border: 2px solid white; }
-.btn-secondary:hover { background: rgba(255,255,255,0.15); }
-.hero-visual {
-    flex: 0 0 300px;
-    height: 200px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 16px;
+.landing-westio-body .public-nav .logo { color: #6d5348; }
+.landing-westio-body .public-nav .nav-links a {
+  color: #6d5348;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-size: 1rem;
 }
-.landing-section {
-    padding: 80px 24px;
-    max-width: 1200px;
-    margin: 0 auto;
+.landing-westio-body .public-nav .nav-links a:hover { color: #9a5a2a; }
+.landing-westio-body .public-nav .btn-login {
+  background: linear-gradient(135deg, #9a5a2e, #b8733a);
+  border: none;
+  color: var(--cc-white) !important;
+  border-radius: 8px;
 }
-.landing-section h2 {
-    text-align: center;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    margin-bottom: 48px;
-    color: #5c4033;
+.landing-westio-body .public-nav .btn-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.32);
+  color: var(--cc-white) !important;
 }
-.landing-features { background: #f9f7f4; }
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 32px;
+
+.landing-westio-body .public-footer {
+  background: linear-gradient(145deg, #3d2b22 0%, #4e362c 40%, #5c4033 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-.feature-card {
-    background: white;
-    padding: 32px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    text-align: center;
+
+.westio {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  overflow-x: hidden;
 }
-.feature-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 16px;
-    background: linear-gradient(135deg, #8B4513, #A0522D);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
+
+.westio-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--cc-gold);
+  font-weight: 600;
+  margin: 0 0 1rem;
 }
-.feature-card h3 { margin: 0 0 8px; color: #5c4033; }
-.feature-card p { margin: 0; color: #666; }
-.landing-how { background: white; }
-.steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 32px;
+
+.westio h1, .westio h2, .westio h3, .westio .westio-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
-.step-card {
-    text-align: center;
-    padding: 24px;
+
+.westio-display {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1.1;
+  color: var(--cc-white);
+  margin: 0 0 1.25rem;
+  text-shadow: 0 2px 12px rgba(40, 24, 16, 0.35);
 }
-.step-num {
-    display: inline-block;
-    width: 48px;
-    height: 48px;
-    background: #D2B48C;
-    color: #5c4033;
-    border-radius: 50%;
-    font-weight: 800;
-    font-size: 1.25rem;
-    line-height: 48px;
-    margin-bottom: 16px;
+
+.westio-sub {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.96);
+  max-width: 520px;
+  line-height: 1.7;
+  margin: 0 0 2rem;
+  text-shadow: 0 1px 8px rgba(40, 24, 16, 0.3);
 }
-.step-card h3 { margin: 0 0 8px; }
-.step-card p { margin: 0; color: #666; }
-.landing-stats {
-    background: linear-gradient(135deg, #5c4033, #8B4513);
-    color: white;
+.westio-section .westio-sub,
+.westio-panel .westio-sub {
+  color: var(--cc-muted);
 }
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 32px;
-    text-align: center;
+
+/* Hero */
+.westio-hero {
+  position: relative;
+  min-height: calc(100vh - 76px);
+  display: grid;
+  align-items: center;
+  padding: 4rem 1.5rem 5rem;
+  margin-top: -76px;
+  padding-top: calc(76px + 4rem);
 }
-.stat-value { display: block; font-size: 2.5rem; font-weight: 800; }
-.stat-label { font-size: 0.95rem; opacity: 0.9; }
-.landing-testimonials { background: #f9f7f4; }
-.testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+.westio-hero__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 250, 0.18) 0%, transparent 42%),
+    linear-gradient(135deg, rgba(92, 64, 51, 0.52) 0%, rgba(139, 69, 19, 0.4) 50%, rgba(160, 100, 65, 0.34) 100%),
+    url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=70') center/cover no-repeat;
+  z-index: 0;
 }
-.testimonial-card {
-    background: white;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+.westio-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
-.testimonial-card p { margin: 0 0 12px; font-style: italic; color: #555; }
-.testimonial-card strong { color: #5c4033; }
-.landing-cta {
-    background: linear-gradient(135deg, #8B4513, #A0522D);
-    color: white;
-    text-align: center;
+.westio-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
 }
-.landing-cta h2 { color: white; }
-.landing-cta p { font-size: 1.1rem; margin-bottom: 24px; opacity: 0.95; }
-.cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-.btn-cta { background: white; color: #5c4033; }
-.btn-outline { background: transparent; color: white; border: 2px solid white; }
-@media (max-width: 768px) {
-    .landing-hero { flex-direction: column; text-align: center; min-height: auto; padding: 40px 20px; }
-    .hero-visual { display: none; }
-    .hero-buttons { justify-content: center; }
+.westio-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.westio-btn--primary {
+  background: var(--cc-white);
+  color: #5a4538;
+  border: 1px solid var(--cc-white);
+}
+.westio-btn--primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+.westio-btn--ghost {
+  background: transparent;
+  color: var(--cc-white);
+  border: 2px solid rgba(255,255,255,0.85);
+}
+.westio-btn--ghost:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--cc-white);
+  color: var(--cc-white);
+}
+
+/* Stats strip */
+.westio-stats {
+  background: linear-gradient(135deg, #6d5348, #9a5a32);
+  border-top: none;
+  border-bottom: none;
+  padding: 3rem 1.5rem;
+  color: var(--cc-white);
+}
+.westio-stats__grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+.westio-stat__num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  color: var(--cc-white);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+.westio-stat__label {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Section shell */
+.westio-section {
+  padding: 5rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.westio-section__title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  color: var(--cc-brown);
+  margin: 0.5rem 0 2.5rem;
+  max-width: 720px;
+}
+.westio-section--alt { background: var(--cc-soft); }
+
+/* Quote */
+.westio-quote {
+  padding: 4rem 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.westio-quote blockquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-style: italic;
+  color: var(--cc-text);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  border: none;
+  padding: 0;
+}
+.westio-quote cite {
+  font-style: normal;
+  font-size: 0.85rem;
+  color: var(--cc-muted);
+  letter-spacing: 0.06em;
+}
+
+/* Tabs (rooms / floorplans) */
+.westio-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--cc-line);
+  padding-bottom: 0.5rem;
+}
+.westio-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--cc-muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.westio-tab:hover, .westio-tab.is-active {
+  color: var(--cc-gold);
+  border-bottom-color: var(--cc-gold);
+}
+.westio-panel { display: none; animation: wFade 0.4s ease; }
+.westio-panel.is-active { display: block; }
+@keyframes wFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.westio-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+.westio-split__img {
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background: var(--cc-soft);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.westio-split__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Amenities grid */
+.westio-amenities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.westio-amenities h4 {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cc-gold);
+  margin: 0 0 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+}
+.westio-amenities ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.westio-amenities li {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--cc-line);
+  font-size: 0.9rem;
+  color: var(--cc-muted);
+}
+.westio-amenities li:last-child { border-bottom: none; }
+
+/* Neighborhood */
+.westio-neigh {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.westio-neigh__card {
+  background: var(--cc-white);
+  border: 1px solid var(--cc-line);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-radius: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.westio-neigh__card:hover { border-color: rgba(139, 69, 19, 0.35); }
+.westio-neigh__card svg {
+  width: 28px;
+  height: 28px;
+  color: var(--cc-gold);
+  margin: 0 auto 0.75rem;
+  display: block;
+}
+.westio-neigh__card span {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--cc-brown);
+}
+
+/* Floorplan card */
+.westio-floor-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 2rem;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--cc-muted);
+}
+.westio-floor-meta strong { color: var(--cc-brown); font-weight: 500; }
+
+/* Panoramic band */
+.westio-pano {
+  position: relative;
+  min-height: 45vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem;
+}
+.westio-pano__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(92, 64, 51, 0.5), rgba(139, 90, 50, 0.42)),
+    url('https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=70') center/cover no-repeat;
+}
+.westio-pano .westio-section { position: relative; z-index: 1; margin: 0; }
+.westio-pano .westio-eyebrow { color: var(--cc-tan); }
+.westio-pano .westio-section__title { color: var(--cc-white); margin-left: auto; margin-right: auto; }
+.westio-pano .westio-sub { color: rgba(255,255,255,0.9); margin-left: auto; margin-right: auto; }
+
+/* Testimonials */
+.westio-testi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.westio-testi__card {
+  background: var(--cc-white);
+  border: 1px solid var(--cc-line);
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.westio-testi__card p {
+  font-style: italic;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+}
+.westio-testi__tag {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cc-gold);
+  margin-bottom: 0.35rem;
+}
+.westio-testi__name {
+  font-weight: 600;
+  color: var(--cc-brown);
+  font-size: 0.9rem;
+}
+
+/* CTA */
+.westio-cta {
+  position: relative;
+  padding: clamp(4.5rem, 10vw, 6.5rem) clamp(1.5rem, 4vw, 2rem);
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.09) 0%, transparent 55%),
+    linear-gradient(155deg, #8a4f2e 0%, #9a5a32 38%, #a86a3d 100%);
+  color: var(--cc-white);
+}
+.westio-cta__inner {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+.westio-cta h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.15rem, 4.5vw, 2.85rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.18;
+  color: #fffefc;
+  margin: 0 0 1.125rem;
+  text-shadow: 0 2px 24px rgba(30, 18, 12, 0.35);
+}
+.westio-cta__lead {
+  color: rgba(255, 253, 247, 0.94);
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  line-height: 1.7;
+  margin: 0 auto 2.75rem;
+  max-width: 28rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+.westio-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  justify-content: center;
+  align-items: center;
+}
+.westio-cta .westio-btn {
+  min-width: 12.5rem;
+  padding: 1rem 1.75rem;
+}
+.westio-cta .westio-btn--primary {
+  background: #fffefc;
+  color: #4a3429;
+  border-color: #fffefc;
+  box-shadow: 0 4px 20px rgba(40, 22, 14, 0.25);
+}
+.westio-cta .westio-btn--primary:hover {
+  filter: brightness(1.03);
+  box-shadow: 0 6px 28px rgba(40, 22, 14, 0.32);
+}
+.westio-cta .westio-btn--ghost {
+  border-width: 2px;
+  border-color: rgba(255, 253, 247, 0.88);
+  color: #fffefc;
+  background: rgba(255, 255, 255, 0.06);
+}
+.westio-cta .westio-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #fffefc;
+  color: #fffefc;
+}
+
+@media (max-width: 992px) {
+  .westio-stats__grid { grid-template-columns: repeat(2, 1fr); }
+  .westio-split { grid-template-columns: 1fr; }
+  .westio-amenities { grid-template-columns: 1fr; }
+  .westio-neigh { grid-template-columns: repeat(2, 1fr); }
+  .westio-testi { grid-template-columns: 1fr; }
+}
+@media (max-width: 576px) {
+  .westio-stats__grid { grid-template-columns: 1fr; }
+  .westio-neigh { grid-template-columns: 1fr; }
+  .westio-cta .westio-btn {
+    width: 100%;
+    max-width: 22rem;
+    min-width: 0;
+  }
 }
 </style>
+{% endblock %}
+
+{% block body %}
+<div class="westio">
+  <header class="westio-hero">
+    <div class="westio-hero__bg" aria-hidden="true"></div>
+    <div class="westio-hero__inner">
+      <h1 class="westio-display">Modern, luxury apartment living</h1>
+      <p class="westio-sub">Discover verified listings and exceptional homes—find your next place with CasaClick in just a few clicks.</p>
+      <div class="westio-btns">
+        <a href="{{ path('app_product_index') }}" class="westio-btn westio-btn--primary">Browse listings</a>
+        <a href="{{ path('app_register') }}" class="westio-btn westio-btn--ghost">Create account</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="westio-stats" aria-label="Project Overview">
+    <div class="westio-stats__grid">
+      <div>
+        <div class="westio-stat__num">24</div>
+        <div class="westio-stat__label">Floors</div>
+      </div>
+      <div>
+        <div class="westio-stat__num">180+</div>
+        <div class="westio-stat__label">Luxury apartments</div>
+      </div>
+      <div>
+        <div class="westio-stat__num">120</div>
+        <div class="westio-stat__label">Parking spaces</div>
+      </div>
+      <div>
+        <div class="westio-stat__num">12k</div>
+        <div class="westio-stat__label">Sq ft amenities</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="westio-section">
+    <h2 class="westio-section__title">Project Overview</h2>
+    <p class="westio-sub" style="max-width: 640px;">CasaClick redefines urban living by blending comfort, convenience, and trust in one platform. With carefully selected listings and reliable landlords, users can effortlessly explore, book, and settle into their next home—all in just a few clicks.</p>
+  </section>
+
+  <div class="westio-quote">
+    <blockquote>“Great spaces should feel calm, bright, and unmistakably home. We built CasaClick around that idea.”</blockquote>
+    <cite>— CasaClick team</cite>
+  </div>
+
+  <section class="westio-section westio-section--alt" id="spaces">
+    <p class="westio-eyebrow">Elite residences</p>
+    <h2 class="westio-section__title">Explore open living spaces</h2>
+    <div class="westio-tabs" role="tablist">
+      <button type="button" class="westio-tab is-active" data-tab="lr" role="tab" aria-selected="true">Living room</button>
+      <button type="button" class="westio-tab" data-tab="kit" role="tab">Kitchen</button>
+      <button type="button" class="westio-tab" data-tab="bath" role="tab">Bathroom</button>
+      <button type="button" class="westio-tab" data-tab="bed" role="tab">Bedroom</button>
+    </div>
+    <div class="westio-panel is-active" id="panel-lr" role="tabpanel">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=640&q=70" alt="Living room" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub" style="margin-bottom: 0;">Open-plan living with natural light, premium finishes, and room to entertain—exactly what you see on verified CasaClick listings.</p>
+        </div>
+      </div>
+    </div>
+    <div class="westio-panel" id="panel-kit" role="tabpanel">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=640&q=70" alt="Kitchen" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub" style="margin-bottom: 0;">Kitchens that balance style and function—think stone surfaces, smart storage, and layouts that work every day.</p>
+        </div>
+      </div>
+    </div>
+    <div class="westio-panel" id="panel-bath" role="tabpanel">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=640&q=70" alt="Bathroom" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub" style="margin-bottom: 0;">Spa-inspired bathrooms with quality fixtures and clean lines—details you can confirm before you visit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="westio-panel" id="panel-bed" role="tabpanel">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=640&q=70" alt="Bedroom" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub" style="margin-bottom: 0;">Restful bedrooms with generous closets and quiet layouts—filter by size and amenities on CasaClick.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="westio-section" id="amenities">
+    <p class="westio-eyebrow">Features &amp; amenities</p>
+    <h2 class="westio-section__title">See how we enhance your search</h2>
+    <div class="westio-amenities">
+      <div>
+        <h4>Listing quality</h4>
+        <ul>
+          <li>Verified landlords &amp; photos</li>
+          <li>Clear pricing &amp; availability</li>
+          <li>Neighborhood context</li>
+          <li>Advanced filters</li>
+        </ul>
+      </div>
+      <div>
+        <h4>For tenants</h4>
+        <ul>
+          <li>Save favorites</li>
+          <li>Apply online</li>
+          <li>Visit scheduling</li>
+          <li>Secure messaging</li>
+        </ul>
+      </div>
+      <div>
+        <h4>For landlords</h4>
+        <ul>
+          <li>Listing management</li>
+          <li>Applicant pipeline</li>
+          <li>Role-based access</li>
+          <li>Activity insights</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="westio-section westio-section--alt" id="neighborhood">
+    <p class="westio-eyebrow">Neighborhood</p>
+    <h2 class="westio-section__title">Live in a convenient location</h2>
+    <div class="westio-neigh">
+      <div class="westio-neigh__card"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg><span>Shopping</span></div>
+      <div class="westio-neigh__card"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg><span>Parks &amp; waterfronts</span></div>
+      <div class="westio-neigh__card"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-9.75 3.75h7.5m-9.75 3.75h7.5m-9.75 3.75h7.5"/></svg><span>City &amp; transit</span></div>
+      <div class="westio-neigh__card"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg><span>Cafés &amp; dining</span></div>
+    </div>
+  </section>
+
+  <section class="westio-section" id="floorplans">
+    <p class="westio-eyebrow">Floorplans</p>
+    <h2 class="westio-section__title">The perfect layouts</h2>
+    <div class="westio-tabs" role="tablist">
+      <button type="button" class="westio-tab is-active" data-fplan="studio">Studio</button>
+      <button type="button" class="westio-tab" data-fplan="1br">1 Bedroom</button>
+      <button type="button" class="westio-tab" data-fplan="2br">2 Bedrooms</button>
+      <button type="button" class="westio-tab" data-fplan="ph">Penthouse</button>
+    </div>
+    <div class="westio-panel is-active" id="fplan-studio">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=640&q=70" alt="Studio layout" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub">Compact, efficient studio layouts—ideal for urban living. Compare square footage and amenities across listings.</p>
+          <div class="westio-floor-meta">
+            <div><strong>Total area</strong><br>~420 sq ft</div>
+            <div><strong>Windows</strong><br>3</div>
+            <div><strong>Kitchen</strong><br>Open</div>
+            <div><strong>Bath</strong><br>Full</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="westio-panel" id="fplan-1br">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=640&q=70" alt="One bedroom" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub">One-bedroom plans with distinct living and sleeping zones—filter by bedrooms on CasaClick.</p>
+          <div class="westio-floor-meta">
+            <div><strong>Total area</strong><br>~650 sq ft</div>
+            <div><strong>Bedroom</strong><br>1</div>
+            <div><strong>Closet</strong><br>Walk-in</div>
+            <div><strong>Bath</strong><br>Full</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="westio-panel" id="fplan-2br">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=640&q=70" alt="Two bedrooms" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub">Two-bedroom layouts for roommates or small families—see real photos on every listing.</p>
+          <div class="westio-floor-meta">
+            <div><strong>Total area</strong><br>~950 sq ft</div>
+            <div><strong>Bedrooms</strong><br>2</div>
+            <div><strong>Living</strong><br>Open</div>
+            <div><strong>Bath</strong><br>2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="westio-panel" id="fplan-ph">
+      <div class="westio-split">
+        <div class="westio-split__img">
+          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=640&q=70" alt="Penthouse" loading="lazy" width="900" height="675">
+        </div>
+        <div>
+          <p class="westio-sub">Top-floor residences with expansive views—premium picks appear first in curated searches.</p>
+          <div class="westio-floor-meta">
+            <div><strong>Total area</strong><br>~1,400+ sq ft</div>
+            <div><strong>Terrace</strong><br>Yes</div>
+            <div><strong>Bedrooms</strong><br>2–3</div>
+            <div><strong>Bath</strong><br>2+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="westio-pano" aria-label="Panoramic views">
+    <div class="westio-pano__bg" aria-hidden="true"></div>
+    <div class="westio-section">
+      <p class="westio-eyebrow">Panoramic views</p>
+      <h2 class="westio-section__title" style="margin-left: auto; margin-right: auto; text-align: center;">Unrestricted views of the skyline</h2>
+      <p class="westio-sub" style="margin: 0 auto; text-align: center;">Browse listings with rooftop terraces, corner units, and floor-to-ceiling glass—where the city becomes part of your home.</p>
+    </div>
+  </section>
+
+  <section class="westio-section westio-section--alt" id="testimonials">
+    <p class="westio-eyebrow">Testimonials</p>
+    <h2 class="westio-section__title">Word from our community</h2>
+    <div class="westio-testi">
+      <div class="westio-testi__card">
+        <div class="westio-testi__tag">Amazing</div>
+        <p>“Found a verified apartment in days. The process was clear from browse to application.”</p>
+        <div class="westio-testi__name">Maria S. · Tenant</div>
+      </div>
+      <div class="westio-testi__card">
+        <div class="westio-testi__tag">Wonderful</div>
+        <p>“As a landlord, qualified leads and fewer no-shows. CasaClick keeps everything in one place.”</p>
+        <div class="westio-testi__name">John D. · Landlord</div>
+      </div>
+      <div class="westio-testi__card">
+        <div class="westio-testi__tag">Excellent</div>
+        <p>“Verification gave me confidence. I knew what I was getting before the visit.”</p>
+        <div class="westio-testi__name">Sarah L. · Tenant</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="westio-cta" aria-labelledby="westio-cta-heading">
+    <div class="westio-cta__inner">
+      <h2 id="westio-cta-heading">Ready to find your home?</h2>
+      <p class="westio-cta__lead">Join CasaClick and explore curated listings with trusted landlords.</p>
+      <div class="westio-cta__actions westio-btns">
+        <a href="{{ path('app_register') }}" class="westio-btn westio-btn--primary">Create free account</a>
+        <a href="{{ path('app_product_index') }}" class="westio-btn westio-btn--ghost">View listings</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll('.westio-tabs').forEach(function (tablist) {
+    var tabs = tablist.querySelectorAll('.westio-tab');
+    var container = tablist.parentElement;
+    var panels = [];
+    if (tablist.closest('#spaces')) {
+      panels = [
+        document.getElementById('panel-lr'),
+        document.getElementById('panel-kit'),
+        document.getElementById('panel-bath'),
+        document.getElementById('panel-bed')
+      ];
+    } else if (tablist.closest('#floorplans')) {
+      panels = [
+        document.getElementById('fplan-studio'),
+        document.getElementById('fplan-1br'),
+        document.getElementById('fplan-2br'),
+        document.getElementById('fplan-ph')
+      ];
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        panels.forEach(function (p, j) {
+          if (!p) return;
+          p.classList.toggle('is-active', j === i);
+        });
+      });
+    });
+  });
+})();
+</script>
 {% endblock %}

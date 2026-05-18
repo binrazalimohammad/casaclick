@@ -1,0 +1,6 @@
+# Loaded after ux_turbo.yaml (alphabetically). Turbo enables check_header for fetch/Turbo-driven submits;
+# classic HTML form POSTs only send the cookie double-submit — an extra header check can reject valid requests
+# if anything sets a conflicting "csrf-token" header, or if cookie/header interaction misbehaves on some clients.
+framework:
+    csrf_protection:
+        check_header: false
