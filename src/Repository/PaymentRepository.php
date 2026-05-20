@@ -70,5 +70,21 @@ class PaymentRepository extends ServiceEntityRepository
 
         return (float) ($result ?? 0);
     }
+
+    /**
+     * Payments across all applications belonging to this tenant (customer).
+     *
+     * @return Payment[]
+     */
+    public function findByTenant(User $tenant): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.application', 'a')
+            ->andWhere('a.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('p.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
 

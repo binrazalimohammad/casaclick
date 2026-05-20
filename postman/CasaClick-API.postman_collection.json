@@ -9,6 +9,7 @@
     { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
     { "key": "token", "value": "" },
     { "key": "listingId", "value": "1" },
+    { "key": "applicationId", "value": "1" },
     { "key": "verifyToken", "value": "paste-token-from-email-or-database" }
   ],
   "item": [
@@ -172,6 +173,85 @@
             },
             "method": "GET",
             "url": "{{baseUrl}}/api/verification-status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer API (tenant only)",
+      "description": "JWT from a **tenant or ROLE_USER** customer account. Staff, admin, and landlord tokens receive HTTP 403.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Profile GET",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/profile"
+          }
+        },
+        {
+          "name": "Profile PATCH (name)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Customer Name\"\n}" },
+            "url": "{{baseUrl}}/api/mobile/customer/profile"
+          }
+        },
+        {
+          "name": "Bookings list",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/bookings"
+          }
+        },
+        {
+          "name": "Booking create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"listingId\": {{listingId}},\n  \"message\": \"Interested — please contact me.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/customer/bookings"
+          }
+        },
+        {
+          "name": "Booking by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/bookings/{{applicationId}}"
+          }
+        },
+        {
+          "name": "Orders (approved + completed)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/orders"
+          }
+        },
+        {
+          "name": "Payments list",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/payments"
+          }
+        },
+        {
+          "name": "Payment create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": {{applicationId}},\n  \"paymentMethod\": \"gcash\",\n  \"notes\": \"Reference: TEST123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/customer/payments",
+            "description": "Requires application status **approved**. Optional `amount` defaults to listing price."
           }
         }
       ]

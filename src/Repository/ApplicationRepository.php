@@ -98,5 +98,39 @@ class ApplicationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findOneByTenantAndId(User $tenant, int $id): ?Application
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.tenant = :tenant')
+            ->andWhere('a.id = :id')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Applications for a tenant filtered by one or more statuses (e.g. orders = approved, completed).
+     *
+     * @param list<string> $statuses
+     *
+     * @return Application[]
+     */
+    public function findByTenantAndStatuses(User $tenant, array $statuses): array
+    {
+        if ($statuses === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.tenant = :tenant')
+            ->andWhere('a.status IN (:statuses)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('statuses', $statuses)
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
 
