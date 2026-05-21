@@ -17,35 +17,48 @@ class ActivityLogService
      */
     public function logAction(?User $user, string $action, object $entity): void
     {
-        $connection = $this->em->getConnection();
-
-        $userId = $user?->getId();
-        $username = $user?->getEmail() ?? $user?->getUserIdentifier() ?? 'System';
-        $roles = $user?->getRoles() ?? [];
-        if (in_array('ROLE_ADMIN', $roles)) {
-            $role = 'ROLE_ADMIN';
-        } elseif (in_array('ROLE_LANDLORD', $roles)) {
-            $role = 'ROLE_LANDLORD';
-        } else {
-            $role = 'ROLE_TENANT';
-        }
-
         $targetEntity = get_class($entity);
         $targetId = method_exists($entity, 'getId') ? $entity->getId() : null;
         $targetData = $this->buildTargetData($entity);
 
+        $this->logEvent($user, $action, $targetData, null, $targetEntity, $targetId !== null ? (string) $targetId : null);
+    }
+
+    /**
+     * Mobile app + custom events (same activity_log table as the website).
+     */
+    public function logEvent(
+        ?User $user,
+        string $action,
+        string $targetData,
+        ?string $details = null,
+        ?string $targetEntity = 'App\\Entity\\Mobile',
+        ?string $targetId = null,
+        ?string $ipAddress = null,
+        ?string $platform = null,
+    ): void {
+        $connection = $this->em->getConnection();
+
+        $userId = $user?->getId();
+        $username = $user?->getEmail() ?? $user?->getUserIdentifier() ?? 'System';
+        $role = $user && method_exists($user, 'getPrimaryRole')
+            ? $user->getPrimaryRole()
+            : 'ROLE_TENANT';
+
         try {
             $connection->executeStatement(
-                'INSERT INTO activity_log (user_id, username, role, action, target_entity, target_id, target_data, details, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())',
+                'INSERT INTO activity_log (user_id, username, role, action, target_entity, target_id, target_data, details, ip_address, platform, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())',
                 [
                     $userId,
                     $username,
                     $role,
                     strtoupper($action),
                     $targetEntity,
-                    $targetId ? (string)$targetId : null,
+                    $targetId,
                     $targetData,
-                    null,
+                    $details,
+                    $ipAddress,
+                    $platform,
                 ]
             );
         } catch (\Throwable $e) {

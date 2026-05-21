@@ -4,16 +4,10 @@
 
 {% block body_class %}landing-westio-body cc-public-page{% endblock %}
 
-{% block google_fonts %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-{% endblock %}
 {% block icon_font %}{% endblock %}
-{% block stylesheets %}{{ parent() }}{% endblock %}
 
 {% block head %}
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" fetchpriority="high">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=960&amp;q=55" fetchpriority="high">
 <style>
 /* Palette: global tokens in assets/styles/casaclick-brand.css (Encore). Duplicated here for hero-only overrides. */
 .landing-westio-body {
@@ -114,7 +108,7 @@
   background:
     linear-gradient(180deg, rgba(255, 253, 250, 0.18) 0%, transparent 42%),
     linear-gradient(135deg, rgba(92, 64, 51, 0.52) 0%, rgba(139, 69, 19, 0.4) 50%, rgba(160, 100, 65, 0.34) 100%),
-    url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=70') center/cover no-repeat;
+    url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=960&q=55') center/cover no-repeat;
   z-index: 0;
 }
 .westio-hero__inner {
@@ -370,7 +364,7 @@
   inset: 0;
   background:
     linear-gradient(180deg, rgba(92, 64, 51, 0.5), rgba(139, 90, 50, 0.42)),
-    url('https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=70') center/cover no-repeat;
+    url('https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=960&q=55') center/cover no-repeat;
 }
 .westio-pano .westio-section { position: relative; z-index: 1; margin: 0; }
 .westio-pano .westio-eyebrow { color: var(--cc-tan); }
@@ -553,7 +547,7 @@
     <div class="westio-panel is-active" id="panel-lr" role="tabpanel">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=640&q=70" alt="Living room" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=480&q=55" alt="Living room" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub" style="margin-bottom: 0;">Open-plan living with natural light, premium finishes, and room to entertain—exactly what you see on verified CasaClick listings.</p>
@@ -563,7 +557,7 @@
     <div class="westio-panel" id="panel-kit" role="tabpanel">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=640&q=70" alt="Kitchen" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=480&q=55" alt="Kitchen" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub" style="margin-bottom: 0;">Kitchens that balance style and function—think stone surfaces, smart storage, and layouts that work every day.</p>
@@ -573,7 +567,7 @@
     <div class="westio-panel" id="panel-bath" role="tabpanel">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=640&q=70" alt="Bathroom" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=480&q=55" alt="Bathroom" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub" style="margin-bottom: 0;">Spa-inspired bathrooms with quality fixtures and clean lines—details you can confirm before you visit.</p>
@@ -583,7 +577,7 @@
     <div class="westio-panel" id="panel-bed" role="tabpanel">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=640&q=70" alt="Bedroom" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=480&q=55" alt="Bedroom" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub" style="margin-bottom: 0;">Restful bedrooms with generous closets and quiet layouts—filter by size and amenities on CasaClick.</p>
@@ -649,7 +643,7 @@
     <div class="westio-panel is-active" id="fplan-studio">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=640&q=70" alt="Studio layout" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=480&q=55" alt="Studio layout" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub">Compact, efficient studio layouts—ideal for urban living. Compare square footage and amenities across listings.</p>
@@ -665,7 +659,7 @@
     <div class="westio-panel" id="fplan-1br">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=640&q=70" alt="One bedroom" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=480&q=55" alt="One bedroom" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub">One-bedroom plans with distinct living and sleeping zones—filter by bedrooms on CasaClick.</p>
@@ -681,7 +675,7 @@
     <div class="westio-panel" id="fplan-2br">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=640&q=70" alt="Two bedrooms" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=480&q=55" alt="Two bedrooms" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub">Two-bedroom layouts for roommates or small families—see real photos on every listing.</p>
@@ -697,7 +691,7 @@
     <div class="westio-panel" id="fplan-ph">
       <div class="westio-split">
         <div class="westio-split__img">
-          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=640&q=70" alt="Penthouse" loading="lazy" width="900" height="675">
+          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=480&q=55" alt="Penthouse" loading="lazy" width="900" height="675">
         </div>
         <div>
           <p class="westio-sub">Top-floor residences with expansive views—premium picks appear first in curated searches.</p>

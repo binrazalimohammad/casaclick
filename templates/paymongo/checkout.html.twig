@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CasaClick — Pay rent</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 24px 16px 32px;
+            color: #1a1a1a;
+            background: linear-gradient(180deg, #f8f6f3 0%, #fff 40%);
+            min-height: 100vh;
+        }
+        .wrap { max-width: 400px; margin: 0 auto; }
+        .logo { font-weight: 700; color: #5c4033; font-size: 1.1rem; margin-bottom: 24px; }
+        h1 { font-size: 1.25rem; font-weight: 600; margin: 0 0 4px; }
+        .listing { color: #666; font-size: 0.95rem; margin: 0 0 20px; }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,.08);
+            border: 1px solid #eee;
+        }
+        .label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: .05em; margin: 0; }
+        .amount { font-size: 2rem; font-weight: 700; color: #2d5016; margin: 8px 0 20px; }
+        .methods { font-size: 0.85rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #00a651;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            border: none;
+        }
+        .secure { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 0.8rem; color: #666; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="logo">CasaClick</div>
+    <h1>Review payment</h1>
+    <p class="listing">{{ listing }}</p>
+    <div class="card">
+        <p class="label">Total amount</p>
+        <p class="amount">₱{{ amount }}</p>
+        <p class="methods">
+            <strong>{{ channel_label }}</strong>
+            {% if payer_summary %}<br>Account: {{ payer_summary }}{% endif %}
+            <br><span style="color:#888;font-size:0.85rem">Confirm to continue with secure checkout.</span>
+        </p>
+        <a class="btn" href="{{ complete_url }}">Pay ₱{{ amount }}</a>
+        <p class="secure">🔒 Secure checkout · No charge until you confirm</p>
+    </div>
+</div>
+</body>
+</html>

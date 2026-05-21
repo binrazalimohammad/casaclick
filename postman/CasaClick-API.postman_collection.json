@@ -257,6 +257,32 @@
       ]
     },
     {
+      "name": "Paymongo (tenant)",
+      "item": [
+        {
+          "name": "Payment options (channels + requirements)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/payments/paymongo/options",
+            "description": "JWT required. Use response to build the payment method form before checkout."
+          }
+        },
+        {
+          "name": "Start Paymongo checkout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentChannel\": \"gcash\",\n  \"payerName\": \"Juan Dela Cruz\",\n  \"payerContact\": \"09171234567\",\n  \"referenceNote\": \"Unit 2B\",\n  \"amount\": \"12000\",\n  \"appOrigin\": \"{{baseUrl}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/applications/{{applicationId}}/payments/paymongo",
+            "description": "Application must be **approved**. Channels: gcash, paymaya, card. Returns checkoutUrl."
+          }
+        }
+      ]
+    },
+    {
       "name": "API Platform (docs)",
       "item": [
         {

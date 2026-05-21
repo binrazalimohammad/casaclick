@@ -432,12 +432,22 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if app.user and app.user.primaryRole == 'ROLE_TENANT' %}
+                    <li class="{% if app.request.attributes.get('_route') == 'app_customer_dashboard' %}active{% endif %}">
+                        <a href="{{ path('app_customer_dashboard') }}">
+                            <i class="fa fa-home"></i>
+                            <p>My Dashboard</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
                     <li class="{% if 'app_landlord' in app.request.attributes.get('_route') %}active{% endif %}">
                         <a href="{{ path('app_landlord_index') }}">
                             <i class="fa fa-user"></i>
                             <p>Landlord's Profile</p>
                         </a>
                     </li>
+                    {% endif %}
                     {% if is_granted('ROLE_LANDLORD') or is_granted('ROLE_ADMIN') %}
                     <li class="{% if 'app_tenant' in app.request.attributes.get('_route') %}active{% endif %}">
                         <a href="{{ path('app_tenant') }}">

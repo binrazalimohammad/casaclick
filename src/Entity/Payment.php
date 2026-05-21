@@ -23,7 +23,7 @@ class Payment
     private string $amount;
 
     #[ORM\Column(length: 50)]
-    private string $status = 'pending'; // 'pending', 'completed', 'failed', 'refunded'
+    private string $status = 'pending'; // pending, completed, failed, refunded, cancelled
 
     #[ORM\Column(length: 50)]
     private string $paymentMethod = 'cash'; // 'cash', 'bank_transfer', 'gcash', 'paymaya', 'credit_card'
@@ -43,6 +43,12 @@ class Payment
     #[ORM\ManyToOne(targetEntity: 'App\\Entity\\User')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $processedBy = null; // Admin or landlord who processed the payment
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $paymongoLinkId = null;
+
+    #[ORM\Column(length: 512, nullable: true)]
+    private ?string $paymongoCheckoutUrl = null;
 
     public function __construct()
     {
@@ -147,6 +153,28 @@ class Payment
     public function setProcessedBy(?User $processedBy): static
     {
         $this->processedBy = $processedBy;
+        return $this;
+    }
+
+    public function getPaymongoLinkId(): ?string
+    {
+        return $this->paymongoLinkId;
+    }
+
+    public function setPaymongoLinkId(?string $paymongoLinkId): static
+    {
+        $this->paymongoLinkId = $paymongoLinkId;
+        return $this;
+    }
+
+    public function getPaymongoCheckoutUrl(): ?string
+    {
+        return $this->paymongoCheckoutUrl;
+    }
+
+    public function setPaymongoCheckoutUrl(?string $paymongoCheckoutUrl): static
+    {
+        $this->paymongoCheckoutUrl = $paymongoCheckoutUrl;
         return $this;
     }
 }

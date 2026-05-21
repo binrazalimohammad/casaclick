@@ -97,6 +97,43 @@ await fetch(`${base}/api/mobile/customer/payments`, {
 
 Landlord confirms payment in the **web** dashboard; until then status stays `pending`.
 
+### Paymongo (online checkout)
+
+Tenants must choose **online (GCash/Maya)** or **card**, then fill channel-specific fields before checkout.
+
+**Step 1 — load form schema**
+
+```http
+GET /api/mobile/payments/paymongo/options
+Authorization: Bearer <token>
+```
+
+Response `data.categories[]` has payment types; each channel includes `requirements` (field keys, labels, required flags).
+
+**Step 2 — start checkout** (application must be `approved`)
+
+```javascript
+const r = await fetch(`${base}/api/mobile/applications/${applicationId}/payments/paymongo`, {
+  method: 'POST',
+  headers,
+  body: JSON.stringify({
+    paymentChannel: 'gcash', // gcash | paymaya | card
+    payerName: 'Juan Dela Cruz',
+    payerContact: '09171234567', // required for gcash / paymaya
+    payerEmail: 'juan@example.com', // required for card
+    referenceNote: 'Unit 2B', // optional
+    amount: '12000', // optional; defaults to listing price
+    appOrigin: 'http://192.168.1.10:8000', // optional; used for dev mock checkout URLs
+  }),
+});
+const json = await r.json();
+// json.data.checkoutUrl — open in browser / WebView
+```
+
+On the **website**, tenants use **Pay with Paymongo** on an approved booking (`/payment/application/{id}/paymongo`) for the same flow.
+
+With `PAYMONGO_DEV_MOCK=1` and no secret key, `checkoutUrl` opens a local demo page; tap **Complete** to mark the payment paid.
+
 ## 6. Synchronization with web
 
 After actions on web (approve application, complete payment), call the same list/show endpoints again. There is a single database — no merge logic required on the device beyond normal refresh.

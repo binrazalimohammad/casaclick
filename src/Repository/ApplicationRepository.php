@@ -21,6 +21,23 @@ class ApplicationRepository extends ServiceEntityRepository
     /**
      * @return Application[]
      */
+    /**
+     * @return Application[]
+     */
+    public function findAllOrdered(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.listing', 'l')
+            ->addSelect('l')
+            ->leftJoin('a.tenant', 't')
+            ->addSelect('t')
+            ->leftJoin('a.landlord', 'ld')
+            ->addSelect('ld')
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByLandlord(User $landlord): array
     {
         return $this->createQueryBuilder('a')
@@ -131,6 +148,70 @@ class ApplicationRepository extends ServiceEntityRepository
             ->orderBy('a.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Fingerprint for live sync (mobile ↔ website, same DB).
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getSyncMetaForTenant(User $tenant): array
+    {
+        return $this->buildSyncMeta(
+            $this->createQueryBuilder('a')
+                ->select('COUNT(a.id) AS cnt', 'MAX(COALESCE(a.updatedAt, a.createdAt)) AS maxUpdated')
+                ->andWhere('a.tenant = :tenant')
+                ->setParameter('tenant', $tenant)
+                ->getQuery()
+                ->getOneOrNullResult()
+        );
+    }
+
+    /**
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getSyncMetaForLandlord(User $landlord): array
+    {
+        return $this->buildSyncMeta(
+            $this->createQueryBuilder('a')
+                ->select('COUNT(a.id) AS cnt', 'MAX(COALESCE(a.updatedAt, a.createdAt)) AS maxUpdated')
+                ->andWhere('a.landlord = :landlord')
+                ->setParameter('landlord', $landlord)
+                ->getQuery()
+                ->getOneOrNullResult()
+        );
+    }
+
+    /**
+     * All bookings (admin web feed).
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getGlobalSyncMeta(): array
+    {
+        return $this->buildSyncMeta(
+            $this->createQueryBuilder('a')
+                ->select('COUNT(a.id) AS cnt', 'MAX(COALESCE(a.updatedAt, a.createdAt)) AS maxUpdated')
+                ->getQuery()
+                ->getOneOrNullResult()
+        );
+    }
+
+    /**
+     * @param array{cnt?: mixed, maxUpdated?: mixed}|null $row
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    private function buildSyncMeta(?array $row): array
+    {
+        $max = $row['maxUpdated'] ?? null;
+
+        return [
+            'count' => (int) ($row['cnt'] ?? 0),
+            'latestUpdatedAt' => $max instanceof \DateTimeInterface
+                ? $max->format(\DateTimeInterface::ATOM)
+                : ($max !== null ? (string) $max : null),
+        ];
     }
 }
 

@@ -55,12 +55,21 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/google$, roles: PUBLIC_ACCESS }
         - { path: ^/api/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/verify-email$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/health$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/listings/revision$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/listings, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/categories, roles: PUBLIC_ACCESS }
+        - { path: ^/api/paymongo/webhook$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/paymongo/dev-checkout, roles: PUBLIC_ACCESS }
+        - { path: ^/api/paymongo/dev-complete, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/home$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/about$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/contact$, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register$, roles: PUBLIC_ACCESS }
@@ -71,10 +80,13 @@ security:
         - { path: ^/verify-email, roles: PUBLIC_ACCESS }
         - { path: ^/resend-verification$, roles: PUBLIC_ACCESS }
         - { path: ^/connect/google, roles: PUBLIC_ACCESS }
+        - { path: ^/mobile/google, roles: PUBLIC_ACCESS }
         - { path: ^/dashboard, roles: ROLE_STAFF }    # Staff and Admin can access dashboard
         - { path: ^/admin/users, roles: ROLE_ADMIN }  # Only Admin manages users
         - { path: ^/admin/logs, roles: ROLE_ADMIN }   # Only Admin sees activity logs
+        - { path: ^/admin/bookings, roles: ROLE_ADMIN }
         - { path: ^/admin, roles: ROLE_STAFF }        # Staff can access admin area (limited)
+        - { path: ^/customer, roles: ROLE_TENANT }
         - { path: ^/landlord/new, roles: ROLE_LANDLORD }  # Admins can access via role hierarchy
         - { path: ^/landlord, roles: ROLE_TENANT }  # Admins can access via role hierarchy
         - { path: ^/tenant, roles: ROLE_LANDLORD }  # Admins can access via role hierarchy

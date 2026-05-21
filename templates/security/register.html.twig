@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - CasaClick</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-    {{ encore_entry_link_tags('app') }}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css"></noscript>
+    {{ encore_entry_link_tags('auth') }}
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         .cc-auth-page {
@@ -102,6 +103,6 @@
             </div>
         </div>
     </div>
-    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('auth') }}
 </body>
 </html>

@@ -43,13 +43,7 @@ class SecurityEventListener implements EventSubscriberInterface
         $log->setAction('LOGIN');
         $log->setUser($user);
         $log->setUsername($user->getEmail() ?? $user->getName() ?? 'Unknown');
-        $roles = $user->getRoles();
-        $primaryRole = $roles[0] ?? 'ROLE_TENANT';
-        if (in_array('ROLE_ADMIN', $roles)) {
-            $primaryRole = 'ROLE_ADMIN';
-        } elseif (in_array('ROLE_LANDLORD', $roles)) {
-            $primaryRole = 'ROLE_LANDLORD';
-        }
+        $primaryRole = method_exists($user, 'getPrimaryRole') ? $user->getPrimaryRole() : 'ROLE_TENANT';
         $log->setRole($primaryRole);
         $log->setTargetEntity(get_class($user));
         if (method_exists($user, 'getId')) {
@@ -57,7 +51,8 @@ class SecurityEventListener implements EventSubscriberInterface
         }
         $username = $user->getEmail() ?? $user->getName() ?? 'Unknown';
         $userId = method_exists($user, 'getId') ? $user->getId() : null;
-        $log->setTargetData('User: ' . $username . ($userId !== null ? ' (ID: ' . $userId . ')' : ''));
+        $prefix = $primaryRole === 'ROLE_TENANT' ? 'Customer login: ' : 'User login: ';
+        $log->setTargetData($prefix . $username . ($userId !== null ? ' (ID: ' . $userId . ')' : ''));
 
         $this->em->persist($log);
         $this->em->flush();
@@ -78,13 +73,7 @@ class SecurityEventListener implements EventSubscriberInterface
         $log->setAction('LOGOUT');
         $log->setUser($user);
         $log->setUsername($user->getEmail() ?? $user->getName() ?? 'Unknown');
-        $roles = $user->getRoles();
-        $primaryRole = $roles[0] ?? 'ROLE_TENANT';
-        if (in_array('ROLE_ADMIN', $roles)) {
-            $primaryRole = 'ROLE_ADMIN';
-        } elseif (in_array('ROLE_LANDLORD', $roles)) {
-            $primaryRole = 'ROLE_LANDLORD';
-        }
+        $primaryRole = method_exists($user, 'getPrimaryRole') ? $user->getPrimaryRole() : 'ROLE_TENANT';
         $log->setRole($primaryRole);
         $log->setTargetEntity(get_class($user));
         if (method_exists($user, 'getId')) {
@@ -92,7 +81,8 @@ class SecurityEventListener implements EventSubscriberInterface
         }
         $username = $user->getEmail() ?? $user->getName() ?? 'Unknown';
         $userId = method_exists($user, 'getId') ? $user->getId() : null;
-        $log->setTargetData('User: ' . $username . ($userId !== null ? ' (ID: ' . $userId . ')' : ''));
+        $prefix = $primaryRole === 'ROLE_TENANT' ? 'Customer logout: ' : 'User logout: ';
+        $log->setTargetData($prefix . $username . ($userId !== null ? ' (ID: ' . $userId . ')' : ''));
 
         $this->em->persist($log);
         $this->em->flush();

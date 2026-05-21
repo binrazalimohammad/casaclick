@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\MobileGoogleOAuthBridge;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -37,6 +38,7 @@ class GoogleConnectController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         Security $security,
         LoggerInterface $logger,
+        MobileGoogleOAuthBridge $mobileGoogleOAuth,
     ): Response {
         $client = $clientRegistry->getClient('google');
         try {
@@ -64,6 +66,9 @@ class GoogleConnectController extends AbstractController
                 }
                 $message .= ' ('.$detail.')';
             }
+            if ($mobileGoogleOAuth->consumeMobileRole($request) !== null) {
+                return $mobileGoogleOAuth->redirectToApp($message);
+            }
             $this->addFlash('error', $message);
             return $this->redirectToRoute('app_login');
         }
@@ -79,6 +84,10 @@ class GoogleConnectController extends AbstractController
                 'route' => $request->attributes->get('_route'),
                 'uri' => $request->getUri(),
             ]);
+            $mobileRole = $mobileGoogleOAuth->consumeMobileRole($request);
+            if ($mobileRole !== null) {
+                return $mobileGoogleOAuth->redirectToApp('Google login failed while fetching your profile. Please try again.');
+            }
             $this->addFlash('error', 'Google login failed while fetching your profile. Please try again.');
             return $this->redirectToRoute('app_login');
         }
@@ -88,8 +97,17 @@ class GoogleConnectController extends AbstractController
                 'google_id' => $googleId ?? null,
                 'name' => $name ?? null,
             ]);
+            $mobileRole = $mobileGoogleOAuth->consumeMobileRole($request);
+            if ($mobileRole !== null) {
+                return $mobileGoogleOAuth->redirectToApp('Google did not share an email address. Pick another account.');
+            }
             $this->addFlash('error', 'Google did not share an email address. Please choose a Google account with an email.');
             return $this->redirectToRoute('app_login');
+        }
+
+        $mobileRole = $mobileGoogleOAuth->consumeMobileRole($request);
+        if ($mobileRole !== null) {
+            return $mobileGoogleOAuth->completeForMobile($mobileRole, $email, $googleId, $name);
         }
 
         $user = $em->getRepository(User::class)->findOneBy(['googleId' => $googleId])

@@ -86,5 +86,44 @@ class PaymentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getSyncMetaForTenant(User $tenant): array
+    {
+        return $this->buildSyncMeta($tenant, 'tenant');
+    }
+
+    public function getSyncMetaForLandlord(User $landlord): array
+    {
+        return $this->buildSyncMeta($landlord, 'landlord');
+    }
+
+    /**
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    private function buildSyncMeta(User $user, string $side): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id) AS cnt', 'MAX(p.createdAt) AS maxUpdated')
+            ->join('p.application', 'a');
+
+        if ($side === 'landlord') {
+            $qb->andWhere('a.landlord = :user');
+        } else {
+            $qb->andWhere('a.tenant = :user');
+        }
+
+        $row = $qb->setParameter('user', $user)->getQuery()->getOneOrNullResult();
+        $max = $row['maxUpdated'] ?? null;
+
+        return [
+            'count' => (int) ($row['cnt'] ?? 0),
+            'latestUpdatedAt' => $max instanceof \DateTimeInterface
+                ? $max->format(\DateTimeInterface::ATOM)
+                : ($max !== null ? (string) $max : null),
+        ];
+    }
 }
 
