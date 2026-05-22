@@ -37,7 +37,11 @@ class ActivityLogController extends AbstractController
         $users = $userRepository->findBy([], ['email' => 'ASC']);
 
         // Standard actions that should always be available in the dropdown
-        $standardActions = ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT'];
+        $standardActions = [
+            'CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT',
+            'MOBILE_LOGIN', 'MOBILE_LOGOUT', 'MOBILE_REGISTER', 'MOBILE_VIEW',
+            'MOBILE_APPLY', 'MOBILE_PAYMENT',
+        ];
         
         // Get distinct actions from actual logs (actions that have been used)
         $usedActions = $logRepository->findDistinctActions();
@@ -46,16 +50,55 @@ class ActivityLogController extends AbstractController
         $allActions = array_unique(array_merge($standardActions, $usedActions));
         sort($allActions);
 
+        $newestAt = !empty($logs)
+            ? $logs[0]->getCreatedAt()->format(\DateTimeInterface::ATOM)
+            : (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM);
+
         return $this->render('admin/logs/index.html.twig', [
             'logs' => $logs,
             'users' => $users,
             'actions' => $allActions,
+            'newestAt' => $newestAt,
             'filters' => [
                 'user' => $userId ?: '',
                 'action' => $action ?: '',
                 'from' => $from ? $from->format('Y-m-d') : '',
                 'to' => $to ? $to->format('Y-m-d') : '',
             ],
+        ]);
+    }
+
+    /** Live feed for admin Activity Logs page (poll every few seconds). */
+    #[Route('/feed', name: 'app_admin_logs_feed', methods: ['GET'])]
+    public function feed(Request $request, ActivityLogRepository $logRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $sinceParam = $request->query->get('since', '');
+        try {
+            $since = !empty($sinceParam) ? new \DateTimeImmutable($sinceParam) : new \DateTimeImmutable('-1 minute');
+        } catch (\Exception) {
+            $since = new \DateTimeImmutable('-1 minute');
+        }
+
+        $logs = $logRepository->findSince($since, 50);
+        $data = array_map(static function ($log) {
+            return [
+                'id' => $log->getId(),
+                'userId' => $log->getUser()?->getId(),
+                'username' => $log->getUsername() ?? $log->getUser()?->getEmail() ?? 'System',
+                'role' => $log->getRole() ?? 'ROLE_TENANT',
+                'action' => $log->getAction(),
+                'targetData' => $log->getTargetData() ?? '',
+                'createdAt' => $log->getCreatedAt()->format('Y-m-d g:i:s A'),
+                'createdAtIso' => $log->getCreatedAt()->format(\DateTimeInterface::ATOM),
+            ];
+        }, $logs);
+
+        return $this->json([
+            'success' => true,
+            'data' => $data,
+            'serverTime' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
         ]);
     }
 }

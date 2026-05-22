@@ -1,0 +1,521 @@
+/**
+ * CasaClick brand system — aligned with templates/landing (brown / cream / gold).
+ * Fonts load from base_public.html.twig (one request, display=swap).
+ */
+
+:root {
+  /* Landing palette */
+  --cc-brown: #5c4033;
+  --cc-gold: #8b4513;
+  --cc-sienna: #a0522d;
+  --cc-peru: #cd853f;
+  --cc-tan: #d2b48c;
+  --cc-cream: #fffdf7;
+  --cc-soft: #f9f7f4;
+  --cc-text: #3e2723;
+  --cc-muted: #6d4c41;
+  --cc-line: rgba(92, 64, 51, 0.12);
+  --cc-white: #ffffff;
+
+  /* Map legacy theme.css consumers */
+  --bg: var(--cc-soft);
+  --surface: var(--cc-white);
+  --surface-soft: var(--cc-cream);
+  --text: var(--cc-text);
+  --muted: var(--cc-muted);
+  --border: rgba(92, 64, 51, 0.15);
+  --primary: var(--cc-gold);
+  --primary-600: var(--cc-sienna);
+  --primary-700: #6d3710;
+
+  /* Spacing scale (4px base) — use for padding/margin/gaps */
+  --cc-space-1: 0.25rem;   /* 4px */
+  --cc-space-2: 0.5rem;    /* 8px */
+  --cc-space-3: 0.75rem;  /* 12px */
+  --cc-space-4: 1rem;     /* 16px */
+  --cc-space-5: 1.25rem;  /* 20px */
+  --cc-space-6: 1.5rem;   /* 24px */
+  --cc-space-7: 1.75rem;  /* 28px */
+  --cc-space-8: 2rem;     /* 32px */
+  --cc-space-10: 2.5rem;  /* 40px */
+  --cc-space-12: 3rem;    /* 48px */
+  /* Page gutters (sidebar layouts, cards) */
+  --cc-page-gutter: clamp(1rem, 3vw, 1.75rem);
+  --cc-section-y: var(--cc-space-8);
+  --cc-stack-gap: var(--cc-space-6);
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  color: var(--cc-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, .h1, h2, .h2, h3, .h3, .cc-font-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--cc-brown);
+}
+
+.cc-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cc-gold);
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Public shell (About, Contact, etc.) */
+.cc-public-page {
+  background: var(--cc-cream);
+  color: var(--cc-text);
+}
+
+/* Auth pages (login / register) — card on soft backdrop */
+.cc-auth-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  position: relative;
+  overflow-x: clip;
+  background-color: var(--cc-cream);
+  background-image: linear-gradient(160deg, rgba(255, 253, 247, 0.88) 0%, rgba(245, 230, 211, 0.45) 100%);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.cc-auth-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(3px);
+  z-index: 0;
+}
+
+.cc-auth-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cc-auth-card {
+  width: 100%;
+  max-width: min(460px, 100%);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: clamp(1.5rem, 5vw, 2.75rem);
+  box-shadow: 0 20px 60px rgba(92, 64, 51, 0.12);
+  border: 1px solid var(--cc-line);
+}
+
+.cc-auth-card h1 {
+  font-size: clamp(1.65rem, 4vw, 2rem);
+  margin: 0 0 0.5rem;
+  text-align: center;
+}
+
+.cc-auth-card .cc-auth-sub {
+  text-align: center;
+  color: var(--cc-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.cc-auth-card a {
+  color: var(--cc-gold);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cc-auth-card a:hover {
+  text-decoration: underline;
+  color: var(--cc-sienna);
+}
+
+/* Back to landing page (login / register / resend) */
+.cc-auth-card__top {
+  margin: -0.35rem 0 1rem;
+}
+
+a.cc-back-landing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  color: var(--cc-brown) !important;
+  border: 1px solid var(--cc-line);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 253, 247, 0.92));
+  box-shadow: 0 2px 12px rgba(92, 64, 51, 0.1);
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+a.cc-back-landing:hover {
+  color: var(--cc-gold) !important;
+  border-color: rgba(139, 69, 19, 0.35);
+  box-shadow: 0 4px 16px rgba(139, 69, 19, 0.15);
+  transform: translateY(-1px);
+}
+
+a.cc-back-landing i {
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+.cc-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #9a5a2e, #b8733a);
+  color: var(--cc-white) !important;
+  box-shadow: 0 4px 16px rgba(139, 69, 19, 0.28);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cc-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(139, 69, 19, 0.35);
+}
+
+.cc-btn-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--cc-line);
+  background: var(--cc-white);
+  color: var(--cc-brown) !important;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cc-btn-google:hover {
+  border-color: rgba(139, 69, 19, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.cc-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.25rem 0;
+  color: var(--cc-muted);
+  font-size: 0.8rem;
+}
+
+.cc-auth-divider::before,
+.cc-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cc-line);
+}
+
+.cc-auth-card .form-group {
+  margin-bottom: 1.15rem;
+}
+
+.cc-auth-card .form-group label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--cc-brown);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.cc-auth-card select.form-control,
+.cc-auth-card select {
+  padding-left: 1rem !important;
+}
+
+.cc-auth-card input[type='text'],
+.cc-auth-card input[type='password'],
+.cc-auth-card input[type='email'] {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.65rem;
+  border: 2px solid #e8dcc0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: var(--cc-cream);
+  color: var(--cc-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cc-auth-card input:focus {
+  outline: none;
+  border-color: var(--cc-tan);
+  background: var(--cc-white);
+  box-shadow: 0 0 0 3px rgba(201, 164, 109, 0.15);
+}
+
+.cc-auth-card .input-icon {
+  position: relative;
+}
+
+.cc-auth-card .input-icon > i.fa {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0825c;
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.cc-auth-card .remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.cc-auth-card .remember-me input {
+  width: auto;
+  padding: 0;
+  accent-color: var(--cc-gold);
+}
+
+.cc-auth-card .remember-me label {
+  margin: 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Symfony form validation (form_div layout): errors were unstyled and effectively invisible */
+.cc-auth-card .form-error,
+.cc-auth-card ul.form-error,
+.registration-form .form-error,
+.registration-form ul.form-error {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  color: #a33;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.cc-auth-card .form-error li,
+.registration-form .form-error li {
+  margin: 0.15rem 0;
+}
+
+/* Fallback: Symfony may render field errors as a bare <ul> next to inputs */
+.registration-form .form-group > ul,
+.cc-auth-card .form-group > ul {
+  list-style: disc;
+  margin: 0.35rem 0 0 1.1rem;
+  padding: 0;
+  color: #a33;
+  font-size: 0.85rem;
+}
+
+.cc-auth-card .invalid-feedback,
+.registration-form .invalid-feedback {
+  display: block !important;
+  width: 100%;
+  margin-top: 0.35rem;
+  color: #a33;
+  font-size: 0.85rem;
+}
+
+.cc-register-summary-error {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  background: #fff0f0;
+  border: 1px solid #f5c2c2;
+  color: #7a2020;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.cc-register-summary-error .fa {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+/* Legacy non-dismissible boxes (still used in some places) */
+.cc-flash-error {
+  background: #fff0f0;
+  border: 1px solid #f5c2c2;
+  color: #a33;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.cc-flash-success {
+  background: #f0fff4;
+  border: 1px solid #b8e0c8;
+  color: #1e5c2e;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Dismissible flashes (× in corner) */
+.cc-flash[data-cc-flash] {
+  position: relative;
+  padding: 0.75rem 2.35rem 0.75rem 0.85rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: left;
+  border: 1px solid transparent;
+}
+
+.cc-flash__body {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  line-height: 1.45;
+}
+
+.cc-flash__body .fa {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.cc-flash__dismiss {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cc-flash__dismiss:hover,
+.cc-flash__dismiss:focus {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.cc-flash--error {
+  background: #fff0f0;
+  border-color: #f5c2c2;
+  color: #a33;
+}
+
+.cc-flash--success {
+  background: #f0fff4;
+  border-color: #b8e0c8;
+  color: #1e5c2e;
+}
+
+.cc-flash--warning {
+  background: #fff8e6;
+  border-color: #e6d08c;
+  color: #7a5a00;
+}
+
+.cc-flash--info {
+  background: #f4f8ff;
+  border-color: #c5d8f0;
+  color: #2c5282;
+}
+
+.cc-auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e8dcc0;
+  font-size: 0.9rem;
+  color: var(--cc-muted);
+}
+
+.cc-auth-footer a {
+  font-size: 0.95rem;
+}
+
+/* Public layout footer — must beat global `p, small` color from theme.css */
+.public-footer {
+  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2rem);
+}
+.public-footer p,
+.public-footer .public-footer__copy {
+  color: rgba(255, 253, 247, 0.96) !important;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  margin: 0 0 1.125rem;
+  letter-spacing: 0.01em;
+}
+.public-footer p:last-child,
+.public-footer .public-footer__nav {
+  margin-bottom: 0;
+}
+.public-footer .public-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.25rem;
+}
+.public-footer .public-footer__nav a {
+  color: #f5ead8 !important;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.public-footer .public-footer__nav a:hover {
+  color: #fff !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.public-footer .public-footer__sep {
+  color: rgba(255, 253, 247, 0.45);
+  user-select: none;
+}

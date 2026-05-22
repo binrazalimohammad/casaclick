@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}Manage Bookings{% endblock %}
+{% block body %}
+<div class="page-container">
+    <h1><i class="fa fa-calendar"></i> Manage Bookings</h1>
+    <p class="text-muted">
+        Set status: Pending, Complete, Refund, or Cancelled.
+        <span id="bookings-live-badge" class="badge bg-success"><i class="fa fa-circle"></i> Live (~8s)</span>
+        — new bookings from the mobile app refresh this table automatically.
+        Customer login/logout: <a href="{{ path('app_admin_logs') }}">Activity Logs</a>.
+    </p>
+
+    <div class="table-responsive" style="margin-top: 24px;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Listing</th>
+                    <th>Current status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.id }}</td>
+                    <td>{{ booking.tenant.email ?? booking.tenant.name }}</td>
+                    <td>{{ booking.listing.name ?? '—' }}</td>
+                    <td><span class="badge">{{ statuses[booking.status] ?? booking.status }}</span></td>
+                    <td>
+                        <form method="post" action="{{ path('app_admin_booking_status', {id: booking.id}) }}" style="display:flex; gap:8px; align-items:center;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('booking_status_' ~ booking.id) }}">
+                            <select name="status" class="form-select form-select-sm">
+                                {% for key, label in statuses %}
+                                    <option value="{{ key }}" {% if booking.status == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-dark">Save</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="text-center text-muted">No bookings found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p><a href="{{ path('app_admin') }}">← Back to Admin Area</a></p>
+</div>
+{% endblock %}

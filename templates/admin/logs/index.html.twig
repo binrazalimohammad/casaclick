@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{# Incremental feed poll below — disable full-page live reload #}
+{% block live_sync_attributes %}{% endblock %}
+
 {% block title %}Activity Logs{% endblock %}
 
 {% block body %}
@@ -10,7 +13,8 @@
                 <i class="fa fa-history"></i> Activity Logs
             </h1>
             <p class="page-subtitle">
-                <i class="fa fa-lock"></i> Read-Only - Logs cannot be modified or deleted
+                <i class="fa fa-lock"></i> Read-Only — updates every 8s
+                <span id="live-feed-status" class="live-feed-badge"><i class="fa fa-circle"></i> Live</span>
             </p>
         </div>
         <a href="{{ path('app_dashboard') }}" class="btn-back">
@@ -101,7 +105,7 @@
                             <th><i class="fa fa-clock-o"></i> Date & Time</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="logs-tbody">
                     {% for log in logs %}
                         <tr class="log-row" data-log-id="{{ log.id }}">
                             <td>
@@ -217,6 +221,44 @@
 
     .page-subtitle i {
         color: #A0825C;
+    }
+
+    .live-feed-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 12px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #E8F5E9;
+        color: #2E7D32;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .live-feed-badge .fa-circle {
+        font-size: 8px;
+        color: #43A047;
+        animation: live-pulse 1.5s ease-in-out infinite;
+    }
+
+    .live-feed-badge.live-feed-error {
+        background: #FFEBEE;
+        color: #C62828;
+    }
+
+    @keyframes live-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.35; }
+    }
+
+    .log-row-new {
+        animation: log-highlight 3s ease-out;
+    }
+
+    @keyframes log-highlight {
+        0% { background: #FFF3C4; }
+        100% { background: transparent; }
     }
 
     .btn-back {
@@ -709,6 +751,63 @@
             window.location.href = '{{ path('app_admin_logs') }}';
         }
     }
+
+    let lastSeenAt = {{ newestAt|json_encode|raw }};
+    const feedUrl = {{ path('app_admin_logs_feed')|json_encode|raw }};
+    const seenIds = new Set();
+
+    document.querySelectorAll('.log-row').forEach(function(row) {
+        const id = row.getAttribute('data-log-id');
+        if (id) seenIds.add(id);
+    });
+
+    function actionIcon(action) {
+        if (action === 'LOGIN' || action.indexOf('LOGIN') >= 0) return 'sign-in';
+        if (action === 'LOGOUT' || action.indexOf('LOGOUT') >= 0) return 'sign-out';
+        if (action === 'CREATE' || action.indexOf('CREATE') >= 0) return 'plus';
+        if (action === 'UPDATE') return 'pencil';
+        if (action.indexOf('MOBILE') >= 0) return 'mobile';
+        return 'bolt';
+    }
+
+    function prependLogRow(log) {
+        if (seenIds.has(String(log.id))) return;
+        seenIds.add(String(log.id));
+        const tbody = document.getElementById('logs-tbody');
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        tr.className = 'log-row log-row-new';
+        tr.setAttribute('data-log-id', log.id);
+        tr.innerHTML =
+            '<td><span class="user-id">' + (log.userId || '-') + '</span></td>' +
+            '<td><span class="user-email">' + (log.username || 'System') + '</span></td>' +
+            '<td><span class="role-badge-log">' + (log.role || 'ROLE_TENANT') + '</span></td>' +
+            '<td><span class="action-badge action-' + log.action.toLowerCase() + '"><i class="fa fa-' + actionIcon(log.action) + '"></i> ' + log.action + '</span></td>' +
+            '<td class="target-cell"><span class="target-data">' + (log.targetData || '') + '</span></td>' +
+            '<td class="timestamp-cell"><span class="datetime">' + log.createdAt + '</span></td>';
+        tbody.insertBefore(tr, tbody.firstChild);
+        setTimeout(function() { tr.classList.remove('log-row-new'); }, 3000);
+        if (log.createdAtIso && log.createdAtIso > lastSeenAt) {
+            lastSeenAt = log.createdAtIso;
+        }
+    }
+
+    function pollActivityFeed() {
+        const status = document.getElementById('live-feed-status');
+        fetch(feedUrl + '?since=' + encodeURIComponent(lastSeenAt), { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(json) {
+                if (!json.success || !json.data) return;
+                json.data.forEach(prependLogRow);
+                if (json.serverTime) lastSeenAt = json.serverTime;
+                if (status) status.classList.remove('live-feed-error');
+            })
+            .catch(function() {
+                if (status) status.classList.add('live-feed-error');
+            });
+    }
+
+    setInterval(pollActivityFeed, 8000);
 
     document.addEventListener('DOMContentLoaded', function() {
         const logRows = document.querySelectorAll('.log-row');

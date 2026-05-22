@@ -57,6 +57,9 @@ security:
         - { path: ^/api/mobile/verify-email, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/listings, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/categories, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/home$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/about$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/contact$, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register$, roles: PUBLIC_ACCESS }
