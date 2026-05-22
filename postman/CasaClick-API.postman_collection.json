@@ -1,0 +1,306 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-casa-click-api",
+    "name": "CasaClick API",
+    "description": "JSON API routes for CasaClick (Symfony). Set collection variables `baseUrl` and use Login to fill `token` for protected requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" },
+    { "key": "listingId", "value": "1" },
+    { "key": "applicationId", "value": "1" },
+    { "key": "verifyToken", "value": "paste-token-from-email-or-database" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "  const j = pm.response.json();",
+                  "  if (j.token) {",
+                  "    pm.collectionVariables.set('token', j.token);",
+                  "    pm.test('JWT returned', function () { pm.expect(j.token).to.be.a('string'); });",
+                  "  }",
+                  "} catch (e) { /* non-JSON or error body */ }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"verified-user@example.com\",\n  \"password\": \"your-password\"\n}"
+            },
+            "url": "{{baseUrl}}/api/login_check",
+            "description": "Requires a **verified** email (403 if not verified). Response includes `token` — saved to collection variable `token` automatically."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registration & email (public)",
+      "item": [
+        {
+          "name": "Register (web API)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"secret12\"\n}"
+            },
+            "url": "{{baseUrl}}/api/register",
+            "description": "Creates ROLE_USER; sends verification email when mailer is configured."
+          }
+        },
+        {
+          "name": "Verify email (POST JSON)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{verifyToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/verify-email"
+          }
+        },
+        {
+          "name": "Verify email (GET query)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/verify-email?token={{verifyToken}}"
+          }
+        },
+        {
+          "name": "Mobile register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password12\",\n  \"role\": \"ROLE_TENANT\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/register",
+            "description": "`role`: ROLE_TENANT or ROLE_LANDLORD. Password min 8 chars."
+          }
+        },
+        {
+          "name": "Mobile verify email (GET)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/verify-email/{{verifyToken}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public listings & categories",
+      "item": [
+        {
+          "name": "Mobile listings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/listings"
+          }
+        },
+        {
+          "name": "Mobile listing by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/listings/{{listingId}}"
+          }
+        },
+        {
+          "name": "Mobile categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/categories"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authenticated (Bearer)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Mobile me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mobile/me"
+          }
+        },
+        {
+          "name": "Resend verification email",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "" },
+            "url": "{{baseUrl}}/api/resend-verification",
+            "description": "JWT required; user must not already be verified."
+          }
+        },
+        {
+          "name": "Verification status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/verification-status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer API (tenant only)",
+      "description": "JWT from a **tenant or ROLE_USER** customer account. Staff, admin, and landlord tokens receive HTTP 403.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Profile GET",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/profile"
+          }
+        },
+        {
+          "name": "Profile PATCH (name)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Customer Name\"\n}" },
+            "url": "{{baseUrl}}/api/mobile/customer/profile"
+          }
+        },
+        {
+          "name": "Bookings list",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/bookings"
+          }
+        },
+        {
+          "name": "Booking create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"listingId\": {{listingId}},\n  \"message\": \"Interested — please contact me.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/customer/bookings"
+          }
+        },
+        {
+          "name": "Booking by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/bookings/{{applicationId}}"
+          }
+        },
+        {
+          "name": "Orders (approved + completed)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/orders"
+          }
+        },
+        {
+          "name": "Payments list",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/customer/payments"
+          }
+        },
+        {
+          "name": "Payment create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": {{applicationId}},\n  \"paymentMethod\": \"gcash\",\n  \"notes\": \"Reference: TEST123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/customer/payments",
+            "description": "Requires application status **approved**. Optional `amount` defaults to listing price."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Paymongo (tenant)",
+      "item": [
+        {
+          "name": "Payment options (channels + requirements)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mobile/payments/paymongo/options",
+            "description": "JWT required. Use response to build the payment method form before checkout."
+          }
+        },
+        {
+          "name": "Start Paymongo checkout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentChannel\": \"gcash\",\n  \"payerName\": \"Juan Dela Cruz\",\n  \"payerContact\": \"09171234567\",\n  \"referenceNote\": \"Unit 2B\",\n  \"amount\": \"12000\",\n  \"appOrigin\": \"{{baseUrl}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/mobile/applications/{{applicationId}}/payments/paymongo",
+            "description": "Application must be **approved**. Channels: gcash, paymaya, card. Returns checkoutUrl."
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Platform (docs)",
+      "item": [
+        {
+          "name": "Entrypoint (JSON-LD)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/index.jsonld"
+          }
+        },
+        {
+          "name": "OpenAPI docs (HTML or JSON)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/docs.json",
+            "description": "Use .json for machine-readable OpenAPI; `/api/docs` for Swagger UI (may require auth per security rules)."
+          }
+        }
+      ]
+    }
+  ]
+}

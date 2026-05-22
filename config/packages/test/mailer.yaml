@@ -1,0 +1,4 @@
+# Same as dev: avoid async mail during functional tests.
+framework:
+    mailer:
+        message_bus: false

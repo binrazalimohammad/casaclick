@@ -50,8 +50,10 @@
 - **API verify:** `GET /api/mobile/verify-email/{token}` returns JSON
 - **Configure MAILER_DSN** in `.env` for real email (e.g. `MAILER_DSN=smtp://...`)
 
-## 8. Mobile API - 3 Endpoints (15 pts) ✅
+## 8. Mobile & customer API (15+ pts) ✅
 Base URL: `/api/mobile`
+
+**Public**
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -60,6 +62,22 @@ Base URL: `/api/mobile`
 | `/categories` | GET | All categories |
 | `/register` | POST | Register (JSON: name, email, password, role) |
 | `/verify-email/{token}` | GET | Verify email via token |
+
+**Customer (JWT, tenant / ROLE_USER only — not staff/admin/landlord)**
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/customer/profile` | GET, PATCH | Profile; update `name` |
+| `/customer/bookings` | GET, POST | List / create booking (application) |
+| `/customer/bookings/{id}` | GET | Single booking + nested payments |
+| `/customer/orders` | GET | Approved / completed bookings (“orders”) |
+| `/customer/payments` | GET, POST | List payments; submit pending payment |
+
+**Authenticated (any role)**
+
+- `/me` — current user JSON
+
+See `docs/RUBRIC_COVERAGE.md`, `docs/MOBILE_APP_INTEGRATION.md`, and Postman folder **Customer API (tenant only)**.
 
 **Response format:**
 ```json

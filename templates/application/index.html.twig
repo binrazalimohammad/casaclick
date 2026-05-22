@@ -75,8 +75,11 @@
                             <i class="fa fa-money"></i> View Payments
                         </a>
                         {% if not is_granted('ROLE_LANDLORD') %}
+                            <a href="{{ path('app_payment_paymongo_setup', {'id': application.id}) }}" class="action-btn payment-btn">
+                                <i class="fa fa-mobile"></i> Pay with Paymongo
+                            </a>
                             <a href="{{ path('app_payment_new', {'id': application.id}) }}" class="action-btn payment-btn">
-                                <i class="fa fa-credit-card"></i> Make Payment
+                                <i class="fa fa-money"></i> Record manual payment
                             </a>
                         {% endif %}
                     {% endif %}

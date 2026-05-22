@@ -1,0 +1,15 @@
+# Railway deploy config — CasaClick Symfony (websitedev)
+# https://docs.railway.app/guides/php
+#
+# Build must NOT run migrations or cache:clear against DATABASE_URL (MySQL is not ready at build time).
+# Migrations run on container start via scripts/railway-start.sh
+
+[build]
+builder = "nixpacks"
+buildCommand = "composer install --no-dev --optimize-autoloader --no-interaction --no-scripts && npm ci && npm run build && APP_ENV=prod php bin/console lexik:jwt:generate-keypair --skip-if-exists"
+
+[deploy]
+startCommand = "sh scripts/railway-start.sh"
+healthcheckPath = "/api/mobile/health"
+healthcheckTimeout = 120
+restartPolicyType = "on_failure"

@@ -1,0 +1,5 @@
+{% for type in ['success', 'warning', 'error'] %}
+    {% for message in app.flashes(type) %}
+        {% include '_partials/cc_flash_item.html.twig' with { variant: type, message: message } only %}
+    {% endfor %}
+{% endfor %}

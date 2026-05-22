@@ -363,3 +363,32 @@
         font-size: 14px;
     }
 }
+
+/* --- Viewport-safe forms (fit within screen, no horizontal overflow) --- */
+form {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+form input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="image"]):not([type="file"]),
+form textarea,
+form select,
+.form-control,
+.form-select,
+input.form-control,
+textarea.form-control {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+.form-row,
+.row.g-3,
+.row.g-4 {
+    max-width: 100%;
+}
+.input-group {
+    max-width: 100%;
+    flex-wrap: wrap;
+}

@@ -39,6 +39,12 @@ class ActivityLog
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $details = null;
 
+    #[ORM\Column(length: 45, nullable: true)]
+    private ?string $ipAddress = null;
+
+    #[ORM\Column(length: 80, nullable: true)]
+    private ?string $platform = null;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $createdAt;
 
@@ -64,5 +70,9 @@ class ActivityLog
     public function setTargetData(?string $data): static { $this->targetData = $data; return $this; }
     public function getDetails(): ?string { return $this->details; }
     public function setDetails(?string $d): static { $this->details = $d; return $this; }
+    public function getIpAddress(): ?string { return $this->ipAddress; }
+    public function setIpAddress(?string $ip): static { $this->ipAddress = $ip; return $this; }
+    public function getPlatform(): ?string { return $this->platform; }
+    public function setPlatform(?string $platform): static { $this->platform = $platform; return $this; }
     public function getCreatedAt(): DateTimeImmutable { return $this->createdAt; }
 }

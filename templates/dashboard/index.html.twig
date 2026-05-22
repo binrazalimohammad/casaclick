@@ -1,344 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard — CasaClick{% endblock %}
 
-{% block stylesheets %}
+{% block javascripts_head %}
     {{ parent() }}
-    <style>
-        /* Stats Tiles Styles */
-        .stats-tiles {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-            gap: 20px !important;
-        }
-
-        .stat-tile {
-            background: white !important;
-            border-radius: 12px !important;
-            overflow: hidden !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
-            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-            border: 1px solid #e9ecef !important;
-        }
-
-        .stat-tile:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
-        }
-
-        .stat-tile .tile-image {
-            width: 100% !important;
-            height: 200px !important;
-            overflow: hidden !important;
-            position: relative !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .stat-icon-placeholder {
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 200px !important;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%) !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            position: relative !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .stat-icon-placeholder i {
-            font-size: 64px !important;
-            color: white !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            line-height: 1 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            text-align: center !important;
-            width: auto !important;
-            height: auto !important;
-            position: relative !important;
-            vertical-align: middle !important;
-        }
-
-        /* Ensure Font Awesome icons are properly centered */
-        .stat-icon-placeholder .fa {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .stat-tile .tile-content {
-            padding: 20px !important;
-        }
-
-        .stat-tile .tile-title {
-            font-size: 18px !important;
-            font-weight: 700 !important;
-            color: #2c3e50 !important;
-            margin-bottom: 8px !important;
-        }
-
-        .stat-tile .tile-sub {
-            font-size: 13px !important;
-            color: #6c757d !important;
-            margin-bottom: 12px !important;
-        }
-
-        .stat-tile .tile-price {
-            font-size: 24px !important;
-            font-weight: 700 !important;
-            color: #8B4513 !important;
-            margin-bottom: 8px !important;
-        }
-
-        .stat-tile .tile-frequency {
-            font-size: 12px !important;
-            color: #6c757d !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-        }
-
-        @media (max-width: 768px) {
-            .stats-tiles {
-                grid-template-columns: 1fr !important;
-            }
-        }
-
-        /* Notifications Section Styles */
-        .notifications-list {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 12px !important;
-        }
-
-        .notification-item {
-            background: white !important;
-            border: 1px solid #e9ecef !important;
-            border-radius: 10px !important;
-            padding: 16px !important;
-            transition: all 0.2s ease !important;
-            position: relative !important;
-        }
-
-        .notification-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-            transform: translateY(-1px) !important;
-        }
-
-        .notification-unread {
-            background: #f8f9fa !important;
-            border-left: 4px solid #8B4513 !important;
-        }
-
-        .notification-content {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 8px !important;
-        }
-
-        .notification-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: flex-start !important;
-            margin-bottom: 4px !important;
-        }
-
-        .notification-type {
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-            flex: 1 !important;
-        }
-
-        .notification-icon {
-            font-size: 16px !important;
-            width: 20px !important;
-            text-align: center !important;
-        }
-
-        .icon-success {
-            color: #28a745 !important;
-        }
-
-        .icon-info {
-            color: #17a2b8 !important;
-        }
-
-        .icon-warning {
-            color: #ffc107 !important;
-        }
-
-        .icon-danger {
-            color: #dc3545 !important;
-        }
-
-        .notification-type-text {
-            font-weight: 600 !important;
-            font-size: 14px !important;
-        }
-
-        .notification-mark-read {
-            background: white !important;
-            border: 1px solid #dee2e6 !important;
-            border-radius: 50% !important;
-            width: 28px !important;
-            height: 28px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            padding: 0 !important;
-            flex-shrink: 0 !important;
-        }
-
-        .notification-mark-read:hover {
-            background: #8B4513 !important;
-            border-color: #8B4513 !important;
-            color: white !important;
-        }
-
-        .notification-mark-read i {
-            font-size: 12px !important;
-            color: #6c757d !important;
-        }
-
-        .notification-mark-read:hover i {
-            color: white !important;
-        }
-
-        .notification-message {
-            color: #2c3e50 !important;
-            font-size: 14px !important;
-            line-height: 1.5 !important;
-            margin-top: 4px !important;
-        }
-
-        .notification-time {
-            color: #6c757d !important;
-            font-size: 12px !important;
-            margin-top: 4px !important;
-        }
-
-        .notifications-list::-webkit-scrollbar {
-            width: 6px !important;
-        }
-
-        .notifications-list::-webkit-scrollbar-track {
-            background: #f1f1f1 !important;
-            border-radius: 10px !important;
-        }
-
-        .notifications-list::-webkit-scrollbar-thumb {
-            background: #8B4513 !important;
-            border-radius: 10px !important;
-        }
-
-        .notifications-list::-webkit-scrollbar-thumb:hover {
-            background: #A0522D !important;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 {% endblock %}
 
 {% block body %}
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">
-            <i class="fa fa-bar-chart"></i>
-            Dashboard
-        </h1>
-        <p class="dashboard-subtitle">Welcome to your property management dashboard</p>
-    </div>
-
-    <div class="header-actions">
-        <div class="search-section">
-            <input type="search" class="search-input" placeholder="Search listings" aria-label="Search listings">
+<div class="dashboard-container cc-dashboard">
+    <header class="cc-dash-hero">
+        <div>
+            <p class="cc-dash-eyebrow">Staff overview</p>
+            <h1 class="cc-dash-title">Dashboard</h1>
+            <p class="cc-dash-sub">
+                Welcome back{% if user.name %}, {{ user.name }}{% endif %}. Here’s a snapshot of listings, activity, and notifications.
+            </p>
         </div>
-        <div class="button-group">
-            <a href="{{ path('app_maps') }}" class="btn btn-outline-dark">
+    </header>
+
+    <div class="cc-dash-toolbar">
+        <div class="cc-dash-search">
+            <input type="search" id="dash-search" placeholder="Search listings…" aria-label="Search listings" autocomplete="off">
+        </div>
+        <div class="cc-dash-actions">
+            <a href="{{ path('app_maps') }}" class="btn btn-outline-secondary">
                 <i class="fa fa-map-marker"></i> Maps
             </a>
             <a href="{{ path('app_product_new') }}" class="btn btn-dark">
-                <i class="fa fa-plus"></i> New
+                <i class="fa fa-plus"></i> New listing
             </a>
         </div>
     </div>
 
-    <!-- Stats Tiles Section -->
-    <div class="card p-3 mb-4" style="border-radius:14px;">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <strong style="font-size: 18px; color: #2c3e50;">Statistics</strong>
-        </div>
-        <div class="stats-tiles">
-            <div class="stat-tile">
-                <div class="tile-image">
-                    <div class="stat-icon-placeholder">
-                        <i class="fa fa-home"></i>
-                    </div>
-                </div>
-                <div class="tile-content">
-                    <div class="tile-title">Total Properties</div>
-                    <div class="tile-sub text-muted">This month</div>
-                    <div class="tile-price">{{ stats.totalProperties|default(0) }}</div>
-                    <div class="tile-frequency">Properties</div>
-                </div>
+    <section class="stats-grid" aria-label="Key statistics">
+        <article class="stat-card">
+            <div class="stat-header">
+                <p class="stat-title">Total properties</p>
+                <div class="stat-icon" aria-hidden="true"><i class="fa fa-home"></i></div>
             </div>
-            <div class="stat-tile">
-                <div class="tile-image">
-                    <div class="stat-icon-placeholder">
-                        <i class="fa fa-money"></i>
-                    </div>
-                </div>
-                <div class="tile-content">
-                    <div class="tile-title">Total Revenue</div>
-                    <div class="tile-sub text-muted">This month</div>
-                    <div class="tile-price">₱{{ stats.totalRevenue|default(0)|number_format(0, '.', ',') }}</div>
-                    <div class="tile-frequency">Revenue</div>
-                </div>
+            <p class="stat-value">{{ stats.totalProperties|default(0) }}</p>
+            <div class="stat-change">Across the marketplace</div>
+        </article>
+        <article class="stat-card">
+            <div class="stat-header">
+                <p class="stat-title">Combined listing value</p>
+                <div class="stat-icon" aria-hidden="true"><i class="fa fa-money"></i></div>
             </div>
-            <div class="stat-tile">
-                <div class="tile-image">
-                    <div class="stat-icon-placeholder">
-                        <i class="fa fa-users"></i>
-                    </div>
-                </div>
-                <div class="tile-content">
-                    <div class="tile-title">Total Users</div>
-                    <div class="tile-sub text-muted">All time</div>
-                    <div class="tile-price">{{ stats.totalUsers|default(0) }}</div>
-                    <div class="tile-frequency">Users</div>
-                </div>
+            <p class="stat-value">₱{{ stats.totalRevenue|default(0)|number_format(0, '.', ',') }}</p>
+            <div class="stat-change">Sum of listed prices</div>
+        </article>
+        <article class="stat-card">
+            <div class="stat-header">
+                <p class="stat-title">Registered users</p>
+                <div class="stat-icon" aria-hidden="true"><i class="fa fa-users"></i></div>
             </div>
-            <div class="stat-tile">
-                <div class="tile-image">
-                    <div class="stat-icon-placeholder">
-                        <i class="fa fa-user-circle"></i>
-                    </div>
-                </div>
-                <div class="tile-content">
-                    <div class="tile-title">Landlords</div>
-                    <div class="tile-sub text-muted">All time</div>
-                    <div class="tile-price">{{ stats.totalLandlords|default(0) }}</div>
-                    <div class="tile-frequency">Landlords</div>
-                </div>
+            <p class="stat-value">{{ stats.totalUsers|default(0) }}</p>
+            <div class="stat-change">All roles</div>
+        </article>
+        <article class="stat-card">
+            <div class="stat-header">
+                <p class="stat-title">Landlords</p>
+                <div class="stat-icon" aria-hidden="true"><i class="fa fa-user-circle"></i></div>
             </div>
-        </div>
-    </div>
+            <p class="stat-value">{{ stats.totalLandlords|default(0) }}</p>
+            <div class="stat-change">Accounts with landlord role</div>
+        </article>
+    </section>
 
     <div class="row g-4">
-
-        <!-- Listings column -->
         <div class="col-12 col-lg-5">
-            <div class="card p-3" style="border-radius:14px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <strong>Listings</strong>
-                    <small class="text-muted">Latest</small>
+            <div class="cc-dash-panel">
+                <div class="cc-dash-panel__head">
+                    <h2 class="cc-dash-panel__title">Recent listings</h2>
+                    <span class="cc-dash-panel__hint">Latest</span>
                 </div>
                 <div class="listings-tiles">
                     {% for p in products|slice(0, 4) %}
@@ -346,17 +81,17 @@
                             <a href="{{ path('app_dashboard') }}?id={{ p.id }}" class="tile-link">
                                 <div class="tile-image">
                                     {% if p.image %}
-                                        <img src="{{ asset('uploads/images/' ~ p.image) }}" alt="{{ p.name }}">
+                                        <img src="{{ asset('uploads/images/' ~ p.image) }}" alt="">
                                     {% else %}
-                                        <div class="tile-placeholder">🏠</div>
+                                        <div class="tile-placeholder" aria-hidden="true">🏠</div>
                                     {% endif %}
                                 </div>
                                 <div class="tile-content">
                                     <div class="tile-title">{{ p.name }}</div>
-                                    <div class="tile-sub text-muted">{{ p.category ? p.category.name : 'Salads & Bowls' }}</div>
+                                    <div class="tile-sub text-muted">{{ p.category ? p.category.name : 'Uncategorized' }}</div>
                                     <div class="tile-price">₱{{ p.price|number_format(0, '.', ',') }}</div>
-                                    <div class="tile-frequency">Monthly</div>
-                                    <div class="tile-meta"><span>2 Beds</span><span>1 Bath</span><span>60 sqft</span></div>
+                                    <div class="tile-frequency">per month</div>
+                                    <div class="tile-meta"><span>View</span></div>
                                 </div>
                             </a>
                         </div>
@@ -367,9 +102,8 @@
             </div>
         </div>
 
-        <!-- Details column -->
         <div class="col-12 col-lg-7">
-            <div class="detail-card">
+            <div class="cc-dash-detail detail-card">
                 {% if featured %}
                     <div class="detail-image">
                         <img src="{{ asset('uploads/images/' ~ featured.image) }}" alt="{{ featured.name }}">
@@ -377,190 +111,184 @@
                     <div class="detail-header">
                         <div class="detail-info">
                             <h3 class="detail-title">{{ featured.name }}</h3>
-                            <span class="detail-price">${{ featured.price|number_format(0, '.', ',') }}</span>
+                            <span class="detail-price">₱{{ featured.price|number_format(0, '.', ',') }}</span>
                         </div>
                         <div class="detail-actions">
-                            <a href="{{ path('app_product_show', {id: featured.id}) }}" class="btn btn-outline-dark">
-                                <i class="ti-eye"></i> View
+                            <a href="{{ path('app_product_show', {id: featured.id}) }}" class="btn btn-outline-dark btn-sm">
+                                <i class="fa fa-eye"></i> View
                             </a>
-                            <a href="{{ path('app_product_edit', {id: featured.id}) }}" class="btn btn-dark">
-                                <i class="ti-pencil"></i> Edit
+                            <a href="{{ path('app_product_edit', {id: featured.id}) }}" class="btn btn-dark btn-sm">
+                                <i class="fa fa-pencil"></i> Edit
                             </a>
                         </div>
                     </div>
-
-                    <p class="detail-desc">{{ featured.description }}</p>
+                    <p class="detail-desc">{% set _d = featured.description ?? '' %}{{ _d|length > 320 ? _d|slice(0, 320) ~ '…' : _d }}</p>
                 {% else %}
-                    <div class="text-center text-muted py-5">Select a listing to see details.</div>
+                    <div class="text-center text-muted py-5 px-3">Select a listing on the left to preview details.</div>
                 {% endif %}
             </div>
         </div>
-        </div>
+    </div>
 
-        <!-- Listing Board + Suggestion -->
-        <div class="row g-4 mt-1">
-            <div class="col-12 col-xl-8">
-                <div class="card p-3" style="border-radius:14px;">
-                    <div class="d-flex justify-content-between align-items-center mb-4" style="padding: 8px 0;">
-                        <strong style="font-size: 18px; color: #2c3e50;">Listing Board</strong>
-                    </div>
-                    <div class="property-tiles">
-                        {% for p in products|slice(0, 3) %}
-                            <div class="property-tile">
-                                <div class="tile-image">
-                                    {% if p.image %}
-                                        <img src="{{ asset('uploads/images/' ~ p.image) }}" alt="{{ p.name }}">
-                                    {% else %}
-                                        <div class="tile-placeholder"><i class="fa fa-home"></i></div>
-                                    {% endif %}
-                                </div>
-                                <div class="tile-content">
-                                    <h4 class="tile-title">{{ p.name }}</h4>
-                                    <p class="tile-price">₱{{ p.price|number_format(0, '.', ',') }}</p>
-                                    <div class="tile-actions">
-                                        <a href="{{ path('app_product_show', {'id': p.id}) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fa fa-eye"></i> View
-                                        </a>
-                                        <a href="{{ path('app_product_edit', {'id': p.id}) }}" class="btn btn-sm btn-primary">
-                                            <i class="fa fa-edit"></i> Edit
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="text-center text-muted py-5">
-                                <i class="fa fa-home" style="font-size: 48px; color: #ddd;"></i>
-                                <p class="mt-2">No property listings found</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="text-center mt-4" style="padding-top: 16px; border-top: 1px solid #e9ecef;">
-                        <a href="{{ path('app_product_index') }}" class="view-all-btn">
-                            <i class="ti-list"></i> View All Listings
-                        </a>
-                    </div>
+    <div class="row g-4 mt-1">
+        <div class="col-12 col-xl-8">
+            <div class="cc-dash-panel">
+                <div class="cc-dash-panel__head">
+                    <h2 class="cc-dash-panel__title">Listing board</h2>
                 </div>
-            </div>
-
-            <div class="col-12 col-xl-4">
-                <div class="card p-3" style="border-radius:14px;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <strong style="font-size: 18px; color: #2c3e50;">
-                            Notifications
-                            {% if unreadCount > 0 %}
-                                <span class="badge bg-danger ms-2" style="font-size: 12px; padding: 4px 8px;">{{ unreadCount }}</span>
-                            {% endif %}
-                        </strong>
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="markAllAsRead()" style="border-radius: 8px; padding: 6px 12px; font-size: 12px;">Mark all read</button>
-                    </div>
-                    <div class="notifications-list" style="max-height: 400px; overflow-y: auto;">
-                        {% for notification in notifications %}
-                            <div class="notification-item {% if not notification.isRead %}notification-unread{% endif %}" 
-                                 data-notification-id="{{ notification.id }}">
-                                <div class="notification-content">
-                                    <div class="notification-header">
-                                        <div class="notification-type">
-                                            {% if notification.type == 'listing_created' %}
-                                                <i class="fa fa-home notification-icon icon-success"></i>
-                                                <span class="notification-type-text text-success">New Listing</span>
-                                            {% elseif notification.type == 'application_submitted' %}
-                                                <i class="fa fa-file-text notification-icon icon-info"></i>
-                                                <span class="notification-type-text text-info">New Application</span>
-                                            {% elseif notification.type == 'application_approved' %}
-                                                <i class="fa fa-check-circle notification-icon icon-success"></i>
-                                                <span class="notification-type-text text-success">Application Approved</span>
-                                            {% elseif notification.type == 'payment_submitted' %}
-                                                <i class="fa fa-money notification-icon icon-warning"></i>
-                                                <span class="notification-type-text text-warning">Payment Submitted</span>
-                                            {% elseif notification.type == 'payment_approved' %}
-                                                <i class="fa fa-check-circle notification-icon icon-success"></i>
-                                                <span class="notification-type-text text-success">Payment Approved</span>
-                                            {% elseif notification.type == 'payment_rejected' %}
-                                                <i class="fa fa-times-circle notification-icon icon-danger"></i>
-                                                <span class="notification-type-text text-danger">Payment Rejected</span>
-                                            {% elseif notification.type == 'listing_updated' %}
-                                                <i class="fa fa-edit notification-icon icon-warning"></i>
-                                                <span class="notification-type-text text-warning">Listing Updated</span>
-                                            {% else %}
-                                                <i class="fa fa-bell notification-icon"></i>
-                                                <span class="notification-type-text">Notification</span>
-                                            {% endif %}
-                                        </div>
-                                        <button type="button" class="notification-mark-read" onclick="markAsRead({{ notification.id }})" title="Mark as read">
-                                            <i class="fa fa-check"></i>
-                                        </button>
-                                    </div>
-                                    <div class="notification-message">{{ notification.message }}</div>
-                                    <div class="notification-time">{{ notification.createdAt|date('Y-m-d H:i') }}</div>
+                <div class="property-tiles">
+                    {% for p in products|slice(0, 3) %}
+                        <div class="property-tile">
+                            <div class="tile-image">
+                                {% if p.image %}
+                                    <img src="{{ asset('uploads/images/' ~ p.image) }}" alt="">
+                                {% else %}
+                                    <div class="tile-placeholder"><i class="fa fa-home"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="tile-content">
+                                <h4 class="tile-title">{{ p.name }}</h4>
+                                <p class="tile-price">₱{{ p.price|number_format(0, '.', ',') }}</p>
+                                <div class="tile-actions">
+                                    <a href="{{ path('app_product_show', {'id': p.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-eye"></i> View
+                                    </a>
+                                    <a href="{{ path('app_product_edit', {'id': p.id}) }}" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="text-center text-muted py-5">
-                                <i class="fa fa-bell" style="font-size: 48px; color: #ddd; margin-bottom: 12px;"></i>
-                                <p>No notifications.</p>
-                            </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5 w-100">
+                            <i class="fa fa-home" style="font-size: 2.5rem; opacity: 0.25;"></i>
+                            <p class="mt-2 mb-0">No property listings found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center pt-3 mt-3" style="border-top: 1px solid rgba(92,64,51,0.08);">
+                    <a href="{{ path('app_product_index') }}" class="view-all-btn">
+                        <i class="fa fa-list"></i> View all listings
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Banner notice for landlord listings -->
-        {% set listingNotifications = notifications|filter(n => n.type == 'listing_created' or n.type == 'listing_updated')|filter(n => not n.isRead) %}
-        {% if listingNotifications|length > 0 %}
-        <div id="reviewBanner" class="banner-notice">
+        <div class="col-12 col-xl-4">
+            <div class="cc-dash-panel">
+                <div class="cc-dash-panel__head">
+                    <h2 class="cc-dash-panel__title">
+                        Notifications
+                        {% if unreadCount > 0 %}
+                            <span class="badge rounded-pill text-bg-danger ms-1" style="font-size: 0.7rem;">{{ unreadCount }}</span>
+                        {% endif %}
+                    </h2>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="markAllAsRead()">Mark all read</button>
+                </div>
+                <div class="notifications-list" style="max-height: 400px; overflow-y: auto;">
+                    {% for notification in notifications %}
+                        <div class="notification-item {% if not notification.isRead %}notification-unread{% endif %}" data-notification-id="{{ notification.id }}">
+                            <div class="notification-content">
+                                <div class="notification-header">
+                                    <div class="notification-type">
+                                        {% if notification.type == 'listing_created' %}
+                                            <i class="fa fa-home notification-icon icon-success"></i>
+                                            <span class="notification-type-text text-success">New listing</span>
+                                        {% elseif notification.type == 'application_submitted' %}
+                                            <i class="fa fa-file-text notification-icon icon-info"></i>
+                                            <span class="notification-type-text text-info">New application</span>
+                                        {% elseif notification.type == 'application_approved' %}
+                                            <i class="fa fa-check-circle notification-icon icon-success"></i>
+                                            <span class="notification-type-text text-success">Application approved</span>
+                                        {% elseif notification.type == 'payment_submitted' %}
+                                            <i class="fa fa-money notification-icon icon-warning"></i>
+                                            <span class="notification-type-text text-warning">Payment submitted</span>
+                                        {% elseif notification.type == 'payment_approved' %}
+                                            <i class="fa fa-check-circle notification-icon icon-success"></i>
+                                            <span class="notification-type-text text-success">Payment approved</span>
+                                        {% elseif notification.type == 'payment_rejected' %}
+                                            <i class="fa fa-times-circle notification-icon icon-danger"></i>
+                                            <span class="notification-type-text text-danger">Payment rejected</span>
+                                        {% elseif notification.type == 'listing_updated' %}
+                                            <i class="fa fa-edit notification-icon icon-warning"></i>
+                                            <span class="notification-type-text text-warning">Listing updated</span>
+                                        {% else %}
+                                            <i class="fa fa-bell notification-icon"></i>
+                                            <span class="notification-type-text">Notification</span>
+                                        {% endif %}
+                                    </div>
+                                    <button type="button" class="notification-mark-read" onclick="markAsRead({{ notification.id }})" title="Mark as read" aria-label="Mark as read">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </div>
+                                <div class="notification-message">{{ notification.message }}</div>
+                                <div class="notification-time">{{ notification.createdAt|date('Y-m-d H:i') }}</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fa fa-bell" style="font-size: 2rem; opacity: 0.2;"></i>
+                            <p class="mt-2 mb-0 small">No notifications</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% set listingNotifications = notifications|filter(n => n.type == 'listing_created' or n.type == 'listing_updated')|filter(n => not n.isRead) %}
+    {% if listingNotifications|length > 0 %}
+        <div id="reviewBanner" class="banner-notice mt-4">
             <div class="banner-content">
                 <div class="banner-message">
-                    <i class="ti-bell" style="margin-right: 8px;"></i>
+                    <i class="fa fa-bell" style="margin-right: 8px;"></i>
                     {% if listingNotifications|length == 1 %}
-                        A landlord has {{ listingNotifications[0].type == 'listing_created' ? 'posted a new listing' : 'updated a listing' }} recently, please check and review.
+                        A landlord has {{ listingNotifications[0].type == 'listing_created' ? 'posted a new listing' : 'updated a listing' }} — please review.
                     {% else %}
-                        Some landlords have posted new listings or edited listings recently, please check and review.
+                        Landlords have new or updated listings — please review.
                     {% endif %}
                 </div>
                 <div class="banner-actions">
                     <a href="{{ path('app_product_index') }}" class="banner-btn primary">
-                        <i class="ti-check"></i> Review Listings
+                        <i class="fa fa-check"></i> Review listings
                     </a>
                     <button type="button" class="banner-btn secondary" onclick="dismissBanner()">
-                        <i class="ti-close"></i> Dismiss
+                        <i class="fa fa-times"></i> Dismiss
                     </button>
                 </div>
             </div>
         </div>
-        {% endif %}
+    {% endif %}
 
-        <!-- Charts -->
-        <div class="row g-4">
-            <div class="col-12 col-xl-6">
-                <div class="card p-3" style="border-radius:14px;">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong>Growth Statistics</strong>
-                        <span class="badge text-bg-light">Yearly</span>
-                    </div>
-                    <canvas id="growthChart" height="180"></canvas>
+    <div class="row g-4 mt-2">
+        <div class="col-12 col-xl-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title mb-0">Growth (sample)</h3>
+                    <span class="badge rounded-pill text-bg-light border">Yearly</span>
+                </div>
+                <div class="chart-content" style="height: auto; padding: 0.5rem 0 1rem;">
+                    <canvas id="growthChart" height="200"></canvas>
                 </div>
             </div>
-            <div class="col-12 col-xl-6">
-                <div class="card p-3" style="border-radius:14px;">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong>Sales Statistics</strong>
-                        <span class="badge text-bg-light">Last months</span>
-                    </div>
-                    <canvas id="salesChart" height="180"></canvas>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title mb-0">Activity (sample)</h3>
+                    <span class="badge rounded-pill text-bg-light border">6 months</span>
+                </div>
+                <div class="chart-content" style="height: auto; padding: 0.5rem 0 1rem;">
+                    <canvas id="salesChart" height="200"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-{% block javascripts_head %}
-    {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script>
         function markAsRead(notificationId) {
             fetch('{{ path('app_notification_mark_read', {'id': 0}) }}'.replace('0', notificationId), {
@@ -605,21 +333,15 @@
             fetch('{{ path('app_notification_count') }}')
                 .then(response => response.json())
                 .then(data => {
-                    const badge = document.querySelector('.badge.bg-danger');
+                    const badge = document.querySelector('.cc-dash-panel .badge.text-bg-danger');
                     if (data.count > 0) {
                         if (badge) {
                             badge.textContent = data.count;
-                        } else {
-                            const strong = document.querySelector('strong');
-                            if (strong) {
-                                const newBadge = document.createElement('span');
-                                newBadge.className = 'badge bg-danger ms-2';
-                                newBadge.textContent = data.count;
-                                strong.appendChild(newBadge);
-                            }
                         }
                     } else {
-                        if (badge) badge.remove();
+                        if (badge) {
+                            badge.remove();
+                        }
                     }
                 });
         }
@@ -642,14 +364,21 @@
                 new Chart(growthCtx, {
                     type: 'bar',
                     data: {
-                        labels: ['Q1','Q2','Q3','Q4'],
+                        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
                         datasets: [{
-                            label: 'Total Revenue',
+                            label: 'Revenue (sample)',
                             data: [120000, 185000, 160000, 220000],
-                            backgroundColor: '#a9825c'
+                            backgroundColor: 'rgba(109, 76, 65, 0.75)',
+                            borderRadius: 6,
                         }]
                     },
-                    options: { scales: { y: { ticks: { callback: v => '₱' + v } } }, plugins:{ legend:{display:false} } }
+                    options: {
+                        scales: {
+                            y: { ticks: { callback: v => '₱' + Number(v).toLocaleString() } },
+                            x: { grid: { display: false } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
                 });
             }
 
@@ -658,16 +387,18 @@
                 new Chart(salesCtx, {
                     type: 'line',
                     data: {
-                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                         datasets: [
-                            { label:'Total Sales', data:[5,7,6,9,11,10], borderColor:'#a9825c', tension:.35 },
-                            { label:'Total Cost', data:[3,4,4,6,7,8], borderColor:'#9a8b7a', tension:.35 }
+                            { label: 'Listings', data: [5, 7, 6, 9, 11, 10], borderColor: '#6d4c41', backgroundColor: 'rgba(109,76,65,0.08)', fill: true, tension: 0.35 },
+                            { label: 'Applications', data: [3, 4, 4, 6, 7, 8], borderColor: '#a67c52', tension: 0.35, fill: false }
                         ]
                     },
-                    options: { plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+                    options: {
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+                        scales: { y: { beginAtZero: true } }
+                    }
                 });
             }
         })();
     </script>
-{% endblock %}
 {% endblock %}

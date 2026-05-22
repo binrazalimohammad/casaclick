@@ -2,6 +2,11 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    router:
+        # Matches how you open the app in the browser (see .env DEFAULT_URI). Used when generating
+        # OAuth redirect URIs so they stay consistent with Google Cloud Console.
+        default_uri: '%env(DEFAULT_URI)%'
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 

@@ -1,0 +1,6 @@
+# Railway/Nixpacks: PHP 8.2 + Node 20 (Webpack Encore assets)
+# https://nixpacks.com/docs/configuration/file
+
+[variables]
+NIXPACKS_PHP_VERSION = "8.2"
+NIXPACKS_NODE_VERSION = "20"

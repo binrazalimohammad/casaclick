@@ -7,8 +7,11 @@ use App\Entity\Payment;
 use App\Form\PaymentType;
 use App\Repository\PaymentRepository;
 use App\Service\NotificationService;
+use App\Service\PaymongoCheckoutHandler;
+use App\Service\PaymongoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,8 +20,79 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PaymentController extends AbstractController
 {
     public function __construct(
-        private NotificationService $notificationService
+        private NotificationService $notificationService,
+        private PaymongoCheckoutHandler $paymongoCheckoutHandler,
+        private PaymongoService $paymongoService,
     ) {
+    }
+
+    /**
+     * Step 1: tenant chooses online (GCash/Maya) or card, fills required fields, then continues to Paymongo checkout.
+     */
+    #[Route('/application/{id}/paymongo', name: 'app_payment_paymongo_setup', methods: ['GET', 'POST'])]
+    public function paymongoSetup(Request $request, Application $application): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_TENANT');
+
+        $user = $this->getUser();
+        if (!$user || $application->getTenant()?->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('You can only pay for your own bookings.');
+        }
+
+        if ($application->getStatus() !== 'approved') {
+            $this->addFlash('error', 'You can only pay for approved bookings.');
+            return $this->redirectToRoute('app_application_index');
+        }
+
+        if (!$this->paymongoService->isConfigured()) {
+            $this->addFlash('error', 'Online Paymongo payment is not available. Use manual payment instead.');
+            return $this->redirectToRoute('app_payment_new', ['id' => $application->getId()]);
+        }
+
+        $listing = $application->getListing();
+        $defaultAmount = (string) ($listing?->getPrice() ?? '0');
+
+        if ($request->isMethod('POST')) {
+            $payload = $request->request->all();
+            $payload['amount'] = $payload['amount'] ?? $defaultAmount;
+            $payload['paymentChannel'] = $payload['paymentChannel'] ?? '';
+
+            try {
+                $result = $this->paymongoCheckoutHandler->startCheckout(
+                    $user,
+                    $application,
+                    $payload,
+                    $request->getSchemeAndHttpHost(),
+                );
+            } catch (\InvalidArgumentException $e) {
+                $this->addFlash('error', $e->getMessage());
+
+                return $this->render('payment/paymongo_setup.html.twig', [
+                    'application' => $application,
+                    'default_amount' => $defaultAmount,
+                    'options_json' => json_encode($this->paymongoCheckoutHandler->getPaymentOptionsSchema(), JSON_THROW_ON_ERROR),
+                    'submitted' => $payload,
+                ]);
+            } catch (\Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
+
+                return $this->render('payment/paymongo_setup.html.twig', [
+                    'application' => $application,
+                    'default_amount' => $defaultAmount,
+                    'options_json' => json_encode($this->paymongoCheckoutHandler->getPaymentOptionsSchema(), JSON_THROW_ON_ERROR),
+                    'submitted' => $payload,
+                ]);
+            }
+
+            return new RedirectResponse($result['checkoutUrl']);
+        }
+
+        return $this->render('payment/paymongo_setup.html.twig', [
+            'application' => $application,
+            'default_amount' => $defaultAmount,
+            'options_json' => json_encode($this->paymongoCheckoutHandler->getPaymentOptionsSchema(), JSON_THROW_ON_ERROR),
+            'submitted' => [],
+        ]);
     }
 
     #[Route('/application/{id}/new', name: 'app_payment_new', methods: ['GET', 'POST'])]

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+{% block title %}Customer Dashboard — CasaClick{% endblock %}
+{% block body %}
+<div class="page-container cc-dashboard">
+    <header class="cc-dash-hero">
+        <div>
+            <p class="cc-dash-eyebrow">Customer dashboard</p>
+            <h1 class="cc-dash-title">Welcome, {{ user.name ?? user.email }}</h1>
+            <p class="cc-dash-sub">Browse rentals, track bookings, and pay with Paymongo — no admin tools here.</p>
+            <p class="text-muted" style="margin-top:8px;font-size:0.9rem;">
+                <span id="live-sync-badge" class="badge bg-success"><i class="fa fa-circle"></i> Live sync (~8s)</span>
+                — changes from the mobile app appear here automatically.
+            </p>
+        </div>
+    </header>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <p class="stat-title">Available listings</p>
+            <p class="stat-value">{{ listingCount }}</p>
+        </article>
+        <article class="stat-card">
+            <p class="stat-title">My bookings</p>
+            <p class="stat-value">{{ applicationCount }}</p>
+        </article>
+        <article class="stat-card">
+            <p class="stat-title">Payments</p>
+            <p class="stat-value">{{ paymentCount }}</p>
+        </article>
+        <article class="stat-card">
+            <p class="stat-title">Notifications</p>
+            <p class="stat-value">{{ unreadNotifications }}</p>
+        </article>
+    </section>
+
+    <div class="cc-dash-actions" style="margin: 24px 0;">
+        <a href="{{ path('app_product_index') }}" class="btn btn-dark"><i class="fa fa-list"></i> Browse listings</a>
+        <a href="{{ path('app_application_index') }}" class="btn btn-outline-secondary"><i class="fa fa-file-text"></i> My applications</a>
+        <a href="{{ path('app_application_index') }}" class="btn btn-outline-secondary"><i class="fa fa-credit-card"></i> Pay from booking</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="cc-dash-panel">
+                <h2 class="cc-dash-panel__title">Recent bookings</h2>
+                {% for app in recentApplications %}
+                    <p><strong>#{{ app.id }}</strong> — {{ app.listing.name ?? 'Listing' }} — <span class="badge">{{ app.status }}</span></p>
+                {% else %}
+                    <p class="text-muted">No bookings yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="cc-dash-panel">
+                <h2 class="cc-dash-panel__title">Recent payments</h2>
+                {% for pay in recentPayments %}
+                    <p>₱{{ pay.amount }} — {{ pay.status }} ({{ pay.paymentMethod }})</p>
+                {% else %}
+                    <p class="text-muted">No payments yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    const feedUrl = {{ path('app_customer_dashboard_feed')|json_encode|raw }};
+    let lastRevision = null;
+    function poll() {
+        fetch(feedUrl, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (!data.success) return;
+                if (lastRevision !== null && data.revision !== lastRevision) {
+                    window.location.reload();
+                }
+                lastRevision = data.revision;
+            })
+            .catch(function () {});
+    }
+    poll();
+    setInterval(poll, 8000);
+})();
+</script>
+{% endblock %}

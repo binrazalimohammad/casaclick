@@ -5,6 +5,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     images_directory: '%kernel.project_dir%/public/uploads/images'   # ✅ Add this line
+    # Empty string when PAYMONGO_SECRET_KEY is unset (avoids null in PaymongoService)
+    paymongo_secret_fallback: ''
+    paymongo_dev_mock_default: '0'
+    paymongo_default_uri: 'http://127.0.0.1:8000'
 
 services:
     # default configuration for services in *this* file
@@ -26,3 +30,14 @@ services:
     App\EventListener\SecurityEventListener:
         tags:
             - { name: 'kernel.event_subscriber' }
+
+    App\Service\GoogleIdTokenVerifier:
+        arguments:
+            $primaryClientId: '%env(trim:GOOGLE_OAUTH_CLIENT_ID)%'
+            $mobileWebClientId: '%env(default::GOOGLE_MOBILE_WEB_CLIENT_ID)%'
+
+    App\Service\PaymongoService:
+        arguments:
+            $secretKey: '%env(default:paymongo_secret_fallback:PAYMONGO_SECRET_KEY)%'
+            $devMock: '%env(bool:default:paymongo_dev_mock_default:PAYMONGO_DEV_MOCK)%'
+            $appBaseUrl: '%env(default:paymongo_default_uri:DEFAULT_URI)%'

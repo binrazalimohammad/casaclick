@@ -187,11 +187,6 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * Fingerprint for a landlord's own listings (all statuses).
-     *
-     * @return array{count: int, latestUpdatedAt: ?string}
-     */
-    /**
      * All listings (staff/admin dashboard + pending approvals).
      *
      * @return array{count: int, latestUpdatedAt: ?string}
@@ -213,6 +208,11 @@ class ProductRepository extends ServiceEntityRepository
         ];
     }
 
+    /**
+     * Fingerprint for a landlord's own listings (all statuses).
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
     public function getOwnerListingsSyncMeta(int $userId): array
     {
         $row = $this->createQueryBuilder('p')

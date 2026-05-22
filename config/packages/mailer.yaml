@@ -1,3 +1,5 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        # Do not set envelope.sender here: the From address on each message is enough. A mismatched or
+        # unverified envelope sender can cause Brevo to accept SMTP but not deliver to the recipient inbox.
