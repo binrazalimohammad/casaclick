@@ -22,9 +22,12 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         // Redirect based on role
         if (in_array('ROLE_ADMIN', $user->getRoles(), true) || in_array('ROLE_STAFF', $user->getRoles(), true)) {
             return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
-        } else {
-            return new RedirectResponse($this->urlGenerator->generate('app_product_index'));
         }
+        if (method_exists($user, 'getPrimaryRole') && $user->getPrimaryRole() === 'ROLE_TENANT') {
+            return new RedirectResponse($this->urlGenerator->generate('app_customer_dashboard'));
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('app_product_index'));
     }
 }
 

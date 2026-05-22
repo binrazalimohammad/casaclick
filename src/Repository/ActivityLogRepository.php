@@ -64,6 +64,24 @@ class ActivityLogRepository extends ServiceEntityRepository
      * Get all distinct actions that have been used in the logs
      * @return string[]
      */
+    /**
+     * Logs created after a timestamp (for live admin feed).
+     *
+     * @return ActivityLog[]
+     */
+    public function findSince(\DateTimeInterface $since, int $limit = 100): array
+    {
+        return $this->createQueryBuilder('l')
+            ->leftJoin('l.user', 'u')
+            ->addSelect('u')
+            ->andWhere('l.createdAt > :since')
+            ->setParameter('since', $since)
+            ->orderBy('l.createdAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findDistinctActions(): array
     {
         $results = $this->createQueryBuilder('l')

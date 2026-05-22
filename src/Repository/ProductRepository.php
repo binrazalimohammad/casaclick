@@ -100,6 +100,26 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * Approved listings for marketing highlights (e.g. About page carousel), newest first.
+     *
+     * @return Product[]
+     */
+    public function findApprovedRecent(int $limit = 8): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->leftJoin('p.createdBy', 'user')
+            ->addSelect('user')
+            ->andWhere('p.status = :status')
+            ->setParameter('status', 'approved')
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Product[]
      */
     public function findApprovedWithLandlord(): array
@@ -140,5 +160,58 @@ class ProductRepository extends ServiceEntityRepository
             ->orderBy('p.id', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Fingerprint for approved marketplace listings (mobile live sync).
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getApprovedMarketplaceSyncMeta(): array
+    {
+        $row = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id) AS cnt', 'MAX(p.updatedAt) AS maxUpdated')
+            ->andWhere('p.status = :status')
+            ->setParameter('status', 'approved')
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $max = $row['maxUpdated'] ?? null;
+
+        return [
+            'count' => (int) ($row['cnt'] ?? 0),
+            'latestUpdatedAt' => $max instanceof \DateTimeInterface
+                ? $max->format(\DateTimeInterface::ATOM)
+                : null,
+        ];
+    }
+
+    /**
+     * Fingerprint for a landlord's own listings (all statuses).
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getOwnerListingsSyncMeta(int $userId): array
+    {
+        $row = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id) AS cnt', 'MAX(p.updatedAt) AS maxUpdated')
+            ->andWhere('p.createdBy = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $max = $row['maxUpdated'] ?? null;
+
+        return [
+            'count' => (int) ($row['cnt'] ?? 0),
+            'latestUpdatedAt' => $max instanceof \DateTimeInterface
+                ? $max->format(\DateTimeInterface::ATOM)
+                : null,
+        ];
+    }
+
+    public static function buildSyncRevision(int $count, ?string $latestUpdatedAt): string
+    {
+        return $count . ':' . ($latestUpdatedAt ?? 'none');
     }
 }

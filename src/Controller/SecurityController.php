@@ -14,7 +14,7 @@ class SecurityController extends AbstractController
     {
         // If already logged in, redirect based on role
         if ($this->getUser()) {
-            if ($this->isGranted('ROLE_ADMIN')) {
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
                 return $this->redirectToRoute('app_dashboard');
             }
             return $this->redirectToRoute('app_product_index');

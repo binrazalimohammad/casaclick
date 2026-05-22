@@ -1,0 +1,5 @@
+# Dev: send mail in the same request instead of enqueueing SendEmailMessage on the async bus.
+# Otherwise registration can fail when queuing fails, or verification never sends until a worker runs.
+framework:
+    mailer:
+        message_bus: false

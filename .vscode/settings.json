@@ -1,0 +1,19 @@
+{
+    "files.exclude": {
+        "**/var/cache/**": true,
+        "**/var/log/**": true
+    },
+    "search.exclude": {
+        "**/var/**": true,
+        "**/vendor/**": true
+    },
+    "intelephense.files.exclude": [
+        "**/var/**",
+        "**/vendor/**",
+        "**/node_modules/**"
+    ],
+    "php.problems.exclude": {
+        "**/var/**": true,
+        "**/vendor/**": true
+    }
+}

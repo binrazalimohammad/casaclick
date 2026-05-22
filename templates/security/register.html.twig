@@ -4,196 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - CasaClick</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css"></noscript>
+    {{ encore_entry_link_tags('auth') }}
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Nunito', 'Poppins', sans-serif;
-            min-height: 100vh;
+        .cc-auth-page {
+            background-image: linear-gradient(160deg, rgba(255, 253, 247, 0.55), rgba(245, 230, 211, 0.35)),
+                url('{{ asset('uploads/images/log in background.jpg') }}');
+        }
+        .cc-auth-card .checkbox-row {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: url('{{ asset('uploads/images/log in background.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            position: relative;
-            background-color: #F5E6D3; /* fallback */
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin: 1rem 0 1.25rem;
+            font-size: 0.9rem;
+            color: var(--cc-muted, #6d4c41);
         }
-        body::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.78);
-            backdrop-filter: blur(2px);
-            z-index: 0;
-        }
-        .register-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 520px;
-            padding: 20px;
-        }
-        .register-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 44px 38px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .register-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .register-header h1 {
-            font-size: 30px;
-            font-weight: 800;
-            color: #5C4033;
-            margin-bottom: 6px;
-            letter-spacing: -0.4px;
-        }
-        .register-header p {
-            color: #8B7355;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .form-group { margin-bottom: 18px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #5C4033;
-            font-weight: 700;
-            font-size: 13px;
-            letter-spacing: 0.2px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 13px 16px;
-            border: 2px solid #E8DCC0;
-            border-radius: 12px;
-            font-size: 15px;
-            font-family: 'Nunito', sans-serif;
-            background: #FFFDF7;
-            color: #3E2723;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus {
-            outline: none;
-            border-color: #C9A46D;
-            background: #FFFFFF;
-            box-shadow: 0 0 0 3px rgba(201, 164, 109, 0.12);
-        }
-        .form-control::placeholder { color: #A0825C; }
-        .form-select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%235C4033' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px 12px;
-            padding-right: 40px;
-            appearance: none;
-            cursor: pointer;
-        }
-        .error-block {
-            background: #FEE;
-            border: 1px solid #FCC;
-            color: #C33;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            font-size: 14px;
-        }
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0 4px;
-        }
-        .checkbox-row input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #C9A46D;
-            cursor: pointer;
-            margin: 0;
-            flex-shrink: 0;
-        }
-        .checkbox-row label {
-            color: #5C4033;
-            font-size: 14px;
-            font-weight: 500;
-            margin: 0;
-            cursor: pointer;
-            user-select: none;
-        }
-        .btn-register {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-            margin-top: 8px;
-        }
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
-        }
-        .login-link {
-            text-align: center;
-            margin-top: 22px;
-            padding-top: 20px;
-            border-top: 1px solid #E8DCC0;
-            color: #8B7355;
-            font-size: 14px;
-        }
-        .login-link a {
-            color: #8B4513;
-            text-decoration: none;
-            font-weight: 700;
-            margin-left: 6px;
-        }
-        .login-link a:hover { color: #A0522D; text-decoration: underline; }
-        @media (max-width: 480px) {
-            .register-card { padding: 36px 26px; margin: 16px; }
-            .register-header h1 { font-size: 26px; }
-        }
+        .cc-auth-card .checkbox-row input { margin-top: 3px; accent-color: #8b4513; }
     </style>
 </head>
-<body>
-    <div class="register-container">
-        <div class="register-card">
-            <div class="register-header">
-                <h1>Create Account</h1>
-                <p>Set your credentials to get started</p>
+<body class="cc-auth-page">
+    <div style="width:100%;max-width:min(520px,calc(100vw - 24px));padding:clamp(12px,4vw,20px);">
+        <div class="cc-auth-card">
+            <div class="cc-auth-card__top">
+                <a href="{{ path('app_landing') }}" class="cc-back-landing"><i class="fa fa-arrow-left"></i> Back to home</a>
+            </div>
+            <div style="text-align:center;margin-bottom:1.5rem;">
+                <h1 class="cc-font-display" style="font-size:clamp(1.65rem,4vw,2rem);">Create account</h1>
+                <p class="cc-auth-sub">Join CasaClick to browse and apply for homes</p>
+                <p class="cc-auth-sub" style="margin-top:0.65rem;font-size:0.88rem;">After you register, we’ll email you a link to verify your address. You need to verify before you can sign in.</p>
             </div>
 
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="error-block">{{ message }}</div>
-                {% endfor %}
-            {% endfor %}
+            {% include '_partials/cc_dismissible_flashes_all_labels.html.twig' %}
 
-            {{ form_start(registrationForm, {'attr': {'class': 'registration-form'}}) }}
+            {{ form_start(registrationForm, {'attr': {'class': 'registration-form', 'novalidate': 'novalidate'}}) }}
+
+                {% if registrationForm.vars.submitted and not registrationForm.vars.valid %}
+                    <div class="cc-register-summary-error" role="alert">
+                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        <div>
+                            <p style="margin:0 0 0.5rem;"><strong>Please fix the following.</strong> If nothing is highlighted, check your email (it may already be registered), password rules (8+ characters, letters and a number or symbol), or reload the page and try again (invalid security token).</p>
+                            {{ form_errors(registrationForm) }}
+                        </div>
+                    </div>
+                {% else %}
+                    {{ form_errors(registrationForm) }}
+                {% endif %}
 
                 <div class="form-group">
                     {{ form_label(registrationForm.name) }}
-                    {{ form_widget(registrationForm.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter your full name'}}) }}
+                    {{ form_widget(registrationForm.name, {'attr': {'class': 'form-control', 'placeholder': 'Full name'}}) }}
                     {{ form_errors(registrationForm.name) }}
                 </div>
 
                 <div class="form-group">
                     {{ form_label(registrationForm.email) }}
-                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter your email address'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'Email address'}}) }}
                     {{ form_errors(registrationForm.email) }}
                 </div>
 
@@ -205,15 +72,16 @@
 
                 <div class="form-group">
                     {{ form_label(registrationForm.plainPassword.first) }}
-                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control', 'type': 'password', 'placeholder': 'Enter your password'}}) }}
+                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
                     {{ form_errors(registrationForm.plainPassword.first) }}
                 </div>
 
                 <div class="form-group">
                     {{ form_label(registrationForm.plainPassword.second) }}
-                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control', 'type': 'password', 'placeholder': 'Repeat your password'}}) }}
+                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control', 'placeholder': 'Repeat password'}}) }}
                     {{ form_errors(registrationForm.plainPassword.second) }}
                 </div>
+                {{ form_errors(registrationForm.plainPassword) }}
 
                 <div class="checkbox-row">
                     {{ form_widget(registrationForm.agreeTerms, {'attr': {'id': 'agree_terms'}}) }}
@@ -221,16 +89,20 @@
                     {{ form_errors(registrationForm.agreeTerms) }}
                 </div>
 
-                <button type="submit" class="btn-register">
-                    <i class="fa fa-user-plus"></i> Create Account
+                <button type="submit" class="cc-btn-primary">
+                    <i class="fa fa-user-plus"></i> Create account
                 </button>
             {{ form_end(registrationForm) }}
 
-            <div class="login-link">
+            <div class="cc-auth-footer">
                 <span>Already have an account?</span>
                 <a href="{{ path('app_login') }}">Sign in</a>
+                <p style="margin-top:10px;">
+                    <a href="{{ path('app_resend_verification') }}">Didn’t get the verification email?</a>
+                </p>
             </div>
         </div>
     </div>
+    {{ encore_entry_script_tags('auth') }}
 </body>
 </html>

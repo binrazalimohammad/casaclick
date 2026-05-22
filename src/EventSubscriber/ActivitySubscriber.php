@@ -58,7 +58,6 @@ class ActivitySubscriber implements EventSubscriber
         // This includes: Admin creating users, Landlords creating listings, etc.
         $entity = $args->getObject();
         if (!($entity instanceof ActivityLog)) {
-            error_log('ActivitySubscriber: postPersist triggered for ' . get_class($entity));
             $this->log('CREATE', $args);
         }
     }
@@ -69,7 +68,6 @@ class ActivitySubscriber implements EventSubscriber
         // This includes: Admin updating users, Landlords updating listings, etc.
         $entity = $args->getObject();
         if (!($entity instanceof ActivityLog)) {
-            error_log('ActivitySubscriber: postUpdate triggered for ' . get_class($entity));
             $this->log('UPDATE', $args);
         }
     }
@@ -80,7 +78,6 @@ class ActivitySubscriber implements EventSubscriber
         // This includes: Admin deleting users, Landlords deleting listings, etc.
         $entity = $args->getObject();
         if (!($entity instanceof ActivityLog)) {
-            error_log('ActivitySubscriber: postRemove triggered for ' . get_class($entity));
             $this->log('DELETE', $args);
         }
     }
@@ -155,10 +152,8 @@ class ActivitySubscriber implements EventSubscriber
                     \PDO::PARAM_STR,
                 ]
             );
-            error_log('✅ Activity log saved: ' . $action . ' on ' . $targetEntity . ' by ' . $username . ' | Target: ' . $targetData);
         } catch (\Exception $e) {
-            error_log('❌ Activity log INSERT failed: ' . $e->getMessage() . ' | Action: ' . $action . ' | Entity: ' . $targetEntity . ' | Code: ' . $e->getCode());
-            error_log('Stack trace: ' . substr($e->getTraceAsString(), 0, 300));
+            // Activity logging must not break the main request
         }
     }
 

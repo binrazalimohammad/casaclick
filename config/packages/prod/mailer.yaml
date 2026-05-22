@@ -1,0 +1,6 @@
+# Send mail in the same request so verification/notification emails are not stuck in the async
+# queue (which requires a running messenger:consume worker). For high volume, switch to async
+# and run workers instead.
+framework:
+    mailer:
+        message_bus: false

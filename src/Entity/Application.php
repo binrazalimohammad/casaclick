@@ -30,7 +30,7 @@ class Application
     private ?User $landlord = null;
 
     #[ORM\Column(length: 50)]
-    private string $status = 'pending'; // 'pending', 'approved', 'rejected', 'completed'
+    private string $status = 'pending'; // pending, approved, rejected, completed, refunded, cancelled
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $message = null;

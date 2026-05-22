@@ -25,6 +25,7 @@ class UserFixtures extends Fixture
         $admin->setRoles(['ROLE_ADMIN']);
         $hashedPassword = $this->passwordHasher->hashPassword($admin, 'admin1234');
         $admin->setPassword($hashedPassword);
+        $admin->setEmailVerified(true);
         $manager->persist($admin);
 
         
@@ -35,6 +36,7 @@ class UserFixtures extends Fixture
         $hashedPassword = $this->passwordHasher->hashPassword($landlord, 'landlord3333');
         $landlord->setPassword($hashedPassword);
         $landlord->setIsEnabled(true);
+        $landlord->setEmailVerified(true);
         $manager->persist($landlord);
 
       
@@ -45,6 +47,7 @@ class UserFixtures extends Fixture
         $hashedPassword = $this->passwordHasher->hashPassword($tenant, 'tenant2222');
         $tenant->setPassword($hashedPassword);
         $tenant->setIsEnabled(true);
+        $tenant->setEmailVerified(true);
         $manager->persist($tenant);
 
         $manager->flush();

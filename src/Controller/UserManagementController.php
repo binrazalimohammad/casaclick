@@ -60,6 +60,7 @@ class UserManagementController extends AbstractController
                 $selectedRole = 'ROLE_TENANT'; // Default to tenant if invalid
             }
             $user->setRoles([$selectedRole]);
+            $user->setEmailVerified(true);
 
             $this->em->persist($user);
             $this->em->flush();

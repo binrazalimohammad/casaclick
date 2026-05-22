@@ -1,0 +1,11 @@
+{# variant: success | error | warning | info #}
+<div class="cc-flash cc-flash--{{ variant }}" data-cc-flash role="alert">
+    <button type="button" class="cc-flash__dismiss" data-cc-flash-dismiss aria-label="Dismiss notification">&times;</button>
+    <div class="cc-flash__body">
+        {% if variant == 'success' %}<i class="fa fa-check-circle" aria-hidden="true"></i>
+        {% elseif variant == 'error' %}<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        {% elseif variant == 'warning' %}<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        {% else %}<i class="fa fa-info-circle" aria-hidden="true"></i>{% endif %}
+        <span>{{ message }}</span>
+    </div>
+</div>
