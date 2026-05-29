@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     images_directory: '%kernel.project_dir%/public/uploads/images'   # ✅ Add this line
+    ws_broadcast_url_default: ''
+    ws_internal_secret_default: 'casaclick-ws-dev-secret'
     # Empty string when PAYMONGO_SECRET_KEY is unset (avoids null in PaymongoService)
     paymongo_secret_fallback: ''
     paymongo_dev_mock_default: '0'
@@ -41,3 +43,9 @@ services:
             $secretKey: '%env(default:paymongo_secret_fallback:PAYMONGO_SECRET_KEY)%'
             $devMock: '%env(bool:default:paymongo_dev_mock_default:PAYMONGO_DEV_MOCK)%'
             $appBaseUrl: '%env(default:paymongo_default_uri:DEFAULT_URI)%'
+
+    # Realtime: POST to Socket.IO server after saving notifications (BinRazali npm run io:server)
+    App\Service\RealtimeBroadcastService:
+        arguments:
+            $broadcastUrl: '%env(default:ws_broadcast_url_default:WS_BROADCAST_URL)%'
+            $internalSecret: '%env(default:ws_internal_secret_default:WS_INTERNAL_SECRET)%'

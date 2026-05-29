@@ -52,6 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
+    /** Firebase Cloud Messaging device token for mobile push when app is backgrounded. */
+    #[ORM\Column(length: 512, nullable: true)]
+    private ?string $fcmToken = null;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -222,6 +226,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
+        return $this;
+    }
+
+    public function getFcmToken(): ?string
+    {
+        return $this->fcmToken;
+    }
+
+    public function setFcmToken(?string $fcmToken): static
+    {
+        $this->fcmToken = $fcmToken;
         return $this;
     }
 }

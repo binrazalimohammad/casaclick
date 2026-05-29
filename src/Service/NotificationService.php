@@ -1,20 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
+use App\Entity\Application;
 use App\Entity\Notification;
 use App\Entity\User;
-use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMapping;
 
+/**
+ * Persists in-app notification history and triggers realtime + FCM broadcast via Socket.IO.
+ */
 class NotificationService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private NotificationRepository $notificationRepository,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private RealtimeBroadcastService $realtimeBroadcast,
     ) {
     }
 
@@ -30,18 +34,74 @@ class NotificationService
         foreach ($adminIds as $adminId) {
             $admin = $this->userRepository->find($adminId);
             if ($admin) {
-                $this->createNotification($admin, $type, $message, $relatedEntity, $relatedId);
+                $this->notifyUser($admin, $type, $message, $relatedEntity, $relatedId);
             }
         }
     }
 
-    public function notifyUser(User $user, string $type, string $message, ?string $relatedEntity = null, ?int $relatedId = null): void
-    {
-        $this->createNotification($user, $type, $message, $relatedEntity, $relatedId);
+    public function notifyUser(
+        User $user,
+        string $type,
+        string $message,
+        ?string $relatedEntity = null,
+        ?int $relatedId = null,
+    ): Notification {
+        $notification = $this->createNotification($user, $type, $message, $relatedEntity, $relatedId);
+        $this->realtimeBroadcast->broadcastNotification($user, $notification);
+
+        return $notification;
     }
 
-    private function createNotification(User $user, string $type, string $message, ?string $relatedEntity = null, ?int $relatedId = null): void
-    {
+    /**
+     * Notify tenant when admin/staff changes booking (order) status — saves history + emits order_updated.
+     */
+    public function notifyOrderStatusChange(
+        Application $application,
+        string $oldStatus,
+        string $newStatus,
+    ): ?Notification {
+        if ($oldStatus === $newStatus) {
+            return null;
+        }
+
+        $tenant = $application->getTenant();
+        if (!$tenant) {
+            return null;
+        }
+
+        $orderId = (int) $application->getId();
+        $listingName = $application->getListing()?->getName() ?? 'your order';
+        $message = OrderStatusLabelService::orderUpdateMessage($listingName, $newStatus);
+        $timestamp = (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM);
+
+        $notification = $this->createNotification(
+            $tenant,
+            'order_update',
+            $message,
+            'application',
+            $orderId,
+        );
+
+        $this->realtimeBroadcast->broadcastOrderUpdated($tenant, $notification, [
+            'order_id' => $orderId,
+            'customer_id' => (int) $tenant->getId(),
+            'status' => $newStatus,
+            'message' => $message,
+            'timestamp' => $timestamp,
+            'title' => 'Order update',
+            'statusLabel' => OrderStatusLabelService::label($newStatus),
+        ]);
+
+        return $notification;
+    }
+
+    private function createNotification(
+        User $user,
+        string $type,
+        string $message,
+        ?string $relatedEntity = null,
+        ?int $relatedId = null,
+    ): Notification {
         $notification = new Notification();
         $notification->setUser($user);
         $notification->setType($type);
@@ -51,6 +111,7 @@ class NotificationService
 
         $this->entityManager->persist($notification);
         $this->entityManager->flush();
+
+        return $notification;
     }
 }
-
