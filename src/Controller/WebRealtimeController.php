@@ -17,17 +17,20 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/sync')]
 final class WebRealtimeController extends AbstractController
 {
+    public function __construct(
+        private readonly string $wsBroadcastUrl = '',
+    ) {
+    }
+
     #[Route('/realtime-session', name: 'app_web_realtime_session', methods: ['GET'])]
-    public function realtimeSession(
-        JWTTokenManagerInterface $jwtManager,
-        string $wsBroadcastUrl,
-    ): JsonResponse {
+    public function realtimeSession(JWTTokenManagerInterface $jwtManager): JsonResponse
+    {
         $user = $this->getUser();
         if (!$user instanceof User) {
             return $this->json(['success' => false, 'error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $url = trim($wsBroadcastUrl);
+        $url = trim($this->wsBroadcastUrl);
         $invalid = $url === ''
             || str_contains($url, '127.0.0.1')
             || str_contains($url, 'localhost')
