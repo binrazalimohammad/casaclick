@@ -157,7 +157,7 @@ final class PaymentController extends AbstractController
     #[Route('/application/{applicationId}', name: 'app_payment_index', methods: ['GET'])]
     public function index(int $applicationId, PaymentRepository $paymentRepository, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_TENANT');
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         $application = $entityManager->getRepository(Application::class)->find($applicationId);
         if (!$application) {
@@ -165,10 +165,10 @@ final class PaymentController extends AbstractController
         }
 
         $user = $this->getUser();
-        // Check if user is tenant or landlord of this application
-        if ($application->getTenant()->getId() !== $user->getId() && 
-            ($application->getLandlord() && $application->getLandlord()->getId() !== $user->getId()) &&
-            !$this->isGranted('ROLE_ADMIN')) {
+        $isTenant = $application->getTenant() && $application->getTenant()->getId() === $user->getId();
+        $isLandlord = $application->getLandlord() && $application->getLandlord()->getId() === $user->getId();
+
+        if (!$isTenant && !$isLandlord && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('You can only view payments for your own applications.');
         }
 
@@ -200,22 +200,9 @@ final class PaymentController extends AbstractController
         $payment->setStatus('completed');
         $payment->setProcessedBy($user);
         $entityManager->flush();
+        // Tenant notification: StatusChangeNotificationSubscriber → notifyTenantPaymentStatusChange
 
-        // Notify tenant about payment approval
-        if ($application->getTenant()) {
-            $this->notificationService->notifyUser(
-                $application->getTenant(),
-                'payment_approved',
-                sprintf('Your payment of ₱%s for listing "%s" has been approved.', 
-                    number_format((float)$payment->getAmount(), 2),
-                    $application->getListing()->getName()
-                ),
-                'Payment',
-                $payment->getId()
-            );
-        }
-
-        $this->addFlash('success', 'Payment approved successfully!');
+        $this->addFlash('success', 'Payment approved successfully! The tenant will be notified on their device.');
         return $this->redirectToRoute('app_payment_index', ['applicationId' => $application->getId()]);
     }
 
@@ -235,22 +222,9 @@ final class PaymentController extends AbstractController
         $payment->setStatus('failed');
         $payment->setProcessedBy($user);
         $entityManager->flush();
+        // Tenant notification: StatusChangeNotificationSubscriber → notifyTenantPaymentStatusChange
 
-        // Notify tenant about payment rejection
-        if ($application->getTenant()) {
-            $this->notificationService->notifyUser(
-                $application->getTenant(),
-                'payment_rejected',
-                sprintf('Your payment of ₱%s for listing "%s" has been rejected. Please contact the landlord.', 
-                    number_format((float)$payment->getAmount(), 2),
-                    $application->getListing()->getName()
-                ),
-                'Payment',
-                $payment->getId()
-            );
-        }
-
-        $this->addFlash('warning', 'Payment rejected.');
+        $this->addFlash('warning', 'Payment rejected. The tenant will be notified on their device.');
         return $this->redirectToRoute('app_payment_index', ['applicationId' => $application->getId()]);
     }
 }

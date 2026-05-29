@@ -15,7 +15,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
 /**
- * Creates notifications and order_updated broadcasts when admin/staff updates record status.
+ * Creates tenant/landlord notifications when application, payment, or listing status changes.
  * Work is deferred to postFlush so we never nest flush() inside preUpdate.
  */
 #[AsDoctrineListener(event: Events::preUpdate)]
@@ -103,30 +103,7 @@ class StatusChangeNotificationSubscriber
     {
         /** @var Payment $payment */
         $payment = $item['payment'];
-        $tenant = $payment->getApplication()?->getTenant();
-        if (!$tenant) {
-            return;
-        }
-
-        $period = $payment->getNotes()
-            ?? $payment->getCreatedAt()?->format('F Y')
-            ?? 'your account';
-
-        $newStatus = (string) $item['new'];
-        $status = strtolower($newStatus);
-        $type = 'payment_update';
-        $message = match (true) {
-            str_contains($status, 'received'), str_contains($status, 'paid') =>
-                sprintf('Your rent payment for %s has been received', $period),
-            str_contains($status, 'overdue') =>
-                sprintf('Your rent payment for %s is overdue', $period),
-            str_contains($status, 'waiv') =>
-                sprintf('Your rent payment for %s has been waived', $period),
-            default =>
-                sprintf('Your payment for %s is now %s', $period, OrderStatusLabelService::label($newStatus)),
-        };
-
-        $this->notifications->notifyUser($tenant, $type, $message, 'payment', (int) $payment->getId());
+        $this->notifications->notifyTenantPaymentStatusChange($payment, (string) $item['new']);
     }
 
     /**

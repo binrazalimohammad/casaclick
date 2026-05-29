@@ -200,6 +200,9 @@
                                         {% elseif notification.type == 'application_approved' %}
                                             <i class="fa fa-check-circle notification-icon icon-success"></i>
                                             <span class="notification-type-text text-success">Application approved</span>
+                                        {% elseif notification.type == 'application_rejected' %}
+                                            <i class="fa fa-times-circle notification-icon icon-danger"></i>
+                                            <span class="notification-type-text text-danger">Application declined</span>
                                         {% elseif notification.type == 'payment_submitted' %}
                                             <i class="fa fa-money notification-icon icon-warning"></i>
                                             <span class="notification-type-text text-warning">Payment submitted</span>

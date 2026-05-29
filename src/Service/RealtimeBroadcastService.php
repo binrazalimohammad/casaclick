@@ -91,9 +91,12 @@ class RealtimeBroadcastService
     {
         return match (strtolower($type)) {
             'application_approved' => 'Application approved',
+            'application_rejected' => 'Application declined',
             'application_submitted' => 'New application',
             'order_update' => 'Order update',
-            'payment_update', 'payment_approved' => 'Payment update',
+            'payment_approved' => 'Payment approved',
+            'payment_rejected' => 'Payment declined',
+            'payment_update' => 'Payment update',
             'listing_update', 'listing_approved' => 'Listing update',
             'contract_update' => 'Contract ready',
             default => 'BinRazali',

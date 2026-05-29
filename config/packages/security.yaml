@@ -59,6 +59,7 @@ security:
         - { path: ^/api/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/verify-email$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/health$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/realtime-config$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/verify-email, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/listings/revision$, roles: PUBLIC_ACCESS }
