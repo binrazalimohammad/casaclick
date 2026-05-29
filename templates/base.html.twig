@@ -585,5 +585,56 @@
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
+    {# Fallback when Encore bundle is missing (e.g. assets not built on deploy) — same logic as assets/js/live-sync.js #}
+    {% if app.user %}
+    <script>
+    (function () {
+        if (window.__ccLiveSyncActive) return;
+        var body = document.body;
+        if (!body || body.dataset.liveSync !== '1' || !body.dataset.liveSyncUrl) return;
+        window.__ccLiveSyncActive = true;
+        var feedUrl = body.dataset.liveSyncUrl;
+        var intervalMs = Math.max(3000, parseInt(body.dataset.liveSyncInterval || '5000', 10) || 5000);
+        var lastRevision = null, inFlight = false, paused = false;
+        body.addEventListener('focusin', function (e) {
+            var t = e.target;
+            if (t && (t.matches('input,textarea,select') || (t.closest && t.closest('form[data-live-sync-pause]')))) paused = true;
+        }, true);
+        body.addEventListener('focusout', function () {
+            setTimeout(function () {
+                if (!body.querySelector('input:focus,textarea:focus,select:focus')) paused = false;
+            }, 200);
+        }, true);
+        function reloadForSync() {
+            if (document.visibilityState === 'hidden') { window.__ccPendingLiveReload = true; return; }
+            window.location.reload();
+        }
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible' && window.__ccPendingLiveReload) {
+                window.__ccPendingLiveReload = false;
+                window.location.reload();
+            }
+        });
+        function poll() {
+            if (inFlight || paused) return;
+            inFlight = true;
+            fetch(feedUrl, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (!data || !data.success) return;
+                    if (lastRevision !== null && data.revision !== lastRevision) {
+                        reloadForSync();
+                        return;
+                    }
+                    lastRevision = data.revision;
+                })
+                .catch(function () {})
+                .finally(function () { inFlight = false; });
+        }
+        poll();
+        setInterval(poll, intervalMs);
+    })();
+    </script>
+    {% endif %}
 </body>
 </html>

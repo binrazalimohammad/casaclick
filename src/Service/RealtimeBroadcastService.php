@@ -75,13 +75,29 @@ class RealtimeBroadcastService
             'createdAt' => $notification->getCreatedAt()->format(\DateTimeInterface::ATOM),
         ];
 
+        $fcmTitle = $this->fcmTitleForType($notification->getType());
+
         $this->postBroadcast([
             'userId' => $userId,
             'event' => 'new_notification',
             'notification' => $notificationRow,
             'message' => $notification->getMessage(),
             'fcmToken' => $recipient->getFcmToken(),
+            'fcmTitle' => $fcmTitle,
         ]);
+    }
+
+    private function fcmTitleForType(string $type): string
+    {
+        return match (strtolower($type)) {
+            'application_approved' => 'Application approved',
+            'application_submitted' => 'New application',
+            'order_update' => 'Order update',
+            'payment_update', 'payment_approved' => 'Payment update',
+            'listing_update', 'listing_approved' => 'Listing update',
+            'contract_update' => 'Contract ready',
+            default => 'BinRazali',
+        };
     }
 
     /**

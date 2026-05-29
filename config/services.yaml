@@ -44,6 +44,10 @@ services:
             $devMock: '%env(bool:default:paymongo_dev_mock_default:PAYMONGO_DEV_MOCK)%'
             $appBaseUrl: '%env(default:paymongo_default_uri:DEFAULT_URI)%'
 
+    App\Controller\Api\MobileApiController:
+        arguments:
+            $wsBroadcastUrl: '%env(default:ws_broadcast_url_default:WS_BROADCAST_URL)%'
+
     # Realtime: POST to Socket.IO server after saving notifications (BinRazali npm run io:server)
     App\Service\RealtimeBroadcastService:
         arguments:

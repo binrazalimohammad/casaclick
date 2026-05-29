@@ -33,6 +33,7 @@ class MobileApiController extends AbstractController
         private readonly NotificationService $notificationService,
         private readonly ActivityLogService $activityLogService,
         private readonly MobileUserProvisioningService $mobileUserProvisioning,
+        private readonly string $wsBroadcastUrl = '',
     ) {
     }
 
@@ -45,6 +46,28 @@ class MobileApiController extends AbstractController
             'message' => 'CasaClick mobile API is running',
             'service' => 'casaclick',
             'time' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
+        ]);
+    }
+
+    /**
+     * Public Socket.IO origin for the mobile app (from WS_BROADCAST_URL on Railway Web).
+     * Does not expose WS_INTERNAL_SECRET.
+     */
+    #[Route('/realtime-config', name: 'realtime_config', methods: ['GET'])]
+    public function realtimeConfig(): JsonResponse
+    {
+        $url = trim($this->wsBroadcastUrl);
+        $invalid = $url === ''
+            || str_contains($url, '127.0.0.1')
+            || str_contains($url, 'localhost')
+            || stripos($url, 'REPLACE') !== false
+            || stripos($url, 'YOUR-REALTIME') !== false;
+
+        return $this->json([
+            'success' => true,
+            'data' => [
+                'realtimeOrigin' => $invalid ? null : rtrim($url, '/'),
+            ],
         ]);
     }
 

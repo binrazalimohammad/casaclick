@@ -212,6 +212,9 @@
                                         {% elseif notification.type == 'listing_updated' %}
                                             <i class="fa fa-edit notification-icon icon-warning"></i>
                                             <span class="notification-type-text text-warning">Listing updated</span>
+                                        {% elseif notification.type == 'order_update' %}
+                                            <i class="fa fa-shopping-bag notification-icon icon-info"></i>
+                                            <span class="notification-type-text text-info">Order update</span>
                                         {% else %}
                                             <i class="fa fa-bell notification-icon"></i>
                                             <span class="notification-type-text">Notification</span>

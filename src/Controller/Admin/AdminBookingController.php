@@ -16,10 +16,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/bookings')]
 final class AdminBookingController extends AbstractController
 {
+    /** Customer-facing order flow + legacy booking statuses (do not remove existing keys). */
     public const BOOKING_STATUSES = [
         'pending' => 'Pending',
-        'approved' => 'Approved',
-        'completed' => 'Complete',
+        'accepted' => 'Accepted',
+        'approved' => 'Accepted',
+        'processing' => 'Processing',
+        'ready_for_pickup' => 'Ready for Pickup',
+        'completed' => 'Completed',
         'refunded' => 'Refund',
         'cancelled' => 'Cancelled',
         'rejected' => 'Rejected',

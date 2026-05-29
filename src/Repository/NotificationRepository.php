@@ -57,4 +57,30 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Fingerprint for live-sync when notifications are created or marked read.
+     *
+     * @return array{count: int, latestUpdatedAt: ?string}
+     */
+    public function getSyncMetaForUser(User $user): array
+    {
+        $row = $this->createQueryBuilder('n')
+            ->select('COUNT(n.id) AS cnt', 'MAX(n.createdAt) AS maxUpdated')
+            ->andWhere('n.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $count = (int) ($row['cnt'] ?? 0);
+        $max = $row['maxUpdated'] ?? null;
+        $latest = null;
+        if ($max instanceof \DateTimeInterface) {
+            $latest = $max->format(\DateTimeInterface::ATOM);
+        } elseif ($max !== null && $max !== '') {
+            $latest = (string) $max;
+        }
+
+        return ['count' => $count, 'latestUpdatedAt' => $latest];
+    }
 }

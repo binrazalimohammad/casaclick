@@ -39,6 +39,9 @@ final class LiveSyncRevisionService
     {
         $parts = [];
 
+        $notifMeta = $this->notificationRepository->getSyncMetaForUser($user);
+        $notifRev = ProductRepository::buildSyncRevision($notifMeta['count'], $notifMeta['latestUpdatedAt']);
+
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $appMeta = $this->applicationRepository->getGlobalSyncMeta();
             $listingMeta = $this->productRepository->getApprovedMarketplaceSyncMeta();
@@ -48,6 +51,7 @@ final class LiveSyncRevisionService
             $parts[] = ProductRepository::buildSyncRevision($listingMeta['count'], $listingMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($allProductsMeta['count'], $allProductsMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($logMeta['count'], $logMeta['latestUpdatedAt']);
+            $parts[] = $notifRev;
             $parts[] = (string) $this->notificationRepository->countUnreadByUser($user);
         } elseif ($this->security->isGranted('ROLE_STAFF')) {
             $appMeta = $this->applicationRepository->getGlobalSyncMeta();
@@ -56,6 +60,7 @@ final class LiveSyncRevisionService
             $parts[] = ProductRepository::buildSyncRevision($appMeta['count'], $appMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($listingMeta['count'], $listingMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($allProductsMeta['count'], $allProductsMeta['latestUpdatedAt']);
+            $parts[] = $notifRev;
             $parts[] = (string) $this->notificationRepository->countUnreadByUser($user);
         } elseif ($this->security->isGranted('ROLE_LANDLORD')) {
             $listingMeta = $this->productRepository->getApprovedMarketplaceSyncMeta();
@@ -66,6 +71,7 @@ final class LiveSyncRevisionService
             $parts[] = ProductRepository::buildSyncRevision($ownerMeta['count'], $ownerMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($appMeta['count'], $appMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($payMeta['count'], $payMeta['latestUpdatedAt']);
+            $parts[] = $notifRev;
             $parts[] = (string) $this->notificationRepository->countUnreadByUser($user);
         } else {
             $listingMeta = $this->productRepository->getApprovedMarketplaceSyncMeta();
@@ -74,6 +80,7 @@ final class LiveSyncRevisionService
             $parts[] = ProductRepository::buildSyncRevision($listingMeta['count'], $listingMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($appMeta['count'], $appMeta['latestUpdatedAt']);
             $parts[] = ProductRepository::buildSyncRevision($payMeta['count'], $payMeta['latestUpdatedAt']);
+            $parts[] = $notifRev;
             $parts[] = (string) $this->notificationRepository->countUnreadByUser($user);
         }
 
