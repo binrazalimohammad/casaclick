@@ -424,7 +424,7 @@
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
-<body{% block live_sync_attributes %}{% if app.user %} data-live-sync="1" data-live-sync-url="{{ path('app_sync_feed') }}" data-live-sync-interval="5000"{% endif %}{% endblock %}>
+<body{% block live_sync_attributes %}{% if app.user %} data-live-sync="1" data-live-sync-url="{{ path('app_sync_feed') }}" data-live-sync-interval="5000" data-realtime-session-url="{{ path('app_web_realtime_session') }}"{% endif %}{% endblock %}>
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar" data-background-color="white" data-active-color="danger">
@@ -559,7 +559,7 @@
                     {{ app.user.name ?? app.user.email }}
                 </div>
                 <div class="user-role">
-                    <span class="live-sync-pill" title="Auto-refresh when mobile or another browser changes data"><i class="fa fa-refresh"></i> Live</span>
+                    <span class="live-sync-pill" title="Realtime + live sync when data changes"><i class="fa fa-refresh"></i> Live</span>
                     {% set primaryRole = app.user.primaryRole ?? 'ROLE_TENANT' %}
                     {% if primaryRole == 'ROLE_ADMIN' %}
                         <span class="user-role-badge admin">Admin</span>
@@ -605,14 +605,20 @@
                 if (!body.querySelector('input:focus,textarea:focus,select:focus')) paused = false;
             }, 200);
         }, true);
-        function reloadForSync() {
+        function reloadForSync(data) {
+            window.dispatchEvent(new CustomEvent('cc:sync-revision', { detail: data || {} }));
+            if (window.__ccSkipFullReload || window.__ccRealtimeActive) return;
             if (document.visibilityState === 'hidden') { window.__ccPendingLiveReload = true; return; }
             window.location.reload();
         }
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'visible' && window.__ccPendingLiveReload) {
                 window.__ccPendingLiveReload = false;
-                window.location.reload();
+                if (!window.__ccSkipFullReload && !window.__ccRealtimeActive) {
+                    window.location.reload();
+                } else {
+                    window.dispatchEvent(new CustomEvent('cc:sync-revision', { detail: { source: 'visibility' } }));
+                }
             }
         });
         function poll() {
@@ -623,7 +629,7 @@
                 .then(function (data) {
                     if (!data || !data.success) return;
                     if (lastRevision !== null && data.revision !== lastRevision) {
-                        reloadForSync();
+                        reloadForSync(data);
                         return;
                     }
                     lastRevision = data.revision;

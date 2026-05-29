@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 #[Route('/admin/bookings')]
 final class AdminBookingController extends AbstractController
@@ -54,6 +55,36 @@ final class AdminBookingController extends AbstractController
             'revision' => $revision,
             'count' => $meta['count'],
             'serverTime' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
+        ]);
+    }
+
+    /** JSON rows for in-page live updates (no full reload). */
+    #[Route('/data', name: 'app_admin_bookings_data', methods: ['GET'])]
+    public function data(
+        ApplicationRepository $applicationRepository,
+        CsrfTokenManagerInterface $csrfTokenManager,
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $rows = [];
+        foreach ($applicationRepository->findAllOrdered() as $booking) {
+            $status = (string) $booking->getStatus();
+            $bookingId = (int) $booking->getId();
+            $rows[] = [
+                'id' => $bookingId,
+                'tenant' => $booking->getTenant()?->getEmail() ?? $booking->getTenant()?->getName() ?? '—',
+                'listing' => $booking->getListing()?->getName() ?? '—',
+                'status' => $status,
+                'statusLabel' => self::BOOKING_STATUSES[$status] ?? $status,
+                'csrfToken' => $csrfTokenManager->getToken('booking_status_' . $bookingId)->getValue(),
+                'statusUrl' => $this->generateUrl('app_admin_booking_status', ['id' => $bookingId]),
+            ];
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'bookings' => $rows,
+            'statuses' => self::BOOKING_STATUSES,
         ]);
     }
 

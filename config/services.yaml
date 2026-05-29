@@ -48,6 +48,10 @@ services:
         arguments:
             $wsBroadcastUrl: '%env(default:ws_broadcast_url_default:WS_BROADCAST_URL)%'
 
+    App\Controller\WebRealtimeController:
+        arguments:
+            $wsBroadcastUrl: '%env(default:ws_broadcast_url_default:WS_BROADCAST_URL)%'
+
     # Realtime: POST to Socket.IO server after saving notifications (BinRazali npm run io:server)
     App\Service\RealtimeBroadcastService:
         arguments:

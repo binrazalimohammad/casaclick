@@ -53,7 +53,17 @@
         true,
     );
 
-    function reloadForSync() {
+    function reloadForSync(data) {
+        window.dispatchEvent(
+            new CustomEvent('cc:sync-revision', {
+                detail: data || {},
+            }),
+        );
+
+        if (window.__ccSkipFullReload || window.__ccRealtimeActive) {
+            return;
+        }
+
         if (document.visibilityState === 'hidden') {
             window.__ccPendingLiveReload = true;
             return;
@@ -64,7 +74,12 @@
     document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'visible' && window.__ccPendingLiveReload) {
             window.__ccPendingLiveReload = false;
-            window.location.reload();
+            if (!window.__ccSkipFullReload && !window.__ccRealtimeActive) {
+                window.location.reload();
+            } else {
+                window.__ccPendingLiveReload = false;
+                window.dispatchEvent(new CustomEvent('cc:sync-revision', { detail: { source: 'visibility' } }));
+            }
         }
     });
 
@@ -85,7 +100,7 @@
                     return;
                 }
                 if (lastRevision !== null && data.revision !== lastRevision) {
-                    reloadForSync();
+                    reloadForSync(data);
                     return;
                 }
                 lastRevision = data.revision;

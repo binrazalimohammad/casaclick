@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block title %}Manage Bookings{% endblock %}
 {% block body %}
-<div class="page-container">
+<div class="page-container" id="admin-bookings-root"
+     data-bookings-data-url="{{ path('app_admin_bookings_data') }}"
+     data-bookings-feed-url="{{ path('app_admin_bookings_feed') }}">
     <h1><i class="fa fa-calendar"></i> Manage Bookings</h1>
     <p class="text-muted">
         Set status: Pending, Complete, Refund, or Cancelled.
-        <span id="bookings-live-badge" class="badge bg-success"><i class="fa fa-circle"></i> Live (~5s)</span>
-        — booking and status changes from mobile or another browser refresh this page automatically.
+        <span id="bookings-live-badge" class="badge bg-success"><i class="fa fa-circle"></i> Live</span>
+        — booking updates appear instantly (no page refresh).
         Customer login/logout: <a href="{{ path('app_admin_logs') }}">Activity Logs</a>.
     </p>
 
@@ -21,9 +23,9 @@
                     <th>Update</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="admin-bookings-tbody">
             {% for booking in bookings %}
-                <tr>
+                <tr data-booking-id="{{ booking.id }}">
                     <td>{{ booking.id }}</td>
                     <td>{{ booking.tenant.email ?? booking.tenant.name }}</td>
                     <td>{{ booking.listing.name ?? '—' }}</td>
