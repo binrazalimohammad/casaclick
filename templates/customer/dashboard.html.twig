@@ -7,6 +7,10 @@
             <p class="cc-dash-eyebrow">Customer dashboard</p>
             <h1 class="cc-dash-title">Welcome, {{ user.name ?? user.email }}</h1>
             <p class="cc-dash-sub">Browse rentals, track bookings, and pay with Paymongo — no admin tools here.</p>
+            <p class="text-muted" style="margin-top:8px;font-size:0.9rem;">
+                <span id="live-sync-badge" class="badge bg-success"><i class="fa fa-circle"></i> Live sync (~5s)</span>
+                — changes from the mobile app or website appear here automatically (no manual refresh).
+            </p>
         </div>
     </header>
 

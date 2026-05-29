@@ -1,6 +1,6 @@
 /**
  * Polls /sync/feed while logged in; reloads when revision changes (mobile ↔ web, same DB).
- * Disabled by default — enable via data-live-sync="1" on <body> in base.html.twig live_sync_attributes block.
+ * Also embedded inline in base.html.twig when Webpack assets are not loaded.
  */
 (function () {
     if (window.__ccLiveSyncActive) {
