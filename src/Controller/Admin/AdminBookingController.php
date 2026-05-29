@@ -4,15 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\Application;
 use App\Repository\ApplicationRepository;
-use App\Service\ActivityLogService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 #[Route('/admin/bookings')]
 final class AdminBookingController extends AbstractController
@@ -60,24 +56,20 @@ final class AdminBookingController extends AbstractController
 
     /** JSON rows for in-page live updates (no full reload). */
     #[Route('/data', name: 'app_admin_bookings_data', methods: ['GET'])]
-    public function data(
-        ApplicationRepository $applicationRepository,
-        CsrfTokenManagerInterface $csrfTokenManager,
-    ): JsonResponse {
+    public function data(ApplicationRepository $applicationRepository): JsonResponse
+    {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $rows = [];
         foreach ($applicationRepository->findAllOrdered() as $booking) {
             $status = (string) $booking->getStatus();
-            $bookingId = (int) $booking->getId();
             $rows[] = [
-                'id' => $bookingId,
+                'id' => (int) $booking->getId(),
                 'tenant' => $booking->getTenant()?->getEmail() ?? $booking->getTenant()?->getName() ?? '—',
                 'listing' => $booking->getListing()?->getName() ?? '—',
+                'landlord' => $booking->getLandlord()?->getEmail() ?? $booking->getLandlord()?->getName() ?? '—',
                 'status' => $status,
                 'statusLabel' => self::BOOKING_STATUSES[$status] ?? $status,
-                'csrfToken' => $csrfTokenManager->getToken('booking_status_' . $bookingId)->getValue(),
-                'statusUrl' => $this->generateUrl('app_admin_booking_status', ['id' => $bookingId]),
             ];
         }
 
@@ -88,48 +80,17 @@ final class AdminBookingController extends AbstractController
         ]);
     }
 
+    /**
+     * Approval is landlord-only (Applications page). Admin cannot change booking status here.
+     */
     #[Route('/{id}/status', name: 'app_admin_booking_status', methods: ['POST'])]
-    public function updateStatus(
-        Application $application,
-        Request $request,
-        EntityManagerInterface $em,
-        ActivityLogService $activityLogService,
-    ): Response {
+    public function updateStatus(): Response
+    {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        if (!$this->isCsrfTokenValid('booking_status_' . $application->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid security token.');
-            return $this->redirectToRoute('app_admin_bookings');
-        }
-
-        $status = (string) $request->request->get('status', '');
-        if (!array_key_exists($status, self::BOOKING_STATUSES)) {
-            $this->addFlash('error', 'Invalid booking status.');
-            return $this->redirectToRoute('app_admin_bookings');
-        }
-
-        $previous = $application->getStatus();
-        $application->setStatus($status);
-        $application->setUpdatedAt(new \DateTimeImmutable());
-        $em->flush();
-
-        $admin = $this->getUser();
-        $activityLogService->logEvent(
-            $admin,
-            'UPDATE',
-            sprintf(
-                'Booking #%d status: %s → %s (listing: %s)',
-                $application->getId(),
-                $previous,
-                $status,
-                $application->getListing()?->getName() ?? '—',
-            ),
-            $application->getTenant()?->getEmail() ?? '',
-            'App\\Entity\\Application',
-            (string) $application->getId(),
+        $this->addFlash(
+            'warning',
+            'Booking approval is handled by the listing landlord under Applications — not by admin.',
         );
-
-        $this->addFlash('success', 'Booking status updated to ' . self::BOOKING_STATUSES[$status] . '.');
 
         return $this->redirectToRoute('app_admin_bookings');
     }

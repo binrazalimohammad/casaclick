@@ -1,5 +1,5 @@
 /**
- * Manage Bookings — refresh table rows in place (no full page reload).
+ * View Bookings (admin) — read-only rows refresh in place when landlords approve on Applications.
  */
 (function () {
     const root = document.getElementById('admin-bookings-root');
@@ -21,17 +21,7 @@
         return div.innerHTML;
     }
 
-    function buildStatusOptions(statuses, selected) {
-        let html = '';
-        for (const [key, label] of Object.entries(statuses)) {
-            const sel = key === selected ? ' selected' : '';
-            html +=
-                '<option value="' + escapeHtml(key) + '"' + sel + '>' + escapeHtml(label) + '</option>';
-        }
-        return html;
-    }
-
-    function renderRow(b, statuses) {
+    function renderRow(b) {
         return (
             '<tr data-booking-id="' +
             escapeHtml(b.id) +
@@ -45,26 +35,17 @@
             '<td>' +
             escapeHtml(b.listing) +
             '</td>' +
+            '<td>' +
+            escapeHtml(b.landlord) +
+            '</td>' +
             '<td><span class="badge">' +
             escapeHtml(b.statusLabel) +
             '</span></td>' +
-            '<td>' +
-            '<form method="post" action="' +
-            escapeHtml(b.statusUrl) +
-            '" data-live-sync-pause style="display:flex; gap:8px; align-items:center;">' +
-            '<input type="hidden" name="_token" value="' +
-            escapeHtml(b.csrfToken) +
-            '">' +
-            '<select name="status" class="form-select form-select-sm">' +
-            buildStatusOptions(statuses, b.status) +
-            '</select>' +
-            '<button type="submit" class="btn btn-sm btn-dark">Save</button>' +
-            '</form>' +
-            '</td></tr>'
+            '</tr>'
         );
     }
 
-    function patchOrRender(bookings, statuses) {
+    function patchOrRender(bookings) {
         if (!bookings.length) {
             tbody.innerHTML =
                 '<tr><td colspan="5" class="text-center text-muted">No bookings found.</td></tr>';
@@ -76,16 +57,12 @@
             known.add(String(b.id));
             const row = tbody.querySelector('tr[data-booking-id="' + b.id + '"]');
             if (row) {
-                const badge = row.querySelector('td:nth-child(4) .badge');
+                const badge = row.querySelector('td:nth-child(5) .badge');
                 if (badge) {
                     badge.textContent = b.statusLabel;
                 }
-                const select = row.querySelector('select[name="status"]');
-                if (select && select.value !== b.status) {
-                    select.value = b.status;
-                }
             } else {
-                tbody.insertAdjacentHTML('beforeend', renderRow(b, statuses));
+                tbody.insertAdjacentHTML('beforeend', renderRow(b));
             }
         }
 
@@ -106,7 +83,7 @@
                 if (!json?.success) {
                     return;
                 }
-                patchOrRender(json.bookings || [], json.statuses || {});
+                patchOrRender(json.bookings || []);
             })
             .catch(function () {});
     }

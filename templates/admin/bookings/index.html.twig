@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
-{% block title %}Manage Bookings{% endblock %}
+{% block title %}View Bookings{% endblock %}
 {% block body %}
 <div class="page-container" id="admin-bookings-root"
      data-bookings-data-url="{{ path('app_admin_bookings_data') }}"
      data-bookings-feed-url="{{ path('app_admin_bookings_feed') }}">
-    <h1><i class="fa fa-calendar"></i> Manage Bookings</h1>
+    <h1><i class="fa fa-calendar"></i> View Bookings</h1>
     <p class="text-muted">
-        Set status: Pending, Complete, Refund, or Cancelled.
+        <strong>Read-only.</strong> Only the <strong>landlord</strong> can approve or reject applications
+        (website → <strong>Applications</strong>). Tenants are notified on their mobile app when the landlord decides.
         <span id="bookings-live-badge" class="badge bg-success"><i class="fa fa-circle"></i> Live</span>
-        — booking updates appear instantly (no page refresh).
-        Customer login/logout: <a href="{{ path('app_admin_logs') }}">Activity Logs</a>.
     </p>
 
     <div class="table-responsive" style="margin-top: 24px;">
@@ -17,10 +16,10 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Customer</th>
+                    <th>Tenant</th>
                     <th>Listing</th>
-                    <th>Current status</th>
-                    <th>Update</th>
+                    <th>Landlord</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="admin-bookings-tbody">
@@ -29,18 +28,8 @@
                     <td>{{ booking.id }}</td>
                     <td>{{ booking.tenant.email ?? booking.tenant.name }}</td>
                     <td>{{ booking.listing.name ?? '—' }}</td>
+                    <td>{{ booking.landlord.email ?? booking.landlord.name ?? '—' }}</td>
                     <td><span class="badge">{{ statuses[booking.status] ?? booking.status }}</span></td>
-                    <td>
-                        <form method="post" action="{{ path('app_admin_booking_status', {id: booking.id}) }}" data-live-sync-pause style="display:flex; gap:8px; align-items:center;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('booking_status_' ~ booking.id) }}">
-                            <select name="status" class="form-select form-select-sm">
-                                {% for key, label in statuses %}
-                                    <option value="{{ key }}" {% if booking.status == key %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="submit" class="btn btn-sm btn-dark">Save</button>
-                        </form>
-                    </td>
                 </tr>
             {% else %}
                 <tr><td colspan="5" class="text-center text-muted">No bookings found.</td></tr>
