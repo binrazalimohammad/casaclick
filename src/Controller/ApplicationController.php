@@ -98,10 +98,12 @@ final class ApplicationController extends AbstractController
             return $this->redirectToRoute('app_application_index');
         }
 
+        $oldStatus = $application->getStatus();
         $application->setStatus('approved');
         $application->setUpdatedAt(new \DateTimeImmutable());
         $entityManager->flush();
-        // Tenant notification + Socket.IO/FCM: StatusChangeNotificationSubscriber → notifyOrderStatusChange
+
+        $this->notificationService->notifyOrderStatusChange($application, $oldStatus, 'approved');
 
         $this->addFlash('success', 'Application approved. The tenant will be notified on their device.');
         return $this->redirectToRoute('app_application_index');
@@ -127,9 +129,12 @@ final class ApplicationController extends AbstractController
             return $this->redirectToRoute('app_application_index');
         }
 
+        $oldStatus = $application->getStatus();
         $application->setStatus('rejected');
         $application->setUpdatedAt(new \DateTimeImmutable());
         $entityManager->flush();
+
+        $this->notificationService->notifyOrderStatusChange($application, $oldStatus, 'rejected');
 
         $this->addFlash('success', 'Application rejected. The tenant will be notified on their device.');
         return $this->redirectToRoute('app_application_index');

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Entity\Application;
-use App\Entity\Payment;
 use App\Entity\Product;
 use App\Service\NotificationService;
 use App\Service\OrderStatusLabelService;
@@ -15,7 +13,8 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
 /**
- * Creates tenant/landlord notifications when application, payment, or listing status changes.
+ * Notifies landlords when listing (product) status changes. Tenant application/payment alerts
+ * are sent directly from controllers (see ApplicationController, PaymentController).
  * Work is deferred to postFlush so we never nest flush() inside preUpdate.
  */
 #[AsDoctrineListener(event: Events::preUpdate)]
@@ -33,26 +32,8 @@ class StatusChangeNotificationSubscriber
     {
         $entity = $args->getObject();
 
-        if ($entity instanceof Application && $args->hasChangedField('status')) {
-            $this->pending[] = [
-                'kind' => 'application',
-                'application' => $entity,
-                'old' => (string) $args->getOldValue('status'),
-                'new' => (string) $args->getNewValue('status'),
-            ];
-
-            return;
-        }
-
-        if ($entity instanceof Payment && $args->hasChangedField('status')) {
-            $this->pending[] = [
-                'kind' => 'payment',
-                'payment' => $entity,
-                'new' => (string) $args->getNewValue('status'),
-            ];
-
-            return;
-        }
+        // Application/payment tenant alerts are sent explicitly from controllers
+        // (same pattern as listing_unoccupied) so they work even if listeners are skipped.
 
         if ($entity instanceof Product && $args->hasChangedField('status')) {
             $this->pending[] = [
@@ -73,37 +54,10 @@ class StatusChangeNotificationSubscriber
         $this->pending = [];
 
         foreach ($queue as $item) {
-            match ($item['kind']) {
-                'application' => $this->dispatchApplication($item),
-                'payment' => $this->dispatchPayment($item),
-                'product' => $this->dispatchProduct($item),
-                default => null,
-            };
+            if ($item['kind'] === 'product') {
+                $this->dispatchProduct($item);
+            }
         }
-    }
-
-    /**
-     * @param array<string, mixed> $item
-     */
-    private function dispatchApplication(array $item): void
-    {
-        /** @var Application $application */
-        $application = $item['application'];
-        $this->notifications->notifyOrderStatusChange(
-            $application,
-            (string) $item['old'],
-            (string) $item['new'],
-        );
-    }
-
-    /**
-     * @param array<string, mixed> $item
-     */
-    private function dispatchPayment(array $item): void
-    {
-        /** @var Payment $payment */
-        $payment = $item['payment'];
-        $this->notifications->notifyTenantPaymentStatusChange($payment, (string) $item['new']);
     }
 
     /**

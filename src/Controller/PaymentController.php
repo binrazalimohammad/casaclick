@@ -200,7 +200,8 @@ final class PaymentController extends AbstractController
         $payment->setStatus('completed');
         $payment->setProcessedBy($user);
         $entityManager->flush();
-        // Tenant notification: StatusChangeNotificationSubscriber → notifyTenantPaymentStatusChange
+
+        $this->notificationService->notifyTenantPaymentStatusChange($payment, 'completed');
 
         $this->addFlash('success', 'Payment approved successfully! The tenant will be notified on their device.');
         return $this->redirectToRoute('app_payment_index', ['applicationId' => $application->getId()]);
@@ -222,7 +223,8 @@ final class PaymentController extends AbstractController
         $payment->setStatus('failed');
         $payment->setProcessedBy($user);
         $entityManager->flush();
-        // Tenant notification: StatusChangeNotificationSubscriber → notifyTenantPaymentStatusChange
+
+        $this->notificationService->notifyTenantPaymentStatusChange($payment, 'failed');
 
         $this->addFlash('warning', 'Payment rejected. The tenant will be notified on their device.');
         return $this->redirectToRoute('app_payment_index', ['applicationId' => $application->getId()]);
