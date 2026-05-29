@@ -424,7 +424,7 @@
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
-<body{% block live_sync_attributes %}{% if app.user %} data-live-sync="1" data-live-sync-url="{{ path('app_sync_feed') }}" data-live-sync-interval="5000"{% endif %}{% endblock %}>
+<body{% block live_sync_attributes %}{# Auto page reload disabled — add data-live-sync="1" + feed URL to re-enable #}{% endblock %}>
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar" data-background-color="white" data-active-color="danger">
@@ -559,7 +559,6 @@
                     {{ app.user.name ?? app.user.email }}
                 </div>
                 <div class="user-role">
-                    <span class="live-sync-pill" title="Auto-refresh when mobile or another browser changes data"><i class="fa fa-refresh"></i> Live</span>
                     {% set primaryRole = app.user.primaryRole ?? 'ROLE_TENANT' %}
                     {% if primaryRole == 'ROLE_ADMIN' %}
                         <span class="user-role-badge admin">Admin</span>
@@ -585,8 +584,8 @@
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
-    {# Fallback when Encore bundle is missing (e.g. assets not built on deploy) — same logic as assets/js/live-sync.js #}
-    {% if app.user %}
+    {# Live sync inline fallback disabled (see assets/js/live-sync.js). Re-enable via live_sync_attributes on <body>. #}
+    {% if false and app.user %}
     <script>
     (function () {
         if (window.__ccLiveSyncActive) return;
